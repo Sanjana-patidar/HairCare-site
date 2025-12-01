@@ -1,0 +1,6 @@
+.carousel-indicators [data-bs-target] {
+    background-color: rgb(195, 229, 43) !important;
+}
+.carousel-control-next-icon{
+    background-image: url("/src/assets/img/next.png") !important;
+}

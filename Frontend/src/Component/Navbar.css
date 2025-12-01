@@ -1,0 +1,56 @@
+.search-bar input{
+    border-radius: 5px;
+    outline-color: rgb(192, 223, 54);
+    border: 1px solid grey;
+    padding: 2px 4px;
+}
+.search-rel{
+   position: relative;
+}
+.search-ab{
+    position: absolute;
+    right:0;
+    transform: translate(-35%, -110%);
+}
+.navbar{
+    background-color: white !important;
+}
+.carousel-item {
+  transition: transform 0.9s ease !important;
+}
+.cross{
+    color: rgb(192, 223, 54);
+}
+.usermodal input{
+    background-color: rgb(241, 240, 240);
+    width:100%;
+    border-radius: 10px;
+    margin: 7px 0px;
+    padding: 6px 15px;
+    border: none;
+    outline-color:rgb(192, 223, 54);  
+}
+.btn-1{
+    background-color: rgb(192, 223, 54);
+    color: white;
+    padding: 4px 30px;
+    border-radius: 50px;
+    border: none;
+    border-color:rgb(195, 229, 43); 
+    margin: 13px 0px;
+}
+.switch-text span{
+   cursor: pointer;
+}
+.logo{
+    height: 40px;
+    width: 40px;
+}
+.logo-text{
+    transition:all ;
+    transform-origin: center;
+}
+.logo-text:hover{
+    color: black !important;
+    transition: color 0.9s ease-in-out ;
+}
