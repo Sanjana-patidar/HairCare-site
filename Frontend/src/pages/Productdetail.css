@@ -1,0 +1,29 @@
+.fa-check{
+    color: rgb(192, 223, 54);
+}
+.discount-btn{
+    background-color: rgb(192, 223, 54);
+    border: 1px solid rgb(192, 223, 54); 
+    padding: 5px 10px;
+    border-radius: 10px ;
+}
+.key{
+    border: 1px solid rgb(192, 223, 54);
+    padding: 5px;
+    background-color: rgb(204, 227, 98);
+    border-radius: 7px;
+    margin: 15px 0px;
+    font-size: 15px;
+}
+.product-img-box {
+    background-color: white;
+}
+.product-img-box img{
+    border-radius: 10px;
+    transition: all 0.4s ease-in;
+}
+.product-img-box:hover img{
+    transform: scale(0.8);
+    transform-origin:  center;
+    
+}

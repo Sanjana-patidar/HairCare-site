@@ -1,17 +1,30 @@
 import React from "react";
 import { useState, useRef,useEffect } from "react";
+import {useCart} from '../Context/CartContext';
 import Modal from "react-bootstrap/Modal";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom" 
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 import "./Navbar.css";
 
-const Navbar = () => {
+const Navbar = ({openCart}) => {
+ 
+  // cart context
+  const { cartItems,clearCart } = useCart();
+  const totalProducts = cartItems.length;
+  const navigate = useNavigate();
   // state for user modal
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   // state for login/signup
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+  return !!localStorage.getItem("token"); // true if token exists
+});
+
+
   // state for user input
   const [formdata, setFormdata] = useState({
     username: "",
@@ -19,6 +32,17 @@ const Navbar = () => {
     password:"",
     confirmPassword:""
   });
+// logout function
+   const handleLogout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("role");
+   clearCart();            
+ setIsLoggedIn(false);   
+  toast.warning("Logged out successfully");
+
+  navigate("/");
+};
+
 
 // for user input value
 const handleChange = (e) => {
@@ -48,7 +72,7 @@ useEffect(() => {
 const handleSignup = async (e) =>{
   e.preventDefault();
   if(formdata.password !== formdata.confirmPassword){
-       alert("password do not match");
+      toast.warning("password do not match");
     return;
 }
    try {
@@ -59,8 +83,7 @@ const handleSignup = async (e) =>{
       confirmPassword: formdata.confirmPassword,
     });
 
-    console.log(response.data);
-    alert("Signup Successful!");
+    toast.success("Signup successfully");
     setIsLoggedIn(true); // redirect to login
   } catch (error) {
     console.log(error);
@@ -76,13 +99,26 @@ const handleLogin = async (e) =>{
       email: formdata.email,
       password: formdata.password,
     });
-   Swal.fire({
-  position: "center",
-  icon: "success",
-  title: "Login Successfully !",
-  showConfirmButton: false,
-  timer: 1500
-});
+
+   const {token, user} = response.data;
+  //store the user token and role in local storage
+  localStorage.setItem("token", token);
+  localStorage.setItem("role", user.role);
+
+  // success alert
+  toast.success("Login successfully");
+setIsLoggedIn(true);
+localStorage.setItem("isLoggedIn", "true");
+
+//role based redirect
+setTimeout(()=>{
+  if(user.role == "admin"){
+    navigate("/admin");
+  }
+  else{
+    navigate("/");
+  }
+})
     handleClose();
   } catch (error) {
     alert(error.response?.data?.message || "Login Failed");
@@ -103,46 +139,75 @@ const handleLogin = async (e) =>{
           >
             <span class="navbar-toggler-icon"></span>
           </button>
-          <a class="navbar-brand">
-            <h3 className="logo-text text-warning"> <img src="/src/assets/img/womens-day.png" className="logo" alt="" />Shinny</h3>
+          <a class="navbar-brand hvr-grow">
+            <h3 className="logo-text text-warning"> <img  src="/src/assets/img/womens-day.png" className="logo" alt="" />Shinny</h3>
           </a>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav m-auto mb-2 mb-lg-0 gap-3">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">
+              <Link to="/" className="text-decoration-none">
+              <li class="nav-item hvr-underline-from-center">
+                <a class="nav-link " href="#">
                   Home
                 </a>
               </li>
-              <li class="nav-item">
+             </Link>
+              <Link to="/Categoryshampoo" className="text-decoration-none">
+                <li class="nav-item hvr-underline-from-center">
                 <a class="nav-link" href="#">
                   Shampoo
                 </a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
+              </Link>
+             <Link to="/Categoryconditioner">
+                <li class="nav-item hvr-underline-from-center">
+                  <a class="nav-link" href="#">
                   Conditioner
                 </a>
               </li>
-              <li class="nav-item">
+             </Link>
+              <Link to="/Categoryserum">
+                <li class="nav-item hvr-underline-from-center">
+                 <a class="nav-link" href="#">
+                  Serum
+                 </a>
+              </li>
+              </Link>
+               <Link to="/Categoryoil" className="text-decoration-none">
+                 <li class="nav-item hvr-underline-from-center">
+                <a class="nav-link" href="#">
+                  Oil
+                </a>
+              </li>
+               </Link>
+             <Link to="/contact" className="text-decoration-none ">
+              <li class="nav-item hvr-underline-from-center">
                 <a class="nav-link " href="#">
                   Contact
                 </a>
               </li>
+             </Link>
             </ul>
           </div>
           <div>
               <div className="search-bar d-flex align-items-center ">
-                <div className="search-rel me-3">
-                  <input type="search" placeholder="search" />
-                  <div className="search-ab">
-                    <i class="rel fa-solid fa-magnifying-glass "></i>
-                  </div>
+                <div  className="me-3 cart-icon">
+                  <i class="fa-solid fa-heart hvr-grow fs-4"></i>
+                  {<span style={{color:"rgb(192, 223, 54)",fontSize:"20px"}}></span>}
                 </div>
-                <div className="me-3">
-                  <i class="fa-solid fa-cart-arrow-down fs-5"></i>
+                <div onClick={openCart} className="me-3 cart-icon">
+                  <i class="fa-solid fa-cart-arrow-down fs-5 hvr-grow"></i>
+                  {cartItems.length > 0 && <span style={{color:"rgb(192, 223, 54)",fontSize:"20px"}}>({totalProducts})</span>}
                 </div>
-                <div onClick={handleShow}>
-                  <i class="fa-solid fa-user fs-5"></i>
+                <div className="cart-icon">
+                  {localStorage.getItem("token") ? (
+                    <button onClick={handleLogout} className="btn btn-sm btn-warning">
+                      Logout <i className="fa-solid fa-arrow-right-from-bracket"></i>
+                    </button>
+                  ) : (
+                    <div onClick={handleShow}>
+                      <i className="fa-solid fa-user fs-5 hvr-grow"></i>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

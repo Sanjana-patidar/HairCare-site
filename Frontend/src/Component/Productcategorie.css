@@ -1,0 +1,81 @@
+.product-container{
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap:20px;
+    padding: 30px 10px ;
+}
+@media (max-width:913px){
+  .product-container{
+   grid-template-columns: repeat(2,1fr);
+}
+}
+@media (max-width:453px){
+  .product-container{
+   grid-template-columns: repeat(1,1fr);
+}
+}
+
+.pro-card{
+  border: 1px solid grey;
+  width: 100%;
+  height: 200px;
+  border-radius: 7%;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 23px;
+  color: white;
+}
+.pro-card-1{
+  background-image: url("https://thumbs.dreamstime.com/b/shampoo-bottle-mockup-spa-still-life-ai-generated-content-design-background-instagram-facebook-wall-painting-image-325362896.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+ 
+}
+.pro-card-2{
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: url("https://images.pexels.com/photos/8467963/pexels-photo-8467963.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500");
+}
+.pro-card-3{
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: url("https://static.vecteezy.com/system/resources/thumbnails/013/629/942/small/amber-bottle-with-dropper-pipette-on-beige-background-with-daylight-and-beautiful-shadows-skincare-serum-or-essential-oil-natural-cosmetic-beauty-concept-for-face-and-body-care-mockup-free-photo.jpg");
+}
+.pro-card-4{
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition: all 0.9s ease;
+  background-image: url("https://images.pexels.com/photos/6706901/pexels-photo-6706901.jpeg?cs=srgb&dl=pexels-mikhail-nilov-6706901.jpg&fm=jpg");
+}
+.pro-card-4:hover{
+  opacity: 0.5;
+}
+.pro-card-3:hover{
+  opacity: 0.5;
+}
+.pro-card-2:hover{
+  opacity: 0.5;
+}
+.pro-card-1:hover{
+  opacity: 0.5;
+}
+.pro-card span {
+  position: relative;
+  z-index: 2;
+  font-size: 22px;
+  font-weight: 600;
+  color: #fff;
+  transform: translateY(0);
+  transition: transform 0.4s ease;
+}
+
+.pro-card:hover span {
+  transform: translateY(-25px); 
+  color: black;
+}

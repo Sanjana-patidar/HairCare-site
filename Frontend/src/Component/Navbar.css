@@ -21,6 +21,16 @@
 .cross{
     color: rgb(192, 223, 54);
 }
+.cart-icon:hover{
+    cursor: pointer;
+}
+.nav-link{
+    color:black;
+    transition: all 0.3s ease-in;
+}
+.nav-link:hover{
+    color:rgb(192, 223, 54);
+}
 .usermodal input{
     background-color: rgb(241, 240, 240);
     width:100%;
@@ -47,10 +57,19 @@
     width: 40px;
 }
 .logo-text{
+    margin-top: 8px;
     transition:all ;
     transform-origin: center;
 }
 .logo-text:hover{
     color: black !important;
     transition: color 0.9s ease-in-out ;
+}
+.navbar{
+    box-shadow: 5px 2px 5px rgb(215, 211, 211) !important;
+    
+}
+.hvr-underline-from-center::before{
+    background:rgb(195, 229, 43);
+    height: 2.5px;
 }

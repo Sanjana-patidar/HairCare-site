@@ -10,13 +10,23 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^7.3.6",
+    "aos": "^2.3.4",
     "axios": "^1.13.2",
     "bootstrap": "^5.3.8",
-    "react": "^19.2.0",
+    "hover.css": "^2.3.2",
+    "motion": "^12.23.26",
+    "react": "^18.3.1",
     "react-bootstrap": "^2.10.10",
-    "react-dom": "^19.2.0",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.5.0",
     "react-router-dom": "^7.9.6",
-    "sweetalert2": "^11.26.3"
+    "react-switch": "^7.1.0",
+    "react-toastify": "^11.0.5",
+    "sweetalert2": "^11.26.3",
+    "swiper": "^12.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

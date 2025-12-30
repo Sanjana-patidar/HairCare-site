@@ -7,6 +7,7 @@ import mongoose from "mongoose"
     discountprice:{type:Number, required:true},
     discountpercentage:{type:Number},
     rating:{type:Number, default:0},
+    stock:{type:Number, required:true},
     category: {
     type: String,
     enum: ["shampoo", "conditioner", "serum", "oil"],
@@ -16,6 +17,12 @@ import mongoose from "mongoose"
     type:String,
     required:true
   },
+  status: {
+  type: String,
+  enum: ["active", "inactive", "outofstock"],
+  default: "active"
+}
+
  })
 
  export const productModel = mongoose.model("product", productSchema);

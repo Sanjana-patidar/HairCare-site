@@ -1,0 +1,33 @@
+.contact-first{
+    background-image: url("https://img.freepik.com/premium-photo/natural-hair-care-flat-lay-wooden-hair-comb-oil-with-fir-branches-beige-background-horizontal-long-banner-web-design-with-copy-space_680447-959.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 5px;
+    transition: all;
+}
+.contact-first:hover{
+    background-image: url("https://img.freepik.com/premium-photo/natural-hair-care-flat-lay-wooden-hair-comb-oil-with-fir-branches-beige-background-horizontal-long-banner-web-design-with-copy-space_680447-959.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 5px;
+    transition:  0.8s ease-in-out;
+}
+textarea{
+    resize: none;
+    border-radius: 5px;
+}
+.submit-btn{
+    background-color: rgb(195, 229, 43);
+    color: white;
+    border: 1px solid rgb(195, 229, 43);
+    padding: 7px;
+    border-radius: 5px;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    outline: none;         
+    border: 1px solid rgb(195, 229, 43); 
+    box-shadow: 0 0 5px rgb(195, 229, 43); 
+}

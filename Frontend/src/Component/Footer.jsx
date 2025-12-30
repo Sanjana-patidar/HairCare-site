@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <div className='footer '>
       <footer className='p-2 '>
-       <div>
+       <div className='hvr-grow'>
             <h3 className="logo-text text-warning"> <img src="/src/assets/img/womens-day.png" className="logo" alt="" />Shinny</h3>
        </div>
        <div className="row m-0 justify-content-start  ">

@@ -6,10 +6,11 @@ import path from "path";
 // ADD product 
 export const addProduct = async (req, res) => {
   try {
-    const { name, description, price, discountprice,  discountpercentage, rating, category } = req.body;
+    const { name, description, price, discountprice,  discountpercentage, rating, category, stock, status } = req.body;
 
     if (!req.file) return res.status(400).json({ message: "Image file is required (form-data key: image)" });
 
+    
     const product = new productModel({
       name,
       description,
@@ -18,7 +19,9 @@ export const addProduct = async (req, res) => {
       discountpercentage,
       rating,
       category,
-      image: req.file.filename
+      stock,
+      image: req.file.filename,
+      status: status || "active"
     });
 
     await product.save();
@@ -32,7 +35,14 @@ export const addProduct = async (req, res) => {
 // GET all products
 export const getAllProducts = async (req, res) => {
   try {
-    const products = await productModel.find();
+    const { status } = req.query;
+    let query = {};
+
+    if (status) {
+      query.status = status;
+    }
+
+    const products = await productModel.find(query);
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -87,6 +97,47 @@ export const deleteProduct = async (req, res) => {
 
     res.status(200).json({ message: "Product deleted successfully" });
 
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+// update product status
+export const updateProductStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    if (!["active", "inactive", "outofstock"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    const product = await productModel.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.json({ message: "Status updated", product });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+export const getProductsByCategory = async (req, res) => {
+  try {
+    const { category } = req.params;
+
+    const products = await productModel.find({
+      category: category,     
+      status: "active",       
+      stock: { $gt: 0 }      
+    });
+
+    res.status(200).json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

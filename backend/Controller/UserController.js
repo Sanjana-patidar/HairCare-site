@@ -21,13 +21,14 @@ export const signup = async (req, res) => {
         const newUser = new UserModel({
             username,
             email,
-            password: hashPassword
+            password: hashPassword,
+            role: "user"
         });
 
         await newUser.save();
 
         const token = jwt.sign(
-            { id: newUser._id },
+            { id: newUser._id, role: newUser.role },
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         );
@@ -35,7 +36,7 @@ export const signup = async (req, res) => {
         res.status(201).json({
             message: "Signup successful",
             token,
-            user: { id: newUser._id, username: newUser.username, email: newUser.email }
+            user: { id: newUser._id, username: newUser.username, email: newUser.email, role: newUser.role }
         });
 
     } catch (error) {
@@ -61,7 +62,7 @@ export const signup = async (req, res) => {
 
       //generate token
       const token = jwt.sign(
-      { id: user._id },
+      { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -69,7 +70,7 @@ export const signup = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token,
-      user: { id: user._id, username: user.username, email: user.email }
+      user: { id: user._id, username: user.username, email: user.email, role: user.role }
     });
  }
  catch(error){

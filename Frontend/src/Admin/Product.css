@@ -1,0 +1,241 @@
+.admin-product-container {
+  padding: 20px;
+  min-height: 100vh;
+}
+
+/* header */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.admin-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.add-btn {
+  background: linear-gradient(135deg,  rgb(192, 223, 54), rgb(139, 159, 50));
+  color: #fff;
+  border: none;
+  padding: 5px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.add-btn:hover {
+  opacity: 0.9;
+}
+
+/* table card */
+.table-card {
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.product-table thead {
+  background: linear-gradient(135deg,  rgb(192, 223, 54), rgb(139, 159, 50));
+  color: #fff;
+}
+
+.product-table th,
+.product-table td {
+  padding: 14px 16px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.product-table tbody tr {
+  border-bottom: 1px solid #eee;
+  transition: background 0.3s;
+}
+
+.product-table tbody tr:hover {
+  background: rgb(186, 210, 82);
+}
+
+/* image */
+.product-thumb {
+  width: 55px;
+  height: 55px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* badges */
+.category-badge {
+  background: rgb(164, 190, 44);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.price {
+  font-weight: 600;
+}
+
+/* action buttons */
+.action-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.action-btns button {
+  border: none;
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.action-btns .edit {
+  background: #ffeaa7;
+  color: #2d3436;
+}
+
+.action-btns .delete {
+  background: #ff7675;
+  color: #fff;
+}
+
+.action-btns button:hover {
+  opacity: 0.85;
+}
+
+.empty-text {
+  text-align: center;
+  padding: 20px;
+  color: #777;
+}
+@media (max-width: 925px) {
+  .product-table thead {
+    display: none;
+  }
+
+  .product-table,
+  .product-table tbody,
+  .product-table tr,
+  .product-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .product-table tr {
+    background: #fff;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    padding: 10px;
+  }
+
+  .product-table td {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .product-table td:last-child {
+    border-bottom: none;
+  }
+
+  .product-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #555;
+  }
+
+  .product-thumb {
+    width: 45px;
+    height: 45px;
+  }
+
+  .action-btns {
+    justify-content: flex-end;
+    gap: 8px;
+  }
+}
+
+/* Small devices */
+@media (max-width: 480px) {
+  .admin-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .add-btn {
+    width: 100%;
+  }
+
+  .action-btns button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm) {
+   background-color:  rgb(192, 223, 54) !important;
+}
+
+.form-select-sm {
+  border:1px solid rgb(192, 223, 54) !important;
+  background-color: rgb(192, 223, 54)!important;
+}
+
+.form-select:focus{
+  outline: none !important;
+  border-color:rgb(192, 223, 54)!important ;
+}
+
+.table-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.product-filter-select {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid rgb(192, 223, 54) ;
+}
+
+select {
+  background-color: #d4ed91; 
+  color: #000;               
+  border: 1px solid #a0c050; 
+  padding: 5px 10px;
+  border-radius: 5px;      
+}
+
+@media  (max-width:1300px) {
+  .admin-header {
+    flex-direction: column-reverse;
+    gap:13px;
+}
+
+}
+@media (max-width:720px){
+  .table-controls{
+  flex-direction: column;
+}
+}
+option{
+ background-color: #d4ed91 !important;
+}
+.product-modal .modal-header{
+  border-bottom: none !important;
+}
+.product-modal h5{
+  color:#a0c050;
+}

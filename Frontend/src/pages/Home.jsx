@@ -1,14 +1,17 @@
 import React from 'react'
-import Navbar from '../Component/Navbar'
 import Mainheader from '../Component/Mainheader'
-import Footer from '../Component/Footer'
-
+import Productcategorie from '../Component/Productcategorie'
+import Product from '../Component/Product'
+import Benfit from '../Component/Benfit'
+import Video from '../Component/Video'
 const Home = () => {
   return (
     <>
-      <Navbar/>
       <Mainheader/>
-      <Footer/>
+      <Productcategorie/>
+      <Video/>
+      <Product/>
+      <Benfit/>
     </>
   )
 }

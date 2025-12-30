@@ -1,0 +1,81 @@
+ .product-card {
+  height: auto;
+  border-radius: 10px;
+  border:1px solid grey;
+  font-weight: 600;
+  padding: 10px;
+  position: relative;
+}
+.product-card img{
+    border-radius: 10px;
+    transition: all 0.4s ease-in;
+}
+.product-card:hover img{
+    transform: scale(0.8);
+    transform-origin:  center;
+    
+}
+.description{
+    color:rgb(192, 223, 54) ;
+}
+.add-to-cart-btn{
+   background-color: rgb(192, 223, 54);
+   border:1px solid rgb(192, 223, 54);
+   border-radius: 8px;
+   padding: 7px ; 
+   visibility: hidden;
+   transform: translate(0%, 30%);
+   transition: all 0.4s ease-in-out;
+}
+
+.product-card:hover .add-to-cart-btn{
+    visibility: visible;
+    transform: translate(0%,0%);
+    transform-origin: bottom;
+}
+
+.swiper-pagination-bullet-active {
+    background: rgb(192, 223, 54);
+}
+.swiper-pagination-bullet {
+    height: 10px;
+    width: 10px;
+}
+@media  (max-width:550px) {
+    .add-to-cart-btn{
+        visibility: visible;
+         transform: translate(0%,0%);
+}
+    .like-btn{
+          transform: translate(-30%,50%) !important;
+        visibility: visible !important;
+    }
+}
+.custom-prev, .custom-next{
+    border: none;
+    background: none;
+}
+.swiper-buttons i{
+   color: rgb(192, 223, 54);
+}
+.swiper-buttons span{
+   color: rgb(192, 223, 54);
+   font-weight: 500;
+}
+.like-btn{
+    position: absolute;
+    top:0;
+    right: 0;
+    transform: translate(10%,50%);
+    visibility: hidden;
+    transition: all 0.5s ease-in;
+}
+.like-btn i{
+    font-size: 27px;
+    color: rgb(192, 223, 54);
+}
+.product-card:hover .like-btn{
+    transform: translate(-30%,50%);
+    transform-origin: right;
+    visibility: visible;
+}

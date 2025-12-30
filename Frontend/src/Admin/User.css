@@ -1,0 +1,83 @@
+.user-container {
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.table-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user-table thead {
+  background: linear-gradient(135deg,  rgb(192, 223, 54), rgb(139, 159, 50));
+  color: #fff;
+}
+
+.user-table th,
+.user-table td {
+  padding: 14px 18px;
+  text-align: left;
+}
+
+.user-table tbody tr {
+  border-bottom: 1px solid #eee;
+  transition: background 0.3s;
+}
+
+
+/* user info */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg,  rgb(192, 223, 54), rgb(139, 159, 50));;
+  color: #fff;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* role badges */
+.role-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.role-badge.admin {
+  background: #ffe3e3;
+  color: #d63031;
+}
+
+.role-badge.user {
+  background: rgb(192, 223, 54);
+  color: white;
+}
+
+.empty-text {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+}

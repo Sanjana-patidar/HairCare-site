@@ -1,0 +1,32 @@
+.product-grid{
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap:10px;
+    padding: 20px;
+}
+.back, .header-top{
+    cursor: pointer;
+    transition: all 0.5s ease-in;
+}
+.back:hover{
+    color: black !important;
+}
+
+.header-top:hover{
+    color:rgb(192, 223, 54);
+}
+@media (max-width:980px){
+    .product-grid{
+    grid-template-columns: repeat(3,1fr);
+}
+}
+@media (max-width:750px){
+    .product-grid{
+    grid-template-columns: repeat(2,1fr);
+}
+}
+@media (max-width:540px){
+    .product-grid{
+    grid-template-columns: repeat(1,1fr);
+}
+}
