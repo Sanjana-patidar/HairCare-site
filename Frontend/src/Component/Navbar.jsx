@@ -36,7 +36,8 @@ const Navbar = ({openCart}) => {
    const handleLogout = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("role");
-   clearCart();            
+  localStorage.removeItem("isLoggedIn");
+  clearCart();       
  setIsLoggedIn(false);   
   toast.warning("Logged out successfully");
 
@@ -61,9 +62,9 @@ useEffect(() => {
   if (show) {
     setTimeout(() => {
       if (isLoggedIn) {
-        emailRef.current && emailRef.current.focus(); // login → email
+        emailRef.current && emailRef.current.focus(); 
       } else {
-        usernameRef.current && usernameRef.current.focus(); // signup → username
+        usernameRef.current && usernameRef.current.focus();   
       }
     }, 100);
   }
@@ -76,7 +77,7 @@ const handleSignup = async (e) =>{
     return;
 }
    try {
-    const response = await axios.post("http://localhost:5000/api/users/signup", {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/signup`, {
       username: formdata.username,
       email: formdata.email,
       password: formdata.password,
@@ -95,7 +96,7 @@ const handleSignup = async (e) =>{
 const handleLogin = async (e) =>{
    e.preventDefault();
    try {
-    const response = await axios.post("http://localhost:5000/api/users/login", {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/login`, {
       email: formdata.email,
       password: formdata.password,
     });
@@ -183,6 +184,13 @@ setTimeout(()=>{
               <li class="nav-item hvr-underline-from-center">
                 <a class="nav-link " href="#">
                   Contact
+                </a>
+              </li>
+             </Link>
+             <Link to="/placeorder" className="text-decoration-none">
+              <li class="nav-item hvr-underline-from-center">
+                <a class="nav-link " href="#">
+                Order
                 </a>
               </li>
              </Link>

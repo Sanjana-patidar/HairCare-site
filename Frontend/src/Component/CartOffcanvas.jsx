@@ -1,4 +1,5 @@
 import { useCart } from "../Context/CartContext";
+import { Link } from "react-router-dom";
 import "./CartOffcanvas.css";
 
 const CartOffcanvas = ({ isOpen, closeCart }) => {
@@ -30,7 +31,7 @@ const CartOffcanvas = ({ isOpen, closeCart }) => {
                 <div className="cart-bg row justify-content-center align-items-center">
                   <div className="col-12 col-sm-4">
                     <img className="w-100"
-                    src={`http://localhost:5000/uploads/${item.image}`}
+                    src={`${import.meta.env.VITE_API_IMAGE}/${item.image}`}
                     alt=""
                   />
                   </div>
@@ -63,7 +64,9 @@ const CartOffcanvas = ({ isOpen, closeCart }) => {
               <p className="m-0 fw-bold">Total Quntity:  {totalQuantity}</p>
               <p className="fw-bold">SubTotal Price:  ₹{subTotalPrice}</p>
             </div>
-            <button className="checkout-btn">Checkout</button>
+          <Link to="/Checkout">
+            <button onClick={closeCart} className="checkout-btn">Checkout</button>
+          </Link>
           </div>
         )}
       </div>

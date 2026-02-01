@@ -20,8 +20,29 @@ import Shampoo from './pages/Shampoo';
 import Conditioner from './pages/Conditioner';
 import Serum from './pages/Serum'
 import './App.css'
-
+import Checkout from './pages/Checkout';
+import Ordersuccess from './pages/Ordersuccess';
+import ScroolToTop from './Component/ScroolToTop';
+import SplashScreen from './Component/SplashScreen'
+import Brand from './Admin/Brand';
+import Addbrand from './Admin/Addbrand';
+import Orderhistory from './Admin/Orderhistory';
 function App() {
+  const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+    const visited = sessionStorage.getItem("visited");
+
+    if (visited) {
+      setLoading(false);
+    } else {
+      setTimeout(() => {
+        sessionStorage.setItem("visited", "true");
+        setLoading(false);
+      }, 4000);
+    }
+  }, []);
+
  useEffect(() => {
     AOS.init({
       duration: 1100,
@@ -30,6 +51,11 @@ function App() {
       easing: "ease-in-out",
     });
   }, []);
+
+  if (loading) {
+    return <SplashScreen />;
+  }
+
   return (
     <>
     <BrowserRouter>
@@ -42,8 +68,9 @@ function App() {
              <Route path="Categoryconditioner" element={<Conditioner/>} />
              <Route path="Categoryserum" element={<Serum/>} />
              <Route path="contact" element={<Contect/>} />
+             <Route path="Checkout" element={<Checkout/>} />
+             <Route path="Placeorder" element={<Ordersuccess/>} />
              <Route path="productdetail/:id" element={<Productdetail/>} />
-
            </Route>
            {/* admin route */}
            <Route path="/admin" element={<Adminlayout/>}>
@@ -51,12 +78,17 @@ function App() {
              <Route path="user" element={<User/>} />
              <Route path="product" element={<Product/>} />
              <Route path="addproduct" element={<Addproduct/>} />
+             <Route path="brand" element={<Brand/>} />
+             <Route path="addbrand" element={<Addbrand/>} />
+             <Route path="orderhistory" element={<Orderhistory/>} />
              <Route path="setting" element={<Setting/>} />
            </Route>
         </Routes>
     </BrowserRouter>
-      <ToastContainer position="top-right" autoClose={2000} />
+      <ToastContainer position="top-right" autoClose={1000} />
+      <ScroolToTop/>
     </>
+    
   )
 }
 

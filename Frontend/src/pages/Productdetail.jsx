@@ -8,12 +8,18 @@ import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import { useCart } from '../Context/CartContext';
 import { useOutletContext } from "react-router-dom";
-import Alert from '@mui/material/Alert';
-import Stack from '@mui/material/Stack';
+import confetti from "canvas-confetti";
 import "./Productdetail.css"
 
 
 const Productdetail = () => {
+  const handleLike = () => {
+    confetti({
+      particleCount: 120,
+      spread: 80,
+      origin: { y: 0.6 },
+    });
+  };
   //state for rating
       const [value, setValue] = useState(2);
       const {id} = useParams();
@@ -23,7 +29,7 @@ const Productdetail = () => {
       const { cartItems, addToCart } = useCart();
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/products/${id}`)
+      .get(`${import.meta.env.VITE_API_URL}/products/${id}`)
       .then((res) => setProduct(res.data))
       .catch((err) => console.log(err));
   }, [id]);
@@ -39,13 +45,7 @@ const Productdetail = () => {
      toast.warning("This product is already in cart");
   } else {
     addToCart(product);
-    Swal.fire({
-      icon: "success",
-      title: "Added to Cart",
-      text: `${product.name} has been added to your cart.`,
-      timer: 1500,
-      showConfirmButton: false,
-    });
+    toast.success("Product added to cart");
   }
 };
 
@@ -55,7 +55,7 @@ const Productdetail = () => {
           <div className="col-12 col-md-12 col-lg-5 ">
             <div className='border rounded text-center product-img-box'>
               <img className='w-100 rounded-4'
-                  src={`http://localhost:5000/uploads/${product.image}`}
+                  src={`${import.meta.env.VITE_API_IMAGE}/${product.image}`}
                   alt={product.name}
                 />
             </div>
@@ -120,7 +120,7 @@ const Productdetail = () => {
               </div>
               <div className="cart-buy-btn mt-3 d-flex justify-content-between gap-4">
                <button
-                  onClick={handleAddToCart}
+                 onClick={() => (handleAddToCart(), handleLike())}
                   className="discount-btn w-100"
                 >
                    {cartItem ? " Already in Cart" : "Add to Cart"}

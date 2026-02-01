@@ -1,0 +1,75 @@
+.form-container{
+    padding: 10px;
+}
+
+.form-container input,textarea{
+    width:100%;
+    margin: 12px 0px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid rgb(205, 203, 203); 
+}
+.form-container input:focus{
+    outline: none;
+}
+.placeorder-btn{
+    width: 100%;
+    background-color: rgb(195, 229, 43);
+    color: black;
+    border: 1px solid rgb(195, 229, 43);
+    padding: 6px;
+    border-radius:10px;
+    font-size: 17px;
+    font-weight: 500;
+}
+.order-product{
+    background-color: rgb(244, 244, 244);
+}
+.product-zoom{
+    background-color: white;
+}
+.product-zoom img{
+    transition: all 0.6s ease-in;
+}
+.product-zoom:hover img{
+    transform: scale(0.6);
+    transform-origin:  center;
+}
+.bedge-rel{
+    position: relative;
+}
+.bedge-abs{
+    position: absolute;
+    top:0px;
+    right:0px;
+    transform: translate(10px,-10px);
+}
+.bedge-abs span{
+    background-color: rgb(179, 194, 17);
+    padding: 2px 6px ;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 50px;
+}
+.order-container{
+    height: 400px;
+    overflow-y: auto;
+}
+.order-container::-webkit-scrollbar{
+   width: 3px; 
+   border-radius: 10px;
+  background-color: #b8b4b4
+  
+}
+.order-container::-webkit-scrollbar-thumb{
+   border-radius: 10px;
+  background-color: #aba827
+  
+}
+.order-container .row{
+    margin-bottom: 10px !important;
+    border-radius: 10px;
+}
+.remove{
+    cursor: pointer;
+}

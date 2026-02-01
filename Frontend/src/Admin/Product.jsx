@@ -86,7 +86,7 @@ const StatusToggle = ({ status, onChange }) => {
   const token = localStorage.getItem("token");
   try {
     await axios.patch(
-      `http://localhost:5000/api/products/status/${id}`,
+      `${import.meta.env.VITE_API_URL}/products/status/${id}`,
       { status: newStatus },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -102,7 +102,7 @@ const StatusToggle = ({ status, onChange }) => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/products/all");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/products/all`);
       setProducts(res.data || []);
     } catch (err) {
       Swal.fire("Error", "Failed to load products", "error");
@@ -121,7 +121,7 @@ const StatusToggle = ({ status, onChange }) => {
     });
 
     if (confirm.isConfirmed) {
-      await axios.delete(`http://localhost:5000/api/products/delete/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/products/delete/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -162,7 +162,7 @@ const StatusToggle = ({ status, onChange }) => {
             <div className="row">
               <div className="col-md-5 text-center">
                 <img
-                  src={`http://localhost:5000/uploads/${selectedProduct.image}`}
+                  src={`${import.meta.env.VITE_API_IMAGE}/${selectedProduct.image}`}
                   className="img-fluid rounded"
                   alt={selectedProduct.name}
                 />
@@ -301,7 +301,7 @@ const StatusToggle = ({ status, onChange }) => {
                 <td>
                   <img
                     className="product-thumb"
-                    src={`http://localhost:5000/uploads/${item.image}`}
+                    src={`${import.meta.env.VITE_API_IMAGE}/${item.image}`}
                     alt={item.name}
                   />
                 </td>

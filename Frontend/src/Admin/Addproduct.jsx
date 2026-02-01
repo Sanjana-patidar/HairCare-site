@@ -43,7 +43,7 @@ const Addproduct = () => {
     try {
       if (state) {
         await axios.put(
-          `http://localhost:5000/api/products/update/${state._id}`,
+          `${import.meta.env.VITE_API_URL}/products/update/${state._id}`,
           formData,
           {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -52,7 +52,7 @@ const Addproduct = () => {
         Swal.fire( "Product updated successfully");
       } else {
         await axios.post(
-          "http://localhost:5000/api/products/add",
+          "${import.meta.env.VITE_API_URL}/products/add",
           formData,
           {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },

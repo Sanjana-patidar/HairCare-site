@@ -1,0 +1,95 @@
+body{
+  margin: 0;
+  padding: 0;
+  box-sizing:border-box;
+  font-family: "Segoe UI", sans-serif;
+  background:white;
+}
+/* Header */
+.header {
+  height: 60px;
+ background: #2D3C59;
+  position: fixed;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  color: white;
+  gap: 20px;
+  z-index: 1000;
+
+}
+
+.menu-icon {
+  font-size: 26px;
+  cursor: pointer;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 200px;
+  background: #2D3C59;
+  color: white;
+  height: 100vh;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  padding-top: 20px;
+  transition: 0.3s ease;
+}
+
+.sidebar.collapsed {
+  width: 65px;
+}
+
+.sidebar-menu .item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition:all  0.4s;
+}
+
+/* .sidebar-menu .item:hover {
+  background:white;
+  color: black;
+   border-radius: 3px;
+  /* border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+} */
+
+.sidebar-menu .item svg {
+  font-size: 22px;
+}
+
+/* Content */
+.content {
+  margin-left: 200px;
+  padding-top: 57px;
+  transition: 0.3s ease;
+}
+
+.collapsed-content {
+  margin-left: 65px;
+}
+.active-tab {
+  /* background-color:rgb(6, 13, 138);  */
+  font-weight: 700 !important;
+  color: black; 
+  font-weight: bold;
+  border-radius: 3px;
+  /* border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px; */
+}
+.sidebar-menu a{
+  color:white;
+  text-decoration: none;
+}
+.container{
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 10px;
+  padding: 10px;
+}

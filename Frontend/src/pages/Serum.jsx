@@ -13,7 +13,7 @@ const Serum = () => {
       const fetchOilProducts = async () => {
         try {
           const res = await axios.get(
-            "http://localhost:5000/api/products/category/serum"
+            `${import.meta.env.VITE_API_URL}/products/category/serum`
           );
           setProducts(res.data);
         } catch (error) {
@@ -40,7 +40,7 @@ const Serum = () => {
               <div>
                 <img
                   className="w-75"
-                  src={`http://localhost:5000/uploads/${product.image}`}
+                  src={`${import.meta.env.VITE_API_IMAGE}/${product.image}`}
                   alt={product.name}
                 />
                 <h6>{product.name}</h6>

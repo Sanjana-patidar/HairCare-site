@@ -8,7 +8,7 @@ body{
 /* Header */
 .header {
   height: 60px;
- background: linear-gradient(135deg,  rgb(192, 223, 54), rgb(139, 159, 50));
+ background: grey;
   position: fixed;
   width: 100vw;
   display: flex;
@@ -28,7 +28,7 @@ body{
 /* Sidebar */
 .sidebar {
   width: 200px;
-  background: linear-gradient(135deg,  rgb(192, 223, 54), rgb(139, 159, 50));
+  background: grey;
   color: white;
   height: 100vh;
   position: fixed;
@@ -49,11 +49,13 @@ body{
   padding: 12px 20px;
   cursor: pointer;
   font-size: 16px;
-  transition: 0.2s;
+  transition:all  0.4s;
 }
 
 .sidebar-menu .item:hover {
-  background: rgb(139, 159, 50);
+  background:rgb(187, 183, 183);
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
 }
 
 .sidebar-menu .item svg {
@@ -71,9 +73,11 @@ body{
   margin-left: 65px;
 }
 .active-tab {
-  background-color: rgb(139, 159, 50); 
+  background-color:rgb(187, 183, 183); 
   color: white; 
   font-weight: bold;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
 }
 .sidebar-menu a{
   color:white;

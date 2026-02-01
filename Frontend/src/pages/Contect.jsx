@@ -30,7 +30,7 @@ const Contect = () => {
     setError(""); // clear previous error
 
     try {
-      const res = await axios.post("http://localhost:5000/api/contact/submit", form);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/contact/submit`, form);
 
       Swal.fire({
         position: "center",

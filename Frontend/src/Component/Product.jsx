@@ -19,7 +19,7 @@ function Product() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-     const response = await axios.get("http://localhost:5000/api/products/all?status=active");
+     const response = await axios.get(`${import.meta.env.VITE_API_URL}/products/all?status=active`);
         setProducts(response.data); 
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -45,7 +45,7 @@ function Product() {
       </div>
       <Swiper
         modules={[Grid,  Navigation]}
-        slidesPerView={4}
+        slidesPerView={5}
         grid={{ rows: 1 }}
         spaceBetween={20}
         navigation={{
@@ -56,7 +56,7 @@ function Product() {
           320: { slidesPerView: 1 },
           500: { slidesPerView: 2 },
           640: { slidesPerView: 3 },
-          1024:{ slidesPerView: 4 },
+          1024:{ slidesPerView: 5 },
         }}
       >
         {products.map((product) => (
@@ -65,7 +65,7 @@ function Product() {
               <div>
                 <img
                   className="w-75"
-                  src={`http://localhost:5000/uploads/${product.image}`}
+                  src={`${import.meta.env.VITE_API_IMAGE}/${product.image}`}
                   alt={product.name}
                 />
                 <h6>{product.name}</h6>
