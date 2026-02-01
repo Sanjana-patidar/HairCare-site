@@ -20,7 +20,8 @@
 }
 
 .order-table th {
-  background: rgb(165, 163, 163);
+    background: #2D3C59;
+    border-radius: 4px;
   color: #fff;
 }
 
