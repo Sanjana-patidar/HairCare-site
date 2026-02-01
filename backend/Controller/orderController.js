@@ -1,3 +1,4 @@
+import nodemailer from "nodemailer";
 import { Order } from "../Model/OrderModel.js";
 export const placeOrder = async (req, res) => {
   try {
@@ -17,6 +18,61 @@ export const placeOrder = async (req, res) => {
     });
 
     await newOrder.save();
+
+    /* ================= EMAIL SETUP ================= */
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    // product list html
+    const productHTML = products
+      .map(
+        (item) => `
+          <tr>
+            <td>${item.name}</td>
+            <td>${item.quantity}</td>
+            <td>₹${item.price}</td>
+          </tr>
+        `
+      )
+      .join("");
+
+    const mailHTML = `
+      <h2>🎉 Order Placed Successfully</h2>
+      <p>Hello <b>${customer.firstname} ${customer.lastname}</b>,</p>
+
+      <p>Your order has been placed successfully.</p>
+
+      <p><b>Order ID:</b> ${newOrder._id}</p>
+      <p><b>Payment Method:</b> ${paymentMethod}</p>
+
+      <table border="1" cellpadding="8" cellspacing="0">
+        <tr>
+          <th>Product</th>
+          <th>Qty</th>
+          <th>Price</th>
+        </tr>
+        ${productHTML}
+      </table>
+
+      <h3>Total Amount: ₹${totalAmount}</h3>
+
+      <p>Thank you for shopping with us ❤️</p>
+    `;
+
+    await transporter.sendMail({
+      from: `"HairCare" <${process.env.EMAIL_USER}>`,
+      to: customer.email,
+      subject: "Your Order Placed Successfully 🎉",
+      html: mailHTML,
+    });
+
+    /* ================= END EMAIL ================= */
 
     res.status(201).json({
       success: true,

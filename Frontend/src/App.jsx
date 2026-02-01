@@ -8,12 +8,6 @@ import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-rou
 import Layout from './pages/Layout';
 import Contect from './Pages/Contect';
 import Home from './pages/Home';
-import Adminlayout from './Admin/Adminlayout';
-import Dashboard from './Admin/Dashboard';
-import User from './Admin/User';
-import Product from './Admin/Product';
-import Setting from './Admin/Setting';
-import Addproduct from './Admin/Addproduct';
 import Productdetail from './pages/Productdetail';
 import Oil from './pages/Oil';
 import Shampoo from './pages/Shampoo';
@@ -23,10 +17,7 @@ import './App.css'
 import Checkout from './pages/Checkout';
 import Ordersuccess from './pages/Ordersuccess';
 import ScroolToTop from './Component/ScroolToTop';
-import SplashScreen from './Component/SplashScreen'
-import Brand from './Admin/Brand';
-import Addbrand from './Admin/Addbrand';
-import Orderhistory from './Admin/Orderhistory';
+import SplashScreen from './Component/SplashScreen';
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -71,17 +62,6 @@ useEffect(() => {
              <Route path="Checkout" element={<Checkout/>} />
              <Route path="Placeorder" element={<Ordersuccess/>} />
              <Route path="productdetail/:id" element={<Productdetail/>} />
-           </Route>
-           {/* admin route */}
-           <Route path="/admin" element={<Adminlayout/>}>
-             <Route index element={<Dashboard/>} />
-             <Route path="user" element={<User/>} />
-             <Route path="product" element={<Product/>} />
-             <Route path="addproduct" element={<Addproduct/>} />
-             <Route path="brand" element={<Brand/>} />
-             <Route path="addbrand" element={<Addbrand/>} />
-             <Route path="orderhistory" element={<Orderhistory/>} />
-             <Route path="setting" element={<Setting/>} />
            </Route>
         </Routes>
     </BrowserRouter>

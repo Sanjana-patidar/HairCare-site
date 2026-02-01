@@ -50,7 +50,8 @@ const Ordersuccess = () => {
     <div className="p-5 mt-4">
       <h4 className="mb-3">My Orders</h4>
 
-      <Table bordered >
+    <div className="orders-table">
+        <Table bordered > 
         <thead className="table-light">
           <tr>
             <th>Order ID</th>
@@ -76,6 +77,7 @@ const Ordersuccess = () => {
               </td>
               <td>
                 <Button
+                  className="view-btn"
                   size="sm"
                   onClick={() => openModal(order)}
                 >
@@ -87,6 +89,7 @@ const Ordersuccess = () => {
         </tbody>
       </Table>
 
+    </div>
       {/* ================= MODAL ================= */}
       <Modal show={show} onHide={closeModal} size="lg" centered>
         {selectedOrder && (
