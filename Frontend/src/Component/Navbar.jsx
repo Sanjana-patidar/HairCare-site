@@ -101,10 +101,12 @@ const handleLogin = async (e) =>{
       password: formdata.password,
     });
 
-   const {token, user} = response.data;
+   const {token, user,username} = response.data;
   //store the user token and role in local storage
   localStorage.setItem("token", token);
   localStorage.setItem("role", user.role);
+  localStorage.setItem("username", user.username);
+
 
   // success alert
   toast.success("Login successfully");
@@ -125,6 +127,8 @@ setTimeout(()=>{
     alert(error.response?.data?.message || "Login Failed");
   }
 }
+const username1 = localStorage.getItem("username");
+const firstLetter = username1.charAt(0).toUpperCase();
   return (
     <>
       <nav class="navbar navbar-expand-lg navbar-light ">
@@ -208,9 +212,14 @@ setTimeout(()=>{
                 </div>
                 <div className="cart-icon">
                   {localStorage.getItem("token") ? (
-                    <button onClick={handleLogout} className="btn btn-sm btn-warning">
-                      Logout <i className="fa-solid fa-arrow-right-from-bracket"></i>
-                    </button>
+                    <div class="dropdown">
+                        <button class="border-0 bg-transparent text-warning fw-bold dropdown-toggle"  id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                          <span className="avatar">{firstLetter}</span> {username1}  
+                        </button>
+                        <ul class="dropdown-menu drop1" aria-labelledby="dropdownMenuButton1">
+                          <li onClick={handleLogout}><a class="dropdown-item" href="#">Logout</a></li>
+                        </ul>
+                      </div>
                   ) : (
                     <div onClick={handleShow}>
                       <i className="fa-solid fa-user fs-5 hvr-grow"></i>

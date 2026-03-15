@@ -8,8 +8,11 @@ import productRoute from "./Route/productRoute.js";
 import contactRoute from './Route/contactRoute.js'
 import orderRoute from "./Route/orderRoute.js";
 import BrandRoute from "./Route/BrandRoute.js";
+import bcrypt from "bcrypt";
 import path from "path";
 dotenv.config();
+
+
 
 const app = express();
 app.use(cors());
@@ -21,6 +24,14 @@ app.use("/api/products", productRoute);
 app.use("/api/contact", contactRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/brands", BrandRoute);
+//generate hash for password
+async function generateHash() {
+  const password = "admin@123";
+  const hash = await bcrypt.hash(password, 10);
+  console.log(hash);
+}
+
+generateHash();
 connectDB();
 const PORT = process.env.PORT;
 app.listen(PORT, () =>{

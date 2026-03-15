@@ -73,3 +73,23 @@
     background:rgb(195, 229, 43);
     height: 2.5px;
 }
+.show{
+    padding:0px !important;
+   
+}
+.dropdown-menu[data-bs-popper] {
+    top: 100%;
+    left:-34px !important;
+    margin-top: 10px !important;
+    border: none;
+}
+.dropdown-toggle::after {
+    content: none;
+}
+.avatar{
+    color:white;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 15px;
+    background-color: rgb(233, 167, 43);
+}

@@ -8,11 +8,11 @@ const Video = () => {
   return (
     <>
     <div className='text-center mt-5 mb-5' style={{color:"rgb(195, 229, 43)"}}>
-        <h3 data-aos="fade-right"  >Real Care Real Results.</h3>
-        <h3 data-aos="fade-left" >See the difference in every strand</h3>
+        <h3   >Real Care Real Results.</h3>
+        <h3  >See the difference in every strand</h3>
     </div>
     {/* swiper for video */}
-    <div data-aos="zoom-in" className="video-container p-4">
+    <div  className="video-container p-4">
        <Swiper
         slidesPerView={5}
         spaceBetween={20}

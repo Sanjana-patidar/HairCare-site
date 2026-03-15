@@ -2,9 +2,9 @@ import React from 'react'
 import './Benifit.css'
 const Benfit = () => {
   return (
-    <div data-aos="zoom-in" className='benifit-section  p-4'>
+    <div  className='benifit-section  p-4'>
        <div>
-          <h3 data-aos="fade-right"  className='text-center'>Why Choose <span className='brand'>Shinny</span></h3>
+          <h3   className='text-center'>Why Choose <span className='brand'>Shinny</span></h3>
           <div className="row mt-5 g-3">
             <div className="col-12 col-sm-6 col-md-6 col-lg-3">
               <div className=' box rounded-4 p-3 text-center'>

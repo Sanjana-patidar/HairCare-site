@@ -32,7 +32,7 @@ function Product() {
   return (
     <div className="multi-product p-4">
       <div className="mb-4">
-        <h3 data-aos="fade-right" className="text-center" style={{color:"rgb(195, 229, 43)"}}>All Products</h3>
+        <h3  className="text-center" style={{color:"rgb(195, 229, 43)"}}>All Products</h3>
       </div>
       <div className="swiper-buttons text-end mb-3">
         <span>More Product</span>
@@ -61,7 +61,7 @@ function Product() {
       >
         {products.map((product) => (
           <SwiperSlide key={product._id}>
-            <div data-aos="zoom-in" className="product-card text-center">
+            <div  className="product-card text-center">
               <div>
                 <img
                   className="w-75"
