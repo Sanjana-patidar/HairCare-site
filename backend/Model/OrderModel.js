@@ -30,8 +30,24 @@ const orderSchema = new mongoose.Schema(
 
     paymentMethod: {
       type: String,
+      enum: ["COD", "Online"],   // ✅ restrict values
       default: "COD",
     },
+
+      paymentId: {
+        type: String,   // Razorpay payment id
+      },
+
+      razorpayOrderId: {
+        type: String,
+      },
+
+      paymentStatus: {
+        type: String,
+        enum: ["Pending", "Paid", "Failed"],
+        default: "Pending",
+      },
+
 
     status: {
      type: String,

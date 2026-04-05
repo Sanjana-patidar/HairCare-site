@@ -9,78 +9,82 @@ export const placeOrder = async (req, res) => {
       return res.status(400).json({ message: "Invalid order data" });
     }
 
-    const newOrder = new Order({
-      user: req.user.id, 
-      customer,
-      products,
-      totalAmount,
-      paymentMethod,
-    });
+    if (paymentMethod === "COD") {
+      const newOrder = new Order({
+        user: req.user.id,
+        customer,
+        products,
+        totalAmount,
+        paymentMethod: "COD",
+        paymentStatus: "Pending",
+      });
 
-    await newOrder.save();
+      await newOrder.save();
 
-    /* ================= EMAIL SETUP ================= */
+      /* ================= EMAIL SETUP ================= */
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
 
-    // product list html
-    const productHTML = products
-      .map(
-        (item) => `
+      const productHTML = products
+        .map(
+          (item) => `
           <tr>
             <td>${item.name}</td>
             <td>${item.quantity}</td>
             <td>₹${item.price}</td>
           </tr>
         `
-      )
-      .join("");
+        )
+        .join("");
 
-    const mailHTML = `
-      <h2>🎉 Order Placed Successfully</h2>
-      <p>Hello <b>${customer.firstname} ${customer.lastname}</b>,</p>
+      const mailHTML = `
+        <h2>🎉 Order Placed Successfully</h2>
+        <p>Hello <b>${customer.firstname} ${customer.lastname}</b>,</p>
 
-      <p>Your order has been placed successfully.</p>
+        <p>Your order has been placed successfully.</p>
 
-      <p><b>Order ID:</b> ${newOrder._id}</p>
-      <p><b>Payment Method:</b> ${paymentMethod}</p>
+        <p><b>Order ID:</b> ${newOrder._id}</p>
+        <p><b>Payment Method:</b> ${paymentMethod}</p>
 
-      <table border="1" cellpadding="8" cellspacing="0">
-        <tr>
-          <th>Product</th>
-          <th>Qty</th>
-          <th>Price</th>
-        </tr>
-        ${productHTML}
-      </table>
+        <table border="1" cellpadding="8" cellspacing="0">
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Price</th>
+          </tr>
+          ${productHTML}
+        </table>
 
-      <h3>Total Amount: ₹${totalAmount}</h3>
+        <h3>Total Amount: ₹${totalAmount}</h3>
 
-      <p>Thank you for shopping with us ❤️</p>
-    `;
+        <p>Thank you for shopping with us ❤️</p>
+      `;
 
-    await transporter.sendMail({
-      from: `"HairCare" <${process.env.EMAIL_USER}>`,
-      to: customer.email,
-      subject: "Your Order Placed Successfully 🎉",
-      html: mailHTML,
-    });
+      await transporter.sendMail({
+        from: `"HairCare" <${process.env.EMAIL_USER}>`,
+        to: customer.email,
+        subject: "Your Order Placed Successfully 🎉",
+        html: mailHTML,
+      });
 
-    /* ================= END EMAIL ================= */
+      return res.status(201).json({
+        success: true,
+        message: "Order placed successfully",
+        orderId: newOrder._id,
+      });
+    }
 
-    res.status(201).json({
-      success: true,
-      message: "Order placed successfully",
-      orderId: newOrder._id,
-    });
+    // 👉 If not COD (ONLINE), don't save here
+    return res.status(400).json({ message: "Invalid payment method" });
+
   } catch (error) {
-    console.log("order error",error)
+    console.log("order error", error);
     res.status(500).json({ message: "Order placement failed" });
   }
 };

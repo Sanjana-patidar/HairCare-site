@@ -18,6 +18,7 @@ const Checkout = () => {
   quantity: Number(item.quantity),
   image: item.image
 }));
+ const [paymentMethod, setPaymentMethod] = useState("COD"); 
   const [form, setForm] = useState({
     firstname: "",
     lastname: "",
@@ -48,36 +49,105 @@ const Checkout = () => {
   };
   const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const placeOrder = async () => {
-    if (!form.firstname || !form.lastname || !form.phone || !form.address) {
-      alert("Fill all required fields");
-      return;
-    }
-    try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/orders/place`, {
-        customer: form,
-        products: productsForBackend,
-        totalAmount:totalAmount,
-        paymentMethod: "COD",
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    Swal.fire({
-      icon: "success",
-      title: "Order Placed Successfully 🎉",
-      text: "Your order has been placed successfully!",
-    }).then(() => {
-      clearCart();
-      navigate("/Placeorder");
-    });
-     
-    } catch (err) {
-      alert("Order failed");
-    }
+  if (!form.firstname || !form.lastname || !form.phone || !form.address) {
+    alert("Fill all required fields");
+    return;
+  }
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   };
+
+  const orderData = {
+    customer: form,
+    products: productsForBackend,
+    totalAmount: totalAmount,
+  };
+
+  try {
+    // 🟢 COD FLOW
+    if (paymentMethod === "COD") {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/orders/place`,
+        { ...orderData, paymentMethod: "COD" },
+        config
+      );
+
+      Swal.fire({
+        icon: "success",
+        title: "Order Placed Successfully 🎉",
+      }).then(() => {
+        clearCart();
+        navigate("/Placeorder");
+      });
+    }
+
+    // 🔵 ONLINE FLOW (RAZORPAY)
+    else if (paymentMethod === "ONLINE") {
+      // 1️⃣ Create Razorpay order
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/payment/create-order`,
+        { amount: totalAmount },
+        config
+      );
+
+      const { id, amount, currency } = res.data;
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount,
+        currency,
+        order_id: id,
+
+        name: "HairCare",
+        description: "Order Payment",
+        theme: {
+          color: "#aba827", // change this color
+        },
+
+        handler: async function (response) {
+          // 2️⃣ Verify payment
+          await axios.post(
+            `${import.meta.env.VITE_API_URL}/payment/verify`,
+            {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              orderData,
+            },
+            config
+          );
+
+          Swal.fire({
+            icon: "success",
+            title: "Payment Successful 🎉",
+          }).then(() => {
+            clearCart();
+            navigate("/Placeorder");
+          });
+        },
+
+        prefill: {
+          name: form.firstname,
+          email: form.email,
+          contact: form.phone,
+        },
+
+        theme: {
+          color: "#3399cc",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    }
+  } catch (err) {
+    console.log(err);
+    alert("Order failed");
+  }
+};
 
   return (
     <div className="checkout-container p-2">
@@ -120,8 +190,46 @@ const Checkout = () => {
                       <label>Pincode  <span style={{color:"red"}}>*</span></label><br />
                       <input name="pincode" type="number" placeholder='pincode' onChange={handleChange} />
                    </div>
+                   <div className="payment-method">
+  <h5>Select Payment Method</h5>
+
+  <label className={`payment-option ${paymentMethod === "COD" ? "active" : ""}`}>
+    <input
+      type="radio"
+      value="COD"
+      checked={paymentMethod === "COD"}
+      onChange={(e) => setPaymentMethod(e.target.value)}
+    />
+    <div className="payment-content">
+      <span className="icon">💵</span>
+      <div>
+        <p className="title">Cash on Delivery</p>
+        <p className="desc">Pay when your order arrives</p>
+      </div>
+    </div>
+  </label>
+
+  <label className={`payment-option ${paymentMethod === "ONLINE" ? "active" : ""}`}>
+    <input
+      type="radio"
+      value="ONLINE"
+      checked={paymentMethod === "ONLINE"}
+      onChange={(e) => setPaymentMethod(e.target.value)}
+    />
+    <div className="payment-content">
+      <span className="icon">💳</span>
+      <div>
+        <p className="title">Online Payment</p>
+        <p className="desc">Pay securely via Razorpay</p>
+      </div>
+    </div>
+  </label>
+</div>
                     <div>
-                       <button onClick={()=>(placeOrder(),handleLike())} className='placeorder-btn' >Place Order</button>
+                       <button onClick={() => {
+                         placeOrder();
+                       handleLike();
+}} className='placeorder-btn' >Place Order</button>
                     </div>
                  </div>
                </div>
@@ -137,7 +245,7 @@ const Checkout = () => {
                   <p>Your current order is empty 😦</p>
                 ) : (
                   cartItems.map((item) => (
-                     <div key={item._id} className="row border ">
+                     <div key={item._id} className="row border p-3 rounded-2 mb-3 bg-white">
                         <div className="col-2">
                             <div className=' bedge-rel   product-zoom border rounded'>
                               <img className='w-100 rounded ' src={`${import.meta.env.VITE_API_IMAGE}/${item.image}`} alt="" />

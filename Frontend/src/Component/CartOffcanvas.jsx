@@ -28,7 +28,7 @@ const CartOffcanvas = ({ isOpen, closeCart }) => {
           ) : (
             cartItems.map((item) => (
               <div key={item._id} className="cart-container p-2">
-                <div className="cart-bg row justify-content-center align-items-center">
+                <div className="cart-bg row justify-content-center align-items-center p-2">
                   <div className="col-12 col-sm-4">
                     <img className="w-100"
                     src={`${import.meta.env.VITE_API_IMAGE}/${item.image}`}

@@ -57,8 +57,8 @@ const Ordersuccess = () => {
             <th>Order ID</th>
             <th>Date</th>
             <th>Total</th>
-            <th>Payment</th>
-            <th>Status</th>
+            <th>Payment Method</th>
+            <th>Payment Status</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -69,10 +69,20 @@ const Ordersuccess = () => {
               <td>{order._id.slice(-6)}</td>
               <td>{new Date(order.createdAt).toLocaleDateString()}</td>
               <td>₹{order.totalAmount}</td>
-              <td>{order.paymentMethod}</td>
+             <td>
+              {order.paymentMethod === "Online" ? "💳 Online" : "💵 COD"}
+            </td>
               <td>
-                <Badge bg="warning" text="dark">
-                  {order.status}
+                <Badge
+                  bg={
+                    order.paymentStatus === "Paid"
+                      ? "success"
+                      : order.paymentStatus === "Failed"
+                      ? "danger"
+                      : "warning"
+                  }
+                >
+                  {order.paymentStatus || "Pending"}
                 </Badge>
               </td>
               <td>
@@ -104,7 +114,10 @@ const Ordersuccess = () => {
               {/* ORDER INFO */}
               <Row className="mb-3">
                 <Col md={6}><b>Date:</b> {new Date(selectedOrder.createdAt).toLocaleDateString()}</Col>
-                <Col md={6}><b>Status:</b> {selectedOrder.status}</Col>
+                <Col md={6}><b>Order Status:</b> {selectedOrder.status}</Col>
+                <Col md={6}>
+                  <b>Payment Status:</b> {selectedOrder.paymentStatus || "Pending"}
+                </Col>
                 <Col md={6}><b>Payment:</b> {selectedOrder.paymentMethod}</Col>
                 <Col md={6}><b>Total:</b> ₹{selectedOrder.totalAmount}</Col>
               </Row>
@@ -128,7 +141,9 @@ const Ordersuccess = () => {
                     <div className="fw-semibold">{p.name}</div>
                     <small>Qty: {p.quantity}</small>
                   </div>
-                  <div className="fw-bold">₹{p.price}</div>
+               <div className="fw-bold">
+                ₹{p.price }
+                </div>
                 </div>
               ))}
 

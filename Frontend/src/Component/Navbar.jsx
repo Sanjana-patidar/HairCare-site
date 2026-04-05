@@ -127,7 +127,7 @@ setTimeout(()=>{
     alert(error.response?.data?.message || "Login Failed");
   }
 }
-const username1 = localStorage.getItem("username");
+const username1 = localStorage.getItem("username") || "";
 const firstLetter = username1.charAt(0).toUpperCase();
   return (
     <>
