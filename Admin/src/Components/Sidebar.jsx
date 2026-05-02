@@ -35,23 +35,23 @@ const Sidebar = ({ collapsed }) => {
     { path: "/admin/addproduct", name: "Add Products", icon: <MdOutlineLibraryAdd /> },
     { path: "/admin/brand", name: "Brands", icon: <LocalOfferIcon /> },
     { path: "/admin/addbrand", name: "Add Brands", icon: <MdOutlineLibraryAdd /> },
-    { path: "/admin/orderhistory", name: "Order History", icon: <ShoppingCartIcon /> },
+    { path: "/", name: "Logout", icon: <IoMdLogOut /> },
     { path: "/admin/setting", name: "Settings", icon: <FiSettings /> },
   ];
 
   return (
-    <motion.div 
+    <motion.div
       className={`sidebar ${collapsed ? "collapsed" : "mobile-open"}`}
       initial={{ x: -250 }}
       animate={{ x: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
       <div className="sidebar-menu" style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-        
+
         {navItems.map((item, index) => (
           <NavLink key={index} to={item.path} end={item.path === "/admin"}>
             {({ isActive }) => (
-              <motion.div 
+              <motion.div
                 className={`item ${isActive ? "active-tab" : ""}`}
                 whileHover={{ scale: 1.02, x: 5 }}
                 whileTap={{ scale: 0.98 }}
@@ -64,8 +64,8 @@ const Sidebar = ({ collapsed }) => {
         ))}
 
         <div className="logout-item">
-          <motion.div 
-            className="item" 
+          <motion.div
+            className="item"
             onClick={handlelogout}
             whileHover={{ scale: 1.02, x: 5 }}
             whileTap={{ scale: 0.98 }}
@@ -74,7 +74,7 @@ const Sidebar = ({ collapsed }) => {
             {!collapsed && <span>Logout</span>}
           </motion.div>
         </div>
-        
+
       </div>
     </motion.div>
   );

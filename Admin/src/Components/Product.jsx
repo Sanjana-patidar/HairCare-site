@@ -3,6 +3,7 @@ import axios from "axios";
 import Switch from "react-switch";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { FaChevronLeft, FaChevronRight, FaFilter } from "react-icons/fa";
 import "./Product.css";
 
 const Product = () => {
@@ -15,6 +16,10 @@ const Product = () => {
   const [priceSort, setPriceSort] = useState(""); // "low-high", "high-low"
   const [nameSort, setNameSort] = useState(""); // "a-z", "z-a"
   const navigate = useNavigate();
+
+  // Pagination
+  const [page, setPage] = useState(1);
+  const perPage = 7;
 
 // function for soting filtered products
 const getFilteredProducts = () => {
@@ -46,6 +51,38 @@ const getFilteredProducts = () => {
 
   return filtered;
 };
+
+// Reset page when filters change
+React.useEffect(() => {
+  setPage(1);
+}, [statusFilter, categoryFilter, priceSort, nameSort]);
+
+const filteredProducts = getFilteredProducts();
+const totalPages = Math.ceil(filteredProducts.length / perPage);
+const start = (page - 1) * perPage;
+const currentProducts = filteredProducts.slice(start, start + perPage);
+
+const getPageNumbers = () => {
+  const pages = [];
+  const maxVisible = 5;
+  let startPage = Math.max(1, page - Math.floor(maxVisible / 2));
+  let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+  if (endPage - startPage + 1 < maxVisible) {
+    startPage = Math.max(1, endPage - maxVisible + 1);
+  }
+  if (startPage > 1) {
+    pages.push(1);
+    if (startPage > 2) pages.push('...');
+  }
+  for (let i = startPage; i <= endPage; i++) pages.push(i);
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) pages.push('...');
+    pages.push(totalPages);
+  }
+  return pages;
+};
+
+const activeFilterCount = [statusFilter, categoryFilter, priceSort, nameSort].filter(Boolean).length;
 
 
 const StatusToggle = ({ status, onChange }) => {
@@ -217,50 +254,67 @@ const StatusToggle = ({ status, onChange }) => {
       <div className="admin-header">
         <div><h2>Product Management</h2></div>
         <div>
-          <div className="table-controls">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="product-filter-select from-select form-select-sm"
-              >
-                <option value="">All Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="outofstock">Out of Stock</option>
-              </select>
+          <div className="filter-bar">
+              <div className="filter-bar-label">
+                <FaFilter />
+                <span>Filters</span>
+                {activeFilterCount > 0 && (
+                  <span className="filter-count-badge">{activeFilterCount}</span>
+                )}
+              </div>
+              <div className="filter-bar-selects">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="filter-select"
+                >
+                  <option value="">All Status</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                  <option value="outofstock">Out of Stock</option>
+                </select>
 
-              <select
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-                className="product-filter-select"
-              >
-                <option value="">All Categories</option>
-                {Array.from(new Set(products.map((p) => p.category))).map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="filter-select"
+                >
+                  <option value="">All Categories</option>
+                  {Array.from(new Set(products.map((p) => p.category))).map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
 
-              <select
-                value={priceSort}
-                onChange={(e) => setPriceSort(e.target.value)}
-                className="product-filter-select"
-              >
-                <option value="">Price: All</option>
-                <option value="low-high">Price: Low → High</option>
-                <option value="high-low">Price: High → Low</option>
-              </select>
+                <select
+                  value={priceSort}
+                  onChange={(e) => setPriceSort(e.target.value)}
+                  className="filter-select"
+                >
+                  <option value="">Price: All</option>
+                  <option value="low-high">Price: Low → High</option>
+                  <option value="high-low">Price: High → Low</option>
+                </select>
 
-              <select
-                value={nameSort}
-                onChange={(e) => setNameSort(e.target.value)}
-                className="product-filter-select"
-              >
-                <option value="">Name: All</option>
-                <option value="a-z">A → Z</option>
-                <option value="z-a">Z → A</option>
-              </select>
+                <select
+                  value={nameSort}
+                  onChange={(e) => setNameSort(e.target.value)}
+                  className="filter-select"
+                >
+                  <option value="">Name: All</option>
+                  <option value="a-z">A → Z</option>
+                  <option value="z-a">Z → A</option>
+                </select>
+              </div>
+              {activeFilterCount > 0 && (
+                <button 
+                  className="filter-clear-btn"
+                  onClick={() => { setStatusFilter(''); setCategoryFilter(''); setPriceSort(''); setNameSort(''); }}
+                >
+                  Clear All
+                </button>
+              )}
             </div>
 
         </div>
@@ -289,9 +343,9 @@ const StatusToggle = ({ status, onChange }) => {
           </thead>
 
           <tbody>
-            {getFilteredProducts().map((item, index) => (
+            {currentProducts.map((item, index) => (
               <tr key={item._id}>
-                <td>{index + 1}</td>
+                <td>{start + index + 1}</td>
 
                 <td>
                   <img
@@ -343,8 +397,46 @@ const StatusToggle = ({ status, onChange }) => {
           </tbody>
         </table>
 
-        {products.length === 0 && (
+        {filteredProducts.length === 0 && (
           <p className="empty-text">No products available</p>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="pagination">
+            <button
+              className="pg-arrow"
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+              title="Previous"
+            >
+              <FaChevronLeft />
+            </button>
+            {getPageNumbers().map((p, i) =>
+              p === '...' ? (
+                <span key={`ellipsis-${i}`} className="pg-ellipsis">...</span>
+              ) : (
+                <button
+                  key={p}
+                  className={page === p ? 'pg-active' : ''}
+                  onClick={() => setPage(p)}
+                >
+                  {p}
+                </button>
+              )
+            )}
+            <button
+              className="pg-arrow"
+              onClick={() => setPage(page + 1)}
+              disabled={page === totalPages}
+              title="Next"
+            >
+              <FaChevronRight />
+            </button>
+            <span className="pg-info">
+              {start + 1}–{Math.min(start + perPage, filteredProducts.length)} of {filteredProducts.length}
+            </span>
+          </div>
         )}
       </div>
     </div>
