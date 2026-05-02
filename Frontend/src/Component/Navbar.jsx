@@ -1,19 +1,25 @@
 import React from "react";
-import { useState, useRef,useEffect } from "react";
-import {useCart} from '../Context/CartContext';
+import { useState, useRef, useEffect } from "react";
+import { useCart } from '../Context/CartContext';
+import { useWishlist } from '../Context/WishlistContext';
 import Modal from "react-bootstrap/Modal";
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom" 
+import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "./Navbar.css";
 
-const Navbar = ({openCart}) => {
- 
+const Navbar = ({ openCart }) => {
+
   // cart context
-  const { cartItems,clearCart } = useCart();
+  const { cartItems, clearCart } = useCart();
   const totalProducts = cartItems.length;
+
+  // wishlist context
+  const { wishlistItems, clearWishlist, fetchWishlist } = useWishlist();
+  const totalWishlistItems = wishlistItems.length;
+
   const navigate = useNavigate();
   // state for user modal
   const [show, setShow] = useState(false);
@@ -21,114 +27,118 @@ const Navbar = ({openCart}) => {
   const handleShow = () => setShow(true);
   // state for login/signup
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
-  return !!localStorage.getItem("token"); // true if token exists
-});
+    return !!localStorage.getItem("token"); // true if token exists
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 
   // state for user input
   const [formdata, setFormdata] = useState({
     username: "",
-    email:"",
-    password:"",
-    confirmPassword:""
+    email: "",
+    password: "",
+    confirmPassword: ""
   });
-// logout function
-   const handleLogout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("role");
-  localStorage.removeItem("isLoggedIn");
-  clearCart();       
- setIsLoggedIn(false);   
-  toast.warning("Logged out successfully");
+  // logout function
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("isLoggedIn");
+    clearCart();
+    clearWishlist();
+    setIsLoggedIn(false);
+    toast.warning("Logged out successfully");
 
-  navigate("/");
-};
-
-
-// for user input value
-const handleChange = (e) => {
-  setFormdata({
-    ...formdata,
-    [e.target.name]: e.target.value,
-  });
-};
-
-// useRef for input focus
-const usernameRef = useRef(null);
-const emailRef = useRef(null);
-
-// useEffect 
-useEffect(() => {
-  if (show) {
-    setTimeout(() => {
-      if (isLoggedIn) {
-        emailRef.current && emailRef.current.focus(); 
-      } else {
-        usernameRef.current && usernameRef.current.focus();   
-      }
-    }, 100);
-  }
-}, [show, isLoggedIn]);
-// handleSignup
-const handleSignup = async (e) =>{
-  e.preventDefault();
-  if(formdata.password !== formdata.confirmPassword){
-      toast.warning("password do not match");
-    return;
-}
-   try {
-    const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/signup`, {
-      username: formdata.username,
-      email: formdata.email,
-      password: formdata.password,
-      confirmPassword: formdata.confirmPassword,
-    });
-
-    toast.success("Signup successfully");
-    setIsLoggedIn(true); // redirect to login
-  } catch (error) {
-    console.log(error);
-    alert(error.response?.data?.message || "Signup Failed");
-  }
-
-}
-// handleLogin function
-const handleLogin = async (e) =>{
-   e.preventDefault();
-   try {
-    const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/login`, {
-      email: formdata.email,
-      password: formdata.password,
-    });
-
-   const {token, user,username} = response.data;
-  //store the user token and role in local storage
-  localStorage.setItem("token", token);
-  localStorage.setItem("role", user.role);
-  localStorage.setItem("username", user.username);
-
-
-  // success alert
-  toast.success("Login successfully");
-setIsLoggedIn(true);
-localStorage.setItem("isLoggedIn", "true");
-
-//role based redirect
-setTimeout(()=>{
-  if(user.role == "admin"){
-    navigate("/admin");
-  }
-  else{
     navigate("/");
+  };
+
+
+  // for user input value
+  const handleChange = (e) => {
+    setFormdata({
+      ...formdata,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // useRef for input focus
+  const usernameRef = useRef(null);
+  const emailRef = useRef(null);
+
+  // useEffect 
+  useEffect(() => {
+    if (show) {
+      setTimeout(() => {
+        if (isLoggedIn) {
+          emailRef.current && emailRef.current.focus();
+        } else {
+          usernameRef.current && usernameRef.current.focus();
+        }
+      }, 100);
+    }
+  }, [show, isLoggedIn]);
+  // handleSignup
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    if (formdata.password !== formdata.confirmPassword) {
+      toast.warning("password do not match");
+      return;
+    }
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/signup`, {
+        username: formdata.username,
+        email: formdata.email,
+        password: formdata.password,
+        confirmPassword: formdata.confirmPassword,
+      });
+
+      toast.success("Signup successfully");
+      setIsLoggedIn(true); // redirect to login
+    } catch (error) {
+      console.log(error);
+      alert(error.response?.data?.message || "Signup Failed");
+    }
+
   }
-})
-    handleClose();
-  } catch (error) {
-    alert(error.response?.data?.message || "Login Failed");
+  // handleLogin function
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/login`, {
+        email: formdata.email,
+        password: formdata.password,
+      });
+
+      const { token, user, username } = response.data;
+      //store the user token and role in local storage
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", user.role);
+      localStorage.setItem("username", user.username);
+
+
+      // success alert
+      toast.success("Login successfully");
+      setIsLoggedIn(true);
+      localStorage.setItem("isLoggedIn", "true");
+      fetchWishlist(); // fetch wishlist on login
+
+      //role based redirect
+      setTimeout(() => {
+        if (user.role == "admin") {
+          navigate("/admin");
+        }
+        else {
+          navigate("/");
+        }
+      })
+      handleClose();
+    } catch (error) {
+      alert(error.response?.data?.message || "Login Failed");
+    }
   }
-}
-const username1 = localStorage.getItem("username") || "";
-const firstLetter = username1.charAt(0).toUpperCase();
+  const username1 = localStorage.getItem("username") || "";
+  const firstLetter = username1.charAt(0).toUpperCase();
   return (
     <>
       <nav class="navbar navbar-expand-lg navbar-light ">
@@ -145,89 +155,92 @@ const firstLetter = username1.charAt(0).toUpperCase();
             <span class="navbar-toggler-icon"></span>
           </button>
           <a class="navbar-brand hvr-grow">
-            <h3 className="logo-text text-warning"> <img  src="/src/assets/img/womens-day.png" className="logo" alt="" />Shinny</h3>
+            <h3 className="logo-text text-warning"> <img src="/src/assets/img/womens-day.png" className="logo" alt="" />Shinny</h3>
           </a>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav m-auto mb-2 mb-lg-0 gap-3">
               <Link to="/" className="text-decoration-none">
-              <li class="nav-item hvr-underline-from-center">
-                <a class="nav-link " href="#">
-                  Home
-                </a>
-              </li>
-             </Link>
+                <li class="nav-item hvr-underline-from-center">
+                  <a class="nav-link " href="#">
+                    Home
+                  </a>
+                </li>
+              </Link>
               <Link to="/Categoryshampoo" className="text-decoration-none">
                 <li class="nav-item hvr-underline-from-center">
-                <a class="nav-link" href="#">
-                  Shampoo
-                </a>
-              </li>
+                  <a class="nav-link" href="#">
+                    Shampoo
+                  </a>
+                </li>
               </Link>
-             <Link to="/Categoryconditioner">
+              <Link to="/Categoryconditioner">
                 <li class="nav-item hvr-underline-from-center">
                   <a class="nav-link" href="#">
-                  Conditioner
-                </a>
-              </li>
-             </Link>
+                    Conditioner
+                  </a>
+                </li>
+              </Link>
               <Link to="/Categoryserum">
                 <li class="nav-item hvr-underline-from-center">
-                 <a class="nav-link" href="#">
-                  Serum
-                 </a>
-              </li>
+                  <a class="nav-link" href="#">
+                    Serum
+                  </a>
+                </li>
               </Link>
-               <Link to="/Categoryoil" className="text-decoration-none">
-                 <li class="nav-item hvr-underline-from-center">
-                <a class="nav-link" href="#">
-                  Oil
-                </a>
-              </li>
-               </Link>
-             <Link to="/contact" className="text-decoration-none ">
-              <li class="nav-item hvr-underline-from-center">
-                <a class="nav-link " href="#">
-                  Contact
-                </a>
-              </li>
-             </Link>
-             <Link to="/placeorder" className="text-decoration-none">
-              <li class="nav-item hvr-underline-from-center">
-                <a class="nav-link " href="#">
-                Order
-                </a>
-              </li>
-             </Link>
+              <Link to="/Categoryoil" className="text-decoration-none">
+                <li class="nav-item hvr-underline-from-center">
+                  <a class="nav-link" href="#">
+                    Oil
+                  </a>
+                </li>
+              </Link>
+              <Link to="/contact" className="text-decoration-none ">
+                <li class="nav-item hvr-underline-from-center">
+                  <a class="nav-link " href="#">
+                    Contact
+                  </a>
+                </li>
+              </Link>
+              <Link to="/placeorder" className="text-decoration-none">
+                <li class="nav-item hvr-underline-from-center">
+                  <a class="nav-link " href="#">
+                    Order
+                  </a>
+                </li>
+              </Link>
             </ul>
           </div>
           <div>
-              <div className="search-bar d-flex align-items-center ">
-                <div  className="me-3 cart-icon">
+            <div className="search-bar d-flex align-items-center ">
+              <Link to="/wishlist" className="text-decoration-none">
+                <div className="me-3 cart-icon text-dark">
                   <i class="fa-solid fa-heart hvr-grow fs-4"></i>
-                  {<span style={{color:"rgb(192, 223, 54)",fontSize:"20px"}}></span>}
+                  {wishlistItems.length > 0 && <span style={{ color: "rgb(192, 223, 54)", fontSize: "20px" }}>({totalWishlistItems})</span>}
                 </div>
-                <div onClick={openCart} className="me-3 cart-icon">
-                  <i class="fa-solid fa-cart-arrow-down fs-5 hvr-grow"></i>
-                  {cartItems.length > 0 && <span style={{color:"rgb(192, 223, 54)",fontSize:"20px"}}>({totalProducts})</span>}
-                </div>
-                <div className="cart-icon">
-                  {localStorage.getItem("token") ? (
-                    <div class="dropdown">
-                        <button class="border-0 bg-transparent text-warning fw-bold dropdown-toggle"  id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                          <span className="avatar">{firstLetter}</span> {username1}  
-                        </button>
-                        <ul class="dropdown-menu drop1" aria-labelledby="dropdownMenuButton1">
-                          <li onClick={handleLogout}><a class="dropdown-item" href="#">Logout</a></li>
-                        </ul>
-                      </div>
-                  ) : (
-                    <div onClick={handleShow}>
-                      <i className="fa-solid fa-user fs-5 hvr-grow"></i>
-                    </div>
-                  )}
-                </div>
+              </Link>
+              <div onClick={openCart} className="me-3 cart-icon">
+                <i class="fa-solid fa-cart-arrow-down fs-5 hvr-grow"></i>
+                {cartItems.length > 0 && <span style={{ color: "rgb(192, 223, 54)", fontSize: "20px" }}>({totalProducts})</span>}
+              </div>
+              <div className="cart-icon">
+                {localStorage.getItem("token") ? (
+                  <div class="dropdown">
+                    <button class="border-0 bg-transparent text-warning fw-bold dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                      <span className="avatar">{firstLetter}</span> {username1}
+                    </button>
+                    <ul class="dropdown-menu drop1" aria-labelledby="dropdownMenuButton1">
+                      <li><Link class="dropdown-item" to="/profile">My Account</Link></li>
+                      <li onClick={handleLogout}><a class="dropdown-item" href="#">Logout</a></li>
+                    </ul>
+                  </div>
+                ) : (
+                  <div onClick={handleShow}>
+                    <i className="fa-solid fa-user fs-5 hvr-grow"></i>
+                  </div>
+                )}
               </div>
             </div>
+          </div>
         </div>
       </nav>
       {/* usermodal  start*/}
@@ -257,12 +270,22 @@ const firstLetter = username1.charAt(0).toUpperCase();
                 <div>
                   <input type="email" name="email" placeholder="Email" onChange={handleChange} ref={emailRef} />
                 </div>
-                <div>
-                  <input type="password" name="password" placeholder="Password" onChange={handleChange} />
+                <div style={{ position: "relative" }}>
+                  <input type={showPassword ? "text" : "password"} name="password" placeholder="Password" onChange={handleChange} />
+                  <i
+                    className={`fa-solid ${showPassword ? "fa-eye-slash" : "fa-eye"} position-absolute`}
+                    style={{ right: "15px", top: "50%", transform: "translateY(-50%)", cursor: "pointer", color: "gray" }}
+                    onClick={() => setShowPassword(!showPassword)}
+                  ></i>
                 </div>
                 {!isLoggedIn && (
-                  <div>
-                    <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange}/>
+                  <div style={{ position: "relative" }}>
+                    <input type={showConfirmPassword ? "text" : "password"} name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} />
+                    <i
+                      className={`fa-solid ${showConfirmPassword ? "fa-eye-slash" : "fa-eye"} position-absolute`}
+                      style={{ right: "15px", top: "50%", transform: "translateY(-50%)", cursor: "pointer", color: "gray" }}
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    ></i>
                   </div>
                 )}
                 <div>

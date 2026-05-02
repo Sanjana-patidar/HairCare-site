@@ -16,12 +16,16 @@ import Serum from './pages/Serum'
 import './App.css'
 import Checkout from './pages/Checkout';
 import Ordersuccess from './pages/Ordersuccess';
+import AllProduct from './pages/AllProduct';
+import Profile from './pages/Profile';
+import Wishlist from './pages/Wishlist';
 import ScroolToTop from './Component/ScroolToTop';
 import SplashScreen from './Component/SplashScreen';
+import CustomCursor from './Component/CustomCursor';
 function App() {
   const [loading, setLoading] = useState(true);
 
-useEffect(() => {
+  useEffect(() => {
     const visited = sessionStorage.getItem("visited");
 
     if (visited) {
@@ -34,11 +38,11 @@ useEffect(() => {
     }
   }, []);
 
- useEffect(() => {
+  useEffect(() => {
     AOS.init({
       duration: 1100,
-      once:false,  
-       mirror: true,
+      once: false,
+      mirror: true,
       easing: "ease-in-out",
     });
   }, []);
@@ -49,26 +53,30 @@ useEffect(() => {
 
   return (
     <>
-    <BrowserRouter>
+      <CustomCursor />
+      <BrowserRouter>
         <Routes>
           {/* user route */}
-           <Route path="/" element={<Layout/>}>
-             <Route index element={<Home/>} />
-             <Route path="Categoryoil" element={<Oil/>} />
-             <Route path="Categoryshampoo" element={<Shampoo/>} />
-             <Route path="Categoryconditioner" element={<Conditioner/>} />
-             <Route path="Categoryserum" element={<Serum/>} />
-             <Route path="contact" element={<Contect/>} />
-             <Route path="Checkout" element={<Checkout/>} />
-             <Route path="Placeorder" element={<Ordersuccess/>} />
-             <Route path="productdetail/:id" element={<Productdetail/>} />
-           </Route>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="Categoryoil" element={<Oil />} />
+            <Route path="Categoryshampoo" element={<Shampoo />} />
+            <Route path="Categoryconditioner" element={<Conditioner />} />
+            <Route path="Categoryserum" element={<Serum />} />
+            <Route path="contact" element={<Contect />} />
+            <Route path="Checkout" element={<Checkout />} />
+            <Route path="Placeorder" element={<Ordersuccess />} />
+            <Route path="allproducts" element={<AllProduct />} />
+            <Route path="productdetail/:id" element={<Productdetail />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="wishlist" element={<Wishlist />} />
+          </Route>
         </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
       <ToastContainer position="top-right" autoClose={1000} />
-      <ScroolToTop/>
+      <ScroolToTop />
     </>
-    
+
   )
 }
 

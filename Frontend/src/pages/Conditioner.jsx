@@ -4,11 +4,22 @@ import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import axios from "axios";
+import { useWishlist } from "../Context/WishlistContext";
 import './Style.css'
 
 const Conditioner = () => {
   const [products, setProducts] = useState([]);
    const navigate = useNavigate();
+   const { wishlistItems, addToWishlist, removeFromWishlist } = useWishlist();
+
+  const handleWishlistToggle = (product) => {
+    const isInWishlist = wishlistItems.some(item => item._id === product._id);
+    if (isInWishlist) {
+      removeFromWishlist(product._id);
+    } else {
+      addToWishlist(product);
+    }
+  };
   useEffect(() => {
       const fetchOilProducts = async () => {
         try {
@@ -60,7 +71,11 @@ const Conditioner = () => {
                   </button>
               </div>
               <div className="like-btn">
-                <i className="fa-regular fa-heart"></i>
+                {wishlistItems.some(item => item._id === product._id) ? (
+                  <i className="fa-solid fa-heart text-danger hvr-grow" onClick={() => handleWishlistToggle(product)} style={{cursor: "pointer"}}></i>
+                ) : (
+                  <i className="fa-regular fa-heart hvr-grow" onClick={() => handleWishlistToggle(product)} style={{cursor: "pointer"}}></i>
+                )}
                 <p style={{color:"rgb(192, 223, 54)"}} >stock:{product.stock}</p>
               </div>
             </div>

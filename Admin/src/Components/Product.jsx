@@ -59,25 +59,20 @@ const StatusToggle = ({ status, onChange }) => {
     onChange(getNextStatus());
   };
 
-  const getColor = () => {
-    if (status === "active") return "#4CAF50"; 
-    if (status === "inactive") return "#f44336"; 
-    if (status === "outofstock") return "#ff9800";
+  const getIcon = () => {
+    if (status === "active") return <i className="fa-solid fa-circle-check"></i>;
+    if (status === "inactive") return <i className="fa-solid fa-circle-xmark"></i>;
+    if (status === "outofstock") return <i className="fa-solid fa-triangle-exclamation"></i>;
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <Switch
-        onChange={handleToggle}
-        checked={status === "active"}
-        onColor="#4CAF50"
-        offColor={getColor()}
-        uncheckedIcon={false}
-        checkedIcon={false}
-        height={20}
-        width={40}
-      />
-      <span style={{ marginLeft: "10px" }}>{status}</span>
+    <div 
+      className={`custom-status-badge ${status}`}
+      onClick={handleToggle}
+      title="Click to change status"
+    >
+      {getIcon()}
+      {status === 'outofstock' ? 'Out of Stock' : status}
     </div>
   );
 };
@@ -318,17 +313,24 @@ const StatusToggle = ({ status, onChange }) => {
                   />
                 </td>
                 <td className="action-btns">
-                  <button data-toggle="tooltip" data-placement="top" title="edit" className="edit" onClick={() => handleEdit(item)}>
-                    <i class="fa-solid fa-pen-to-square"></i>
+                  <button 
+                    data-toggle="tooltip" data-placement="top" title="Edit" 
+                    className="action-icon view" 
+                    style={{ color: "#3b82f6" }}
+                    onClick={() => handleEdit(item)}
+                  >
+                    <i className="fa-solid fa-pen-to-square"></i>
                   </button>
                   <button
-                    className="delete"
+                    className="action-icon delete"
+                    title="Delete"
                     onClick={() => handleDelete(item._id)}
                   >
-                    <i class="fa-solid fa-trash"></i>
+                    <i className="fa-solid fa-trash"></i>
                   </button>
                   <button
-                    className="edit"
+                    className="action-icon view"
+                    title="View Details"
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                     onClick={() => setSelectedProduct(item)}

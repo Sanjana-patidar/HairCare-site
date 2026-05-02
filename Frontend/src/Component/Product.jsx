@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Grid,  Navigation } from "swiper/modules";
 import {useNavigate} from "react-router-dom";
+import { useWishlist } from "../Context/WishlistContext";
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import axios from "axios";
@@ -15,6 +16,17 @@ import "./Product.css";
 function Product() {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
+  const { wishlistItems, addToWishlist, removeFromWishlist } = useWishlist();
+
+  const handleWishlistToggle = (product) => {
+    const isInWishlist = wishlistItems.some(item => item._id === product._id);
+    if (isInWishlist) {
+      removeFromWishlist(product._id);
+    } else {
+      addToWishlist(product);
+    }
+  };
+
   // Fetch products from API
   useEffect(() => {
     const fetchProducts = async () => {
@@ -35,7 +47,7 @@ function Product() {
         <h3  className="text-center" style={{color:"rgb(195, 229, 43)"}}>All Products</h3>
       </div>
       <div className="swiper-buttons text-end mb-3">
-        <span>More Product</span>
+        <span onClick={() => navigate('/allproducts')} style={{cursor: "pointer"}} className="more-product-link">More Product</span>
         <button className="custom-prev">
           <i className="fa-solid fa-arrow-left"></i>
         </button>
@@ -85,8 +97,12 @@ function Product() {
                   </button>
               </div>
               <div className="like-btn">
-                <i className="fa-regular fa-heart"></i>
-                <p style={{color:"rgb(192, 223, 54)"}} >stock:{product.stock}</p>
+                {wishlistItems.some(item => item._id === product._id) ? (
+                  <i className="fa-solid fa-heart text-danger hvr-grow" onClick={() => handleWishlistToggle(product)} style={{cursor: "pointer"}}></i>
+                ) : (
+                  <i className="fa-regular fa-heart hvr-grow" onClick={() => handleWishlistToggle(product)} style={{cursor: "pointer"}}></i>
+                )}
+                <p style={{color:"rgb(192, 223, 54)"}} >stock:{product._id ? product.stock : product.stock}</p>
               </div>
             </div>
           </SwiperSlide>

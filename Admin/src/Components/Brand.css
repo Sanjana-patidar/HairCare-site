@@ -1,0 +1,30 @@
+.brand-container {
+  padding: 20px;
+}
+
+.add-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.add-btn:hover {
+  opacity: 0.9;
+}
+
+.brand-thumb {
+  width: 55px;
+  height: 55px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.empty-text {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-muted);
+}

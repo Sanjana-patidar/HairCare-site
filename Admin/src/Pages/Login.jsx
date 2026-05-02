@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./Login.css";
 
 const Login = () => {
@@ -8,6 +10,7 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
@@ -16,7 +19,7 @@ const Login = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/users/login",
+        `${import.meta.env.VITE_API_URL}/users/login`,
         { email, password }
       );
 
@@ -40,38 +43,60 @@ const Login = () => {
 
   return (
     <div className="login-wrapper">
-      <div className="login-card">
-        <h2 className="login-title">Admin Login</h2>
-        <p className="login-subtitle">Welcome back! Please login</p>
+      <motion.div
+        className="login-card"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <div className="login-header">
+          <h2 className="login-title">Admin Portal</h2>
+          <p className="login-subtitle">Sign in to manage your store</p>
+        </div>
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} className="login-form">
           <div className="form-group">
-            <label>Email</label>
-            <input
-              type="email"
-              placeholder="admin@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <label>Email Address</label>
+            <div className="input-container">
+              <input
+                type="email"
+                placeholder="admin@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
           </div>
 
           <div className="form-group">
             <label>Password</label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="input-container password-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <span
+                className="eye-icon"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
           </div>
 
-          <button className="login-btn" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
-          </button>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="login-btn"
+            disabled={loading}
+          >
+            {loading ? "Authenticating..." : "Login to Dashboard"}
+          </motion.button>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 };

@@ -148,11 +148,13 @@ const Orderhistory = () => {
   </div>
 </div>
 
-    <div className="order-page">
-      <h2>Order History</h2>
+    <div className="order-history-container">
+      <div className="admin-header">
+        <h2>Order History</h2>
+      </div>
 
       {/* TABLE */}
-      <div className="table-wrapper">
+      <div className="table-card">
         <table className="order-table">
           <thead>
             <tr>
@@ -171,35 +173,39 @@ const Orderhistory = () => {
               <tr key={o._id}>
                 <td>{o._id.slice(0, 8)}</td>
                 <td>
-                  {o.customer.firstname} {o.customer.lastname}
+                  {o.customer?.firstname} {o.customer?.lastname}
                 </td>
-                <td>{o.customer.email}</td>
-                <td>₹{o.totalAmount}</td>
+                <td>{o.customer?.email}</td>
+                <td className="price">₹{o.totalAmount}</td>
                 <td>
-                  <span className={`status ${o.status.toLowerCase()}`}>
+                  <span className={`status-badge ${o.status.toLowerCase()}`}>
                     {o.status}
                   </span>
                 </td>
                 <td>{new Date(o.createdAt).toLocaleDateString()}</td>
-                <td className="action-buttons">
+                <td className="action-btns">
                   <button 
                     data-bs-toggle="modal" data-bs-target="#exampleModal"
-                    className="eye-btn"
+                    className="action-icon view"
                     onClick={() => setOrderDetails(o)}
+                    title="View Details"
                   >
                     <FaEye />
                   </button>
 
                   <button
-                    className="approve-btn"
+                    className="action-icon view"
+                    style={{ color: "#059669" }}
                     onClick={() => updateStatus(o._id, "Approved")}
+                    title="Approve Order"
                   >
                     <FaCheck />
                   </button>
 
                   <button
-                    className="reject-btn"
+                    className="action-icon delete"
                     onClick={() => updateStatus(o._id, "Rejected")}
+                    title="Reject Order"
                   >
                     <FaTimes />
                   </button>
@@ -208,6 +214,8 @@ const Orderhistory = () => {
             ))}
           </tbody>
         </table>
+
+        {orders.length === 0 && <p className="empty-text">No orders found.</p>}
       </div>
 
       {/* PAGINATION */}
@@ -216,7 +224,7 @@ const Orderhistory = () => {
           {[...Array(totalPages)].map((_, i) => (
             <button
               key={i}
-              className={page === i + 1 ? "active" : ""}
+              disabled={page === i + 1}
               onClick={() => setPage(i + 1)}
             >
               {i + 1}

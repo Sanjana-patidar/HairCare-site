@@ -67,48 +67,81 @@ const Addproduct = () => {
   };
 
   return (
-    <div className="add-product-page">
-      <form onSubmit={handleSubmit} className="product-form">
-        <h3>{state ? "Edit Product" : "Add Product"}</h3>
+    <div className="add-product-container">
+      <div className="admin-header mb-4">
+        <h2>{state ? "Edit Product" : "Add New Product"}</h2>
+      </div>
+      
+      <div className="form-card">
+        <form onSubmit={handleSubmit} className="product-form">
+          <div className="row g-3">
+            <div className="col-12 col-md-6 form-group">
+              <label>Product Name</label>
+              <input className="form-control" name="name" placeholder="Enter product name" value={form.name} onChange={handleChange} required />
+            </div>
+            
+            <div className="col-12 col-md-6 form-group">
+              <label>Category</label>
+              <select className="form-select" name="category" value={form.category} onChange={handleChange}>
+                <option value="shampoo">Shampoo</option>
+                <option value="conditioner">Conditioner</option>
+                <option value="serum">Serum</option>
+                <option value="oil">Oil</option>
+              </select>
+            </div>
 
-        <input name="name" placeholder="Name" value={form.name} onChange={handleChange} required />
-        <textarea name="description" placeholder="Description" value={form.description} onChange={handleChange} required />
+            <div className="col-12 form-group">
+              <label>Description</label>
+              <textarea className="form-control" name="description" placeholder="Product description..." value={form.description} onChange={handleChange} rows="4" required />
+            </div>
 
-        <div className="row">
-          <input name="price" type="number"  min="0" placeholder="Price" value={form.price} onChange={handleChange} />
-          <input name="discountprice"  min="0" type="number" placeholder="Discount Price" value={form.discountprice} onChange={handleChange} />
-        </div>
+            <div className="col-12 col-md-4 form-group">
+              <label>Price (₹)</label>
+              <input className="form-control" name="price" type="number" min="0" placeholder="0.00" value={form.price} onChange={handleChange} />
+            </div>
 
-        <div className="row">
-          <input name="discountpercentage"  min="0" type="number" placeholder="Discount %" value={form.discountpercentage} onChange={handleChange} />
-          <input name="rating" type="number" placeholder="Rating" value={form.rating} onChange={handleChange} />
-        </div>
+            <div className="col-12 col-md-4 form-group">
+              <label>Discount Price (₹)</label>
+              <input className="form-control" name="discountprice" min="0" type="number" placeholder="0.00" value={form.discountprice} onChange={handleChange} />
+            </div>
 
-        <div className="row">
-          <input
-            name="stock"
-            type="number"
-            placeholder="Stock Quantity"
-            value={form.stock}
-            onChange={handleChange}
-            min="0"
-            required
-          />
-        </div>
+            <div className="col-12 col-md-4 form-group">
+              <label>Discount %</label>
+              <input className="form-control" name="discountpercentage" min="0" type="number" placeholder="0%" value={form.discountpercentage} onChange={handleChange} />
+            </div>
 
-        <select name="category" value={form.category} onChange={handleChange}>
-          <option value="shampoo">Shampoo</option>
-          <option value="conditioner">Conditioner</option>
-          <option value="serum">Serum</option>
-          <option value="oil">Oil</option>
-        </select>
+            <div className="col-12 col-md-4 form-group">
+              <label>Stock Quantity</label>
+              <input
+                className="form-control"
+                name="stock"
+                type="number"
+                placeholder="0"
+                value={form.stock}
+                onChange={handleChange}
+                min="0"
+                required
+              />
+            </div>
 
-        <input type="file" name="image" onChange={handleChange} />
+            <div className="col-12 col-md-4 form-group">
+              <label>Rating</label>
+              <input className="form-control" name="rating" type="number" placeholder="0.0" value={form.rating} onChange={handleChange} />
+            </div>
 
-        <button type="submit">
-          {state ? "Update Product" : "Add Product"}
-        </button>
-      </form>
+            <div className="col-12 col-md-4 form-group">
+              <label>Product Image</label>
+              <input className="form-control" type="file" name="image" onChange={handleChange} />
+            </div>
+            
+            <div className="col-12 mt-4">
+              <button type="submit" className="submit-btn">
+                {state ? "Update Product" : "Publish Product"}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

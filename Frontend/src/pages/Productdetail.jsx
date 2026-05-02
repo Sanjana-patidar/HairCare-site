@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import { useCart } from '../Context/CartContext';
+import { useWishlist } from "../Context/WishlistContext";
 import { useOutletContext } from "react-router-dom";
 import confetti from "canvas-confetti";
 import "./Productdetail.css"
@@ -27,6 +28,17 @@ const Productdetail = () => {
       // usecart context
       const { openCart } = useOutletContext();
       const { cartItems, addToCart } = useCart();
+      const { wishlistItems, addToWishlist, removeFromWishlist } = useWishlist();
+
+      const handleWishlistToggle = (product) => {
+        const isInWishlist = wishlistItems.some(item => item._id === product._id);
+        if (isInWishlist) {
+          removeFromWishlist(product._id);
+        } else {
+          addToWishlist(product);
+        }
+      };
+
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/products/${id}`)
@@ -62,11 +74,20 @@ const Productdetail = () => {
           </div>
           <div className="col-12 col-md-12 col-lg-7">
             <div className=" p-2">
-              <div>
-                <h4>{product.name}</h4>
-                <span className="description">{product.description}</span>
-                <p>A gentle, herbal shampoo enriched with Bhringraj & Amla that helps reduce hair fall, boost shine, and nourish your scalp from root to tip.</p>
+              <div className="d-flex justify-content-between align-items-start">
+                <div>
+                  <h4>{product.name}</h4>
+                  <span className="description">{product.description}</span>
+                </div>
+                <div style={{cursor: "pointer"}} onClick={() => handleWishlistToggle(product)}>
+                  {wishlistItems.some(item => item._id === product._id) ? (
+                    <i className="fa-solid fa-heart text-danger hvr-grow fs-4"></i>
+                  ) : (
+                    <i className="fa-regular fa-heart hvr-grow fs-4"></i>
+                  )}
+                </div>
               </div>
+              <div>
               <div className='advantage'>
                 <ul className='list-unstyled'>
                   <li><i class="fa-regular fa-circle-check fa-check"></i> Reduces Hair Fall & Breakage</li>
@@ -129,6 +150,7 @@ const Productdetail = () => {
               </div>
             </div>
           </div>
+        </div>
         </div>
     </div>
   )

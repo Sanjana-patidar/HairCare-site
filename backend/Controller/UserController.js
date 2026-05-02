@@ -123,3 +123,145 @@ export const deleteUser = async (req, res) => {
     });
   }
 };
+
+// Get logged-in user profile
+export const getUserProfile = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching profile", error });
+  }
+};
+
+// Update user profile
+export const updateUserProfile = async (req, res) => {
+  try {
+    const { username, phone, gender, dob } = req.body;
+    const user = await UserModel.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (username) user.username = username;
+    if (phone) user.phone = phone;
+    if (gender) user.gender = gender;
+    if (dob) user.dob = dob;
+
+    await user.save();
+    res.status(200).json({ message: "Profile updated successfully", user });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating profile", error });
+  }
+};
+
+// Add Address
+export const addAddress = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.addresses.push(req.body);
+    await user.save();
+    
+    res.status(201).json({ message: "Address added successfully", addresses: user.addresses });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding address", error });
+  }
+};
+
+// Update Address
+export const updateAddress = async (req, res) => {
+  try {
+    const { addressId } = req.params;
+    const user = await UserModel.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const addressIndex = user.addresses.findIndex(addr => addr._id.toString() === addressId);
+    if (addressIndex === -1) {
+      return res.status(404).json({ message: "Address not found" });
+    }
+
+    // Merge existing address with new data
+    user.addresses[addressIndex] = { ...user.addresses[addressIndex].toObject(), ...req.body };
+    await user.save();
+    
+    res.status(200).json({ message: "Address updated successfully", addresses: user.addresses });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating address", error });
+  }
+};
+
+// Delete Address
+export const deleteAddress = async (req, res) => {
+  try {
+    const { addressId } = req.params;
+    const user = await UserModel.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.addresses = user.addresses.filter(addr => addr._id.toString() !== addressId);
+    await user.save();
+    
+    res.status(200).json({ message: "Address deleted successfully", addresses: user.addresses });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting address", error });
+  }
+};
+
+// Add to wishlist
+export const addToWishlist = async (req, res) => {
+  try {
+    const { productId } = req.body;
+    const user = await UserModel.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (!user.wishlist.includes(productId)) {
+      user.wishlist.push(productId);
+      await user.save();
+    }
+    
+    // return populated wishlist for immediate update
+    const updatedUser = await UserModel.findById(req.user.id).populate("wishlist");
+    res.status(200).json({ message: "Added to wishlist", wishlist: updatedUser.wishlist });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding to wishlist", error });
+  }
+};
+
+// Remove from wishlist
+export const removeFromWishlist = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const user = await UserModel.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.wishlist = user.wishlist.filter(id => id.toString() !== productId);
+    await user.save();
+
+    const updatedUser = await UserModel.findById(req.user.id).populate("wishlist");
+    res.status(200).json({ message: "Removed from wishlist", wishlist: updatedUser.wishlist });
+  } catch (error) {
+    res.status(500).json({ message: "Error removing from wishlist", error });
+  }
+};
+
+// Get wishlist
+export const getWishlist = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.user.id).populate("wishlist");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json({ wishlist: user.wishlist });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching wishlist", error });
+  }
+};

@@ -1,58 +1,57 @@
-.add-product-page {
-  min-height: 100vh;
-}
-
-.product-form {
-  border-radius: 5px;
-  background: white;
+.add-product-container, .add-brand-container {
+  padding: 30px;
+  max-width: 1200px;
   width: 100%;
-  max-width: 100%;
-  padding: 10px;
+  margin: 0 auto;
 }
 
-.product-form h3 {
-  text-align: center;
+.form-card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+}
+
+.form-group {
   margin-bottom: 20px;
 }
 
-.product-form input,
-.product-form textarea,
-.product-form select {
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--text-main);
+}
+
+.form-control, .form-select {
   width: 100%;
-  padding: 7px;
-  margin-bottom: 14px;
+  padding: 10px 15px;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  border: 1px solid #ddd;
-}
-.product-form input:focus{
-  outline: none;
-  border: 1px solid  rgb(192, 223, 54);
-}
-.product-form textarea:focus{
-  outline: none;
-  border: 1px solid  rgb(192, 223, 54);
-}
-.product-form select:focus{
-   outline: none;
-  border: 1px solid  rgb(192, 223, 54);
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  transition: all 0.2s;
 }
 
-.row {
-  display: flex;
-  gap: 10px;
-  padding: 10px;
+.form-control:focus, .form-select:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-light);
 }
 
-.product-form button {
-  width: 100%;
-  padding: 10px;
-  background: linear-gradient(135deg,  rgb(192, 223, 54), rgb(139, 159, 50));
+.submit-btn {
+  background: var(--accent);
+  color: #fff;
   border: none;
-  border-radius: 10px;
-  color: white;
-  font-size: 16px;
+  padding: 12px 24px;
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: 600;
+  width: 100%;
+  transition: background-color 0.2s;
 }
-div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm) {
-   background-color:  rgb(192, 223, 54) !important;
+
+.submit-btn:hover {
+  background: #2563eb;
 }

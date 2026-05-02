@@ -1,44 +1,9 @@
+/* Only specific styles for User Component, global table styles are in Admin.css */
+
 .user-container {
   padding: 20px;
-  min-height: 100vh;
 }
 
-.page-title {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 20px;
-}
-
-.table-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-  overflow-x: auto;
-}
-
-.user-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.user-table thead {
-  background: #2D3C59;
-  color: #fff;
-}
-
-.user-table th,
-.user-table td {
-  padding: 14px 18px;
-  text-align: left;
-}
-
-.user-table tbody tr {
-  border-bottom: 1px solid #eee;
-  transition: background 0.3s;
-}
-
-
-/* user info */
 .user-info {
   display: flex;
   align-items: center;
@@ -49,7 +14,7 @@
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: #2D3C59;
+  background: var(--accent);
   color: #fff;
   font-weight: 600;
   display: flex;
@@ -67,51 +32,39 @@
 }
 
 .role-badge.admin {
-  background: #ffe3e3;
-  color: #d63031;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
 .role-badge.user {
-  background: #2D3C59;
-  color: white;
+  background: var(--accent-light);
+  color: var(--accent);
 }
 
 .empty-text {
   text-align: center;
   padding: 20px;
-  color: #888;
-}
-.action-icon {
-  cursor: pointer;
-  font-size: 18px;
-  margin-right: 12px;
-}
-
-.action-icon.view {
-  color: #4f46e5;
-}
-
-.action-icon.delete {
-  color: #dc2626;
+  color: var(--text-muted);
 }
 
 /* ===== MODAL ===== */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 9999;
 }
 
 .modal-card {
-  background: #fff;
+  background: var(--card-bg);
   width: 400px;
   border-radius: 12px;
-  padding: 20px;
+  padding: 24px;
   position: relative;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
 .close-btn {
@@ -120,18 +73,20 @@
   right: 15px;
   border: none;
   background: none;
-  font-size: 22px;
+  font-size: 24px;
   cursor: pointer;
+  color: var(--text-muted);
 }
 
 .modal-header {
   text-align: center;
+  margin-bottom: 20px;
 }
 
 .modal-avatar {
-  width: 50px;
-  height: 50px;
-  background: #1e293b;
+  width: 60px;
+  height: 60px;
+  background: var(--accent);
   color: #fff;
   border-radius: 50%;
   display: flex;
@@ -144,31 +99,31 @@
 
 .modal-body p {
   margin: 10px 0;
+  color: var(--text-main);
 }
+
 /* ===== Pagination Styles ===== */
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   gap: 1rem;
-  font-family: inherit;
 }
 
 .pagination button {
-  padding: 6px 14px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #fff;
+  padding: 8px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--card-bg);
+  color: var(--text-main);
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 500;
 }
 
 .pagination button:hover:not(:disabled) {
-  background-color: #000;
-  color: #fff;
-  border-color: #000;
+  background-color: var(--hover-bg);
 }
 
 .pagination button:disabled {
@@ -178,5 +133,5 @@
 
 .pagination span {
   font-weight: 500;
-  color: #333;
+  color: var(--text-muted);
 }
