@@ -12,6 +12,7 @@ import Addproduct from './Components/Addproduct'
 import Brand from './Components/Brand'
 import Addbrand from './Components/Addbrand'
 import Orderhistory from './Components/Orderhistory'
+import Reviews from './Components/Reviews'
 import Login from './Pages/Login';
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
              <Route path="brand" element={<Brand/>} />
              <Route path="addbrand" element={<Addbrand/>} />
              <Route path="orderhistory" element={<Orderhistory/>} />
+             <Route path="reviews" element={<Reviews/>} />
              <Route path="setting" element={<Setting/>} />
            </Route>
         </Routes>

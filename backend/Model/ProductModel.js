@@ -17,12 +17,15 @@ import mongoose from "mongoose"
     type:String,
     required:true
   },
+  // Multiple gallery images for Swiper
+  images: [{ type: String }],
   status: {
   type: String,
   enum: ["active", "inactive", "outofstock"],
   default: "active"
 }
 
- })
+ }, { timestamps: true })
 
  export const productModel = mongoose.model("product", productSchema);
+

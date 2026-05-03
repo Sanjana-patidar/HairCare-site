@@ -137,8 +137,24 @@ const Navbar = ({ openCart }) => {
       alert(error.response?.data?.message || "Login Failed");
     }
   }
-  const username1 = localStorage.getItem("username") || "";
-  const firstLetter = username1.charAt(0).toUpperCase();
+  const [userProfile, setUserProfile] = useState(null);
+
+  // Fetch real profile from API whenever logged in state changes
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) { setUserProfile(null); return; }
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/users/profile`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(res => setUserProfile(res.data))
+      .catch(() => setUserProfile(null));
+  }, [isLoggedIn]);
+
+  const displayName  = userProfile?.username || localStorage.getItem("username") || "";
+  const firstLetter  = displayName.charAt(0).toUpperCase();
+  const profileImage = userProfile?.profileImage || "";
+
   return (
     <>
       <nav class="navbar navbar-expand-lg navbar-light ">
@@ -224,13 +240,57 @@ const Navbar = ({ openCart }) => {
               </div>
               <div className="cart-icon">
                 {localStorage.getItem("token") ? (
-                  <div class="dropdown">
-                    <button class="border-0 bg-transparent text-warning fw-bold dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                      <span className="avatar">{firstLetter}</span> {username1}
+                  <div className="dropdown">
+                    <button
+                      className="border-0 bg-transparent nav-avatar-btn dropdown-toggle"
+                      id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      {profileImage ? (
+                        <img src={profileImage} alt={displayName} className="nav-avatar-img" />
+                      ) : (
+                        <span className="nav-avatar-letter">{firstLetter}</span>
+                      )}
+                      <span className="nav-username-text">{displayName}</span>
                     </button>
-                    <ul class="dropdown-menu drop1" aria-labelledby="dropdownMenuButton1">
-                      <li><Link class="dropdown-item" to="/profile">My Account</Link></li>
-                      <li onClick={handleLogout}><a class="dropdown-item" href="#">Logout</a></li>
+                    <ul className="dropdown-menu drop1 nav-dropdown" aria-labelledby="dropdownMenuButton1">
+                      {/* User info header */}
+                      <li className="nav-drop-header">
+                        <div className="nav-drop-avatar">
+                          {profileImage ? (
+                            <img src={profileImage} alt={displayName} className="nav-drop-avatar-img" />
+                          ) : (
+                            <span className="nav-drop-avatar-letter">{firstLetter}</span>
+                          )}
+                        </div>
+                        <div>
+                          <div className="nav-drop-name">{displayName}</div>
+                          <div className="nav-drop-email">{userProfile?.email || ""}</div>
+                        </div>
+                      </li>
+                      <li><hr className="dropdown-divider" /></li>
+                      <li>
+                        <Link className="dropdown-item nav-drop-item" to="/profile">
+                          <i className="fa-solid fa-user" /> My Account
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item nav-drop-item" to="/placeorder">
+                          <i className="fa-solid fa-box" /> My Orders
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item nav-drop-item" to="/wishlist">
+                          <i className="fa-solid fa-heart" /> My Wishlist
+                        </Link>
+                      </li>
+                      <li><hr className="dropdown-divider" /></li>
+                      <li onClick={handleLogout}>
+                        <a className="dropdown-item nav-drop-item nav-drop-logout" href="#">
+                          <i className="fa-solid fa-right-from-bracket" /> Logout
+                        </a>
+                      </li>
                     </ul>
                   </div>
                 ) : (
@@ -239,6 +299,7 @@ const Navbar = ({ openCart }) => {
                   </div>
                 )}
               </div>
+
             </div>
           </div>
         </div>

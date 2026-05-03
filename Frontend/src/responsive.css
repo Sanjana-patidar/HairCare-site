@@ -1,0 +1,317 @@
+/*
+ * ============================================================
+ * HAIRCARE FRONTEND — Global Responsive Stylesheet
+ * Covers: Navbar, Benefit, Profile, HowItWorks, HairQuiz,
+ *         Product cards, AllProduct, Order page, Brand strip
+ * Breakpoints: 1024px | 768px | 480px | 360px
+ * ============================================================
+ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+/* ── Reset & Box Model ── */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+img  { max-width: 100%; height: auto; }
+
+/* ── Prevent horizontal scroll ── */
+body { overflow-x: hidden; }
+
+/* ─────────────────────────────────────────────────────────── */
+/*  NAVBAR                                                     */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .navbar { padding: 8px 14px !important; }
+  .logo-text { font-size: 1.1rem !important; }
+  .logo      { height: 32px !important; width: 32px !important; }
+
+  /* Collapse menu */
+  .navbar-collapse {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    padding: 12px 16px;
+    margin-top: 8px;
+  }
+  .navbar-nav { gap: 0 !important; }
+  .nav-link   { padding: 10px 0 !important; border-bottom: 1px solid #f3f4f6; }
+  .nav-link:last-child { border: none; }
+
+  /* Right icons row */
+  .search-bar { gap: 12px !important; }
+  .nav-username-text { display: none; }
+  .nav-avatar-btn { padding: 2px !important; }
+}
+
+@media (max-width: 480px) {
+  .nav-dropdown {
+    right: -10px !important;
+    min-width: 200px !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  MAIN HEADER / HERO CAROUSEL                               */
+/* ─────────────────────────────────────────────────────────── */
+.mainheader-css { max-height: 600px; overflow: hidden; }
+
+@media (max-width: 768px) {
+  .mainheader-css { max-height: 380px; }
+  .carousel-item img { object-fit: cover; height: 280px; width: 100%; }
+}
+@media (max-width: 480px) {
+  .carousel-item img { height: 200px; }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  PRODUCT CATEGORIES GRID                                   */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .product-container {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    padding: 20px 12px !important;
+  }
+  .pro-card { height: 160px !important; font-size: 18px !important; }
+}
+@media (max-width: 380px) {
+  .product-container { grid-template-columns: 1fr !important; }
+  .pro-card { height: 140px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  HOW IT WORKS section                                      */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .hiw-steps { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 768px) {
+  .hiw-section  { padding: 60px 20px !important; }
+  .ing-section  { padding: 60px 20px !important; }
+  .hiw-steps    { grid-template-columns: 1fr 1fr !important; gap: 14px !important; }
+  .ing-grid     { grid-template-columns: repeat(3, 1fr) !important; }
+  .ing-cta      { flex-direction: column !important; text-align: center !important; padding: 28px 20px !important; }
+  .ing-cta-btn  { width: 100% !important; justify-content: center !important; }
+}
+@media (max-width: 480px) {
+  .hiw-steps   { grid-template-columns: 1fr !important; }
+  .ing-grid    { grid-template-columns: 1fr 1fr !important; }
+  .hiw-step-num { font-size: 1.8rem !important; width: 50px !important; height: 50px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  HAIR QUIZ section                                         */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .hq-inner   { flex-direction: column !important; gap: 36px !important; }
+  .hq-section { padding: 60px 20px !important; }
+  .hq-card    { padding: 28px 20px !important; }
+}
+@media (max-width: 480px) {
+  .hq-options { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+  .hq-option  { padding: 12px 8px !important; font-size: 0.82rem !important; }
+  .hq-heading { font-size: 1.7rem !important; }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  PRODUCT CAROUSEL (Home)                                   */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .multi-product  { padding: 40px 16px !important; }
+  .mp-header      { margin-bottom: 28px !important; }
+  .mp-title       { font-size: 1.6rem !important; }
+  .mp-toolbar     { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
+}
+@media (max-width: 480px) {
+  .pc-img-wrap { height: 150px !important; }
+  .pc-body     { padding: 10px 12px 12px !important; }
+  .pc-name     { font-size: 0.85rem !important; }
+  .pc-price    { font-size: 1rem !important; }
+  .pc-btn      { padding: 9px !important; font-size: 0.78rem !important; }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  BENEFIT SECTION                                           */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .benifit-section { padding: 40px 16px !important; }
+  .benifit-section h3 { font-size: 1.4rem !important; }
+  .box  { padding: 20px 12px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  BRAND section                                             */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .brand-section { padding: 40px 0 36px !important; }
+  .brand-title   { font-size: 1.4rem !important; }
+  .brand-stats   { flex-wrap: wrap !important; padding: 16px 8px !important; gap: 0 !important; }
+  .brand-stat    { padding: 10px 16px !important; min-width: 50% !important; }
+  .brand-stat-divider { display: none !important; }
+  .stat-number   { font-size: 1.5rem !important; }
+}
+@media (max-width: 480px) {
+  .brand-stat { min-width: 100% !important; }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  ALL PRODUCTS page                                         */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .ap-hero    { padding: 48px 20px 68px !important; }
+  .ap-body    { flex-direction: column !important; margin-top: -24px !important; padding: 0 14px !important; }
+  .ap-sidebar {
+    position: fixed !important;
+    top: 0 !important; left: 0 !important;
+    height: 100vh !important;
+    width: 290px !important;
+    border-radius: 0 !important;
+    z-index: 999 !important;
+    transform: translateX(-110%) !important;
+    overflow-y: auto !important;
+  }
+  .ap-sidebar--open { transform: translateX(0) !important; box-shadow: 0 0 0 100vw rgba(0,0,0,0.4) !important; }
+  .ap-mob-filter-btn { display: flex !important; }
+  .ap-toolbar { flex-direction: column !important; align-items: flex-start !important; }
+  .ap-toolbar-right { width: 100% !important; justify-content: space-between !important; }
+  .ap-grid    { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+  .ap-list-img-wrap { width: 110px !important; }
+  .ap-list-name     { font-size: 0.95rem !important; }
+}
+@media (max-width: 480px) {
+  .ap-hero-title { font-size: 2rem !important; }
+  .ap-grid       { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+  .ap-card-name  { font-size: 0.83rem !important; }
+  .ap-card-body  { padding: 10px !important; }
+  .ap-list-card  { flex-direction: column !important; }
+  .ap-list-img-wrap { width: 100% !important; height: 180px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  ORDER PAGE                                                */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .ord-page       { padding: 24px 14px 80px !important; }
+  .ord-page-title { font-size: 1.4rem !important; }
+  .ord-detail-grid { grid-template-columns: 1fr !important; }
+  .ord-card-mid   { display: none !important; }
+  .ord-detail     { padding: 16px !important; }
+  .ord-header     { flex-direction: column !important; align-items: flex-start !important; }
+}
+@media (max-width: 480px) {
+  .ord-card-head { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
+  .ord-card-right { flex-direction: row !important; flex-wrap: wrap !important; justify-content: flex-start !important; }
+  .ord-amount { font-size: 1rem !important; }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  PROFILE PAGE                                              */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .profile-container { margin: 16px auto !important; padding: 0 14px !important; }
+  .profile-header-banner { padding: 24px 20px !important; border-radius: 12px !important; }
+  .profile-content-wrapper { flex-direction: column !important; gap: 16px !important; }
+  .profile-sidebar { width: 100% !important; padding: 16px 0 !important; }
+  .profile-user-badge { padding: 0 16px 16px !important; }
+  .profile-nav-list { display: flex !important; flex-wrap: wrap !important; padding: 0 12px !important; gap: 6px !important; }
+  .profile-nav-item { margin: 0 !important; padding: 10px 14px !important; flex: 1 1 auto !important; justify-content: center !important; font-size: 0.85rem !important; }
+  .profile-main-content { padding: 20px 16px !important; }
+  .profile-form-grid { grid-template-columns: 1fr !important; gap: 14px !important; }
+  .address-card { padding: 14px !important; }
+}
+@media (max-width: 480px) {
+  .profile-nav-item { flex: 1 1 30% !important; text-align: center !important; }
+  .form-actions { flex-direction: column !important; }
+  .btn-warning, .btn-cancel { width: 100% !important; text-align: center !important; }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  PRODUCT DETAIL PAGE                                       */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .productdetail-grid {
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+  .productdetail-img { max-height: 300px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  FOOTER                                                    */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  footer .row { flex-direction: column !important; gap: 24px !important; }
+  footer .col { text-align: center !important; }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  CART OFFCANVAS                                            */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .offcanvas { width: 100vw !important; }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  VIDEO SECTION                                             */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .video-container .swiper-wrapper { height: 280px !important; }
+  .video-section video { border-radius: 40px !important; }
+}
+@media (max-width: 380px) {
+  .video-container .swiper-wrapper { height: 220px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  SCROLL TO TOP BUTTON                                      */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .scroll-to-top { bottom: 70px !important; right: 14px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  WISHLIST PAGE                                             */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .wishlist-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+@media (max-width: 480px) {
+  .wishlist-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  CHECKOUT PAGE                                             */
+/* ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .checkout-grid {
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+  .checkout-summary,
+  .checkout-form {
+    width: 100% !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  GENERAL UTILITY FIXES                                     */
+/* ─────────────────────────────────────────────────────────── */
+/* Prevent overflow in tables */
+.orders-table { overflow-x: auto !important; }
+
+/* Ensure text doesn't overflow cards */
+h1, h2, h3, h4, h5, h6, p {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Touch-friendly buttons */
+@media (max-width: 768px) {
+  button { min-height: 40px; }
+}
+
+/* Fix Bootstrap container on small screens */
+@media (max-width: 480px) {
+  .container, .container-fluid { padding: 0 12px !important; }
+}

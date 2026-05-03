@@ -6,11 +6,15 @@ import path from "path";
 // ADD product 
 export const addProduct = async (req, res) => {
   try {
-    const { name, description, price, discountprice,  discountpercentage, rating, category, stock, status } = req.body;
+    const { name, description, price, discountprice, discountpercentage, rating, category, stock, status } = req.body;
 
-    if (!req.file) return res.status(400).json({ message: "Image file is required (form-data key: image)" });
+    // Support both upload.single('image') and upload.fields([{name:'image'},{name:'images'}])
+    const mainImageFile = req.files?.image?.[0] || req.file;
+    if (!mainImageFile) return res.status(400).json({ message: "Main image is required" });
 
-    
+    const galleryFiles = req.files?.images || [];
+    const galleryFilenames = galleryFiles.map(f => f.filename);
+
     const product = new productModel({
       name,
       description,
@@ -20,12 +24,13 @@ export const addProduct = async (req, res) => {
       rating,
       category,
       stock,
-      image: req.file.filename,
+      image: mainImageFile.filename,
+      images: galleryFilenames,
       status: status || "active"
     });
 
     await product.save();
-    res.status(201).json({ message: "Product added" });
+    res.status(201).json({ message: "Product added", product });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error", error: err.message });
@@ -65,11 +70,16 @@ export const updateProduct = async (req, res) => {
   try {
     const updateData = { ...req.body };
 
-    if (req.file) {
-      // delete old image file
+    const mainImageFile = req.files?.image?.[0] || req.file;
+    if (mainImageFile) {
       const existing = await productModel.findById(req.params.id);
       if (existing && existing.image) deleteFile(existing.image);
-      updateData.image = req.file.filename;
+      updateData.image = mainImageFile.filename;
+    }
+
+    const galleryFiles = req.files?.images;
+    if (galleryFiles && galleryFiles.length > 0) {
+      updateData.images = galleryFiles.map(f => f.filename);
     }
 
     const updated = await productModel.findByIdAndUpdate(req.params.id, updateData, { new: true });

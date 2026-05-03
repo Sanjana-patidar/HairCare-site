@@ -176,39 +176,56 @@
   align-items: center;
   justify-content: center;
   margin-top: 48px;
-  padding: 22px 40px;
-  background: #f9faf2;
-  border-top: 1px solid rgba(192, 223, 54, 0.25);
-  border-bottom: 1px solid rgba(192, 223, 54, 0.25);
+  padding: 28px 40px;
+  background: linear-gradient(135deg, #f9faf2 0%, #f4f7e8 100%);
+  border-top: 1.5px solid rgba(192, 223, 54, 0.3);
+  border-bottom: 1.5px solid rgba(192, 223, 54, 0.3);
+  flex-wrap: wrap;
+  gap: 8px 0;
 }
 
 .brand-stat {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 0 44px;
+  gap: 6px;
+  padding: 0 40px;
 }
 
 .stat-number {
-  font-size: 1.7rem;
-  font-weight: 800;
-  color: rgb(192, 223, 54);
+  font-size: 2rem;
+  font-weight: 900;
+  color: #7a9c10;
   line-height: 1;
+  letter-spacing: -1px;
+  transition: all 0.1s ease;
+  font-variant-numeric: tabular-nums;
+  min-width: 3ch;
+  text-align: center;
+}
+
+/* Subtle pulse while counting */
+@keyframes statPulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.04); }
+}
+.brand-stat:has(.stat-number) .stat-number {
+  animation: statPulse 0.3s ease;
 }
 
 .stat-label {
-  font-size: 11.5px;
-  color: #666;
-  font-weight: 600;
-  letter-spacing: 0.4px;
+  font-size: 11px;
+  color: #555;
+  font-weight: 700;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .brand-stat-divider {
   width: 1px;
-  height: 36px;
-  background: rgba(192, 223, 54, 0.3);
+  height: 44px;
+  background: linear-gradient(180deg, transparent, rgba(192,223,54,0.5), transparent);
 }
 
 /* ───────────── Skeleton Loader ───────────── */

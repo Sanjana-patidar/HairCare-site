@@ -14,4 +14,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+// For product: accepts 1 main image + up to 5 gallery images
+export const uploadProductImages = upload.fields([
+  { name: "image", maxCount: 1 },
+  { name: "images", maxCount: 5 }
+]);
+
 export default upload;
+

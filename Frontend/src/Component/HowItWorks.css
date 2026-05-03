@@ -1,0 +1,239 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+/* ── HOW IT WORKS ─────────────────────────────── */
+.hiw-section {
+  padding: 90px 40px;
+  background: #fff;
+  font-family: 'Inter', sans-serif;
+}
+
+.hiw-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+.hiw-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #a8c42a;
+  background: rgba(192,223,54,0.12);
+  border: 1px solid rgba(192,223,54,0.4);
+  border-radius: 40px;
+  padding: 5px 16px;
+  margin-bottom: 16px;
+}
+.hiw-title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 900;
+  color: #111;
+  margin: 0 0 12px;
+  letter-spacing: -0.5px;
+}
+.hiw-title span { color: #a8c42a; }
+.hiw-sub { color: #6b7280; font-size: 1rem; margin: 0; }
+
+/* Steps */
+.hiw-steps {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  position: relative;
+}
+
+.hiw-step {
+  position: relative;
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 32px 24px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+.hiw-step:hover {
+  border-color: #c0df36;
+  box-shadow: 0 12px 36px rgba(192,223,54,0.15);
+  transform: translateY(-4px);
+  background: #fff;
+}
+
+.hiw-step-num {
+  font-size: 2.4rem;
+  font-weight: 900;
+  border: 2px solid;
+  border-radius: 50%;
+  width: 60px; height: 60px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+  font-family: 'Inter', sans-serif;
+  background: #fff;
+}
+.hiw-step-icon {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+}
+.hiw-step-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #111;
+  margin: 0 0 8px;
+}
+.hiw-step-desc {
+  font-size: 0.85rem;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Connector arrow between steps */
+.hiw-connector {
+  display: none; /* handled by grid layout */
+}
+
+/* ── KEY INGREDIENTS ──────────────────────────── */
+.ing-section {
+  padding: 80px 40px;
+  background: linear-gradient(180deg, #f4f5f7 0%, #fff 100%);
+  font-family: 'Inter', sans-serif;
+}
+
+.ing-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.ing-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #059669;
+  background: rgba(5,150,105,0.08);
+  border: 1px solid rgba(5,150,105,0.25);
+  border-radius: 40px;
+  padding: 5px 16px;
+  margin-bottom: 16px;
+}
+.ing-title {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 900;
+  color: #111;
+  margin: 0 0 10px;
+  letter-spacing: -0.5px;
+}
+.ing-title span { color: #059669; }
+.ing-sub { color: #6b7280; font-size: 1rem; margin: 0; }
+
+/* Grid */
+.ing-grid {
+  max-width: 1000px;
+  margin: 0 auto 56px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+
+.ing-card {
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 24px 12px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+.ing-card:hover {
+  border-color: #a7f3d0;
+  box-shadow: 0 8px 24px rgba(5,150,105,0.12);
+  transform: translateY(-4px);
+}
+.ing-emoji {
+  font-size: 2.4rem;
+  margin-bottom: 10px;
+}
+.ing-name {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #111;
+  margin: 0 0 4px;
+}
+.ing-benefit {
+  font-size: 0.76rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* CTA Banner */
+.ing-cta {
+  max-width: 900px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #111 0%, #1c1c1c 100%);
+  border-radius: 24px;
+  padding: 48px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  position: relative;
+  overflow: hidden;
+}
+.ing-cta::before {
+  content: '';
+  position: absolute;
+  width: 300px; height: 300px;
+  background: rgba(192,223,54,0.12);
+  border-radius: 50%;
+  top: -100px; right: -80px;
+  filter: blur(60px);
+}
+.ing-cta-content h3 {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 8px;
+}
+.ing-cta-content p {
+  color: rgba(255,255,255,0.55);
+  font-size: 0.95rem;
+  margin: 0;
+}
+.ing-cta-btn {
+  background: #c0df36;
+  color: #111;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 32px;
+  font-size: 1rem;
+  font-weight: 800;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+.ing-cta-btn:hover {
+  background: #a8c42a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(192,223,54,0.3);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .hiw-steps { grid-template-columns: repeat(2, 1fr); }
+  .ing-grid  { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 640px) {
+  .hiw-section, .ing-section { padding: 60px 20px; }
+  .hiw-steps { grid-template-columns: 1fr; }
+  .ing-grid  { grid-template-columns: repeat(2, 1fr); }
+  .ing-cta   { padding: 32px 24px; flex-direction: column; text-align: center; }
+  .ing-cta-btn { width: 100%; justify-content: center; }
+}

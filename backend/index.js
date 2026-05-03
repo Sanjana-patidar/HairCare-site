@@ -9,6 +9,7 @@ import contactRoute from './Route/contactRoute.js'
 import orderRoute from "./Route/orderRoute.js";
 import BrandRoute from "./Route/BrandRoute.js";
 import PaymentRoutes from './Route/PaymentRoute.js';
+import reviewRoute from './Route/reviewRoute.js';
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./Config/swagger.js";
 import bcrypt from "bcrypt";
@@ -30,14 +31,8 @@ app.use("/api/contact", contactRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/brands", BrandRoute);
 app.use("/api/payment", PaymentRoutes);
-//generate hash for password
-async function generateHash() {
-  const password = "admin@123";
-  const hash = await bcrypt.hash(password, 10);
-  console.log(hash);
-}
+app.use("/api/reviews", reviewRoute);
 
-generateHash();
 connectDB();
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

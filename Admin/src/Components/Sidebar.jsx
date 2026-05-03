@@ -6,6 +6,7 @@ import { NavLink } from "react-router-dom";
 import { MdOutlineLibraryAdd } from "react-icons/md";
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import StarIcon from '@mui/icons-material/Star';
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
@@ -36,8 +37,8 @@ const Sidebar = ({ collapsed }) => {
     { path: "/admin/brand", name: "Brands", icon: <LocalOfferIcon /> },
     { path: "/admin/addbrand", name: "Add Brands", icon: <MdOutlineLibraryAdd /> },
     { path: "/admin/orderhistory", name: "Order History", icon: <ShoppingCartIcon /> },
-    { path: "/", name: "Logout", icon: <IoMdLogOut /> },
-    { path: "/admin/setting", name: "Settings", icon: <FiSettings /> },
+    { path: "/admin/reviews",      name: "Reviews",       icon: <StarIcon /> },
+    { path: "/admin/setting",      name: "Settings",      icon: <FiSettings /> },
   ];
 
   return (

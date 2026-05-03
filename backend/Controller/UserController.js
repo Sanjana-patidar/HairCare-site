@@ -140,16 +140,17 @@ export const getUserProfile = async (req, res) => {
 // Update user profile
 export const updateUserProfile = async (req, res) => {
   try {
-    const { username, phone, gender, dob } = req.body;
+    const { username, phone, gender, dob, profileImage } = req.body;
     const user = await UserModel.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (username) user.username = username;
-    if (phone) user.phone = phone;
-    if (gender) user.gender = gender;
-    if (dob) user.dob = dob;
+    if (username)     user.username     = username;
+    if (phone)        user.phone        = phone;
+    if (gender)       user.gender       = gender;
+    if (dob)          user.dob          = dob;
+    if (profileImage !== undefined) user.profileImage = profileImage;
 
     await user.save();
     res.status(200).json({ message: "Profile updated successfully", user });
@@ -157,6 +158,7 @@ export const updateUserProfile = async (req, res) => {
     res.status(500).json({ message: "Error updating profile", error });
   }
 };
+
 
 // Add Address
 export const addAddress = async (req, res) => {
@@ -263,5 +265,25 @@ export const getWishlist = async (req, res) => {
     res.status(200).json({ wishlist: user.wishlist });
   } catch (error) {
     res.status(500).json({ message: "Error fetching wishlist", error });
+  }
+};
+
+// Change Password
+export const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const user = await UserModel.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Current password is incorrect" });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+    res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error changing password", error });
   }
 };

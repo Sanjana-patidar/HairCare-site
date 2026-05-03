@@ -2,28 +2,56 @@
     max-width: 1200px;
     margin: 30px auto;
     padding: 0 20px;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', sans-serif;
   }
-  
-  .profile-header-banner {
-    background-color: #3b8c66;
-    color: white;
-    padding: 30px 40px;
-    border-radius: 12px;
-    margin-bottom: 30px;
-  }
-  
-  .profile-header-banner h2 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 500;
-  }
-  
-  .profile-header-banner p {
-    margin: 5px 0 0 0;
-    font-size: 15px;
-    opacity: 0.9;
-  }
+
+/* Loading & Error */
+.prf-loading {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 60vh; gap: 16px; color: #9ca3af;
+}
+.prf-spinner {
+  width: 42px; height: 42px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #c0df36;
+  border-radius: 50%;
+  animation: prfSpin 0.7s linear infinite;
+}
+@keyframes prfSpin { to { transform: rotate(360deg); } }
+.prf-error {
+  display: flex; align-items: center; gap: 10px;
+  justify-content: center; min-height: 60vh;
+  color: #ef4444; font-weight: 600;
+}
+
+/* Header banner */
+.profile-header-banner {
+  background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+  color: white;
+  padding: 36px 40px;
+  border-radius: 18px;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+}
+.profile-header-banner::before {
+  content: '';
+  position: absolute;
+  width: 250px; height: 250px;
+  background: rgba(192,223,54,0.12);
+  border-radius: 50%;
+  top: -80px; right: -40px;
+  filter: blur(50px);
+}
+.profile-header-banner h2 {
+  margin: 0; font-size: 26px; font-weight: 800; position: relative;
+}
+.profile-header-banner p {
+  margin: 6px 0 0; font-size: 14px; opacity: 0.6; position: relative;
+}
+
+
   
   .profile-content-wrapper {
     display: flex;
@@ -48,33 +76,68 @@
     padding: 0 20px 20px 20px;
   }
   
-  .profile-avatar {
-    width: 70px;
-    height: 70px;
+/* Avatar upload wrap */
+  .profile-avatar-wrap {
+    position: relative;
+    width: 88px; height: 88px;
     border-radius: 50%;
-    background-color: #8c7aea;
-    color: white;
+    cursor: pointer;
+    margin-bottom: 14px;
+  }
+  .profile-avatar-wrap:hover .profile-avatar-overlay { opacity: 1; }
+
+  .profile-avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c0df36, #7a9c10);
+    color: #111;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
-    font-weight: bold;
-    margin-bottom: 15px;
+    font-size: 34px;
+    font-weight: 900;
   }
-  
+
+  .profile-avatar-img {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #c0df36;
+    display: block;
+  }
+
+  .profile-avatar-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.45);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transition: opacity 0.25s;
+    color: #fff;
+    font-size: 20px;
+  }
+
   .profile-user-name {
     margin: 0;
-    font-size: 18px;
-    font-weight: 500;
-    color: #333;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #111;
   }
-  
+
   .profile-user-email {
-    margin: 5px 0 0 0;
-    font-size: 13px;
-    color: #777;
-    margin-bottom: 10px;
+    margin: 4px 0 0;
+    font-size: 0.78rem;
+    color: #9ca3af;
   }
+
+  .profile-user-phone {
+    margin: 4px 0 0;
+    font-size: 0.78rem;
+    color: #6b7280;
+  }
+  .profile-user-phone i { color: #c0df36; margin-right: 4px; }
   
   .profile-nav-list {
     list-style: none;
@@ -83,8 +146,11 @@
   }
   
   .profile-nav-item {
-    padding: 12px 30px;
-    margin: 5px 15px;
+    padding: 11px 20px;
+    margin: 4px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 500;
@@ -97,9 +163,11 @@
   }
   
   .profile-nav-item.active {
-    background-color: #3b8c66;
-    color: white;
+    background: linear-gradient(135deg, #c0df36, #a8c42a);
+    color: #111;
+    font-weight: 700;
   }
+  .profile-nav-item i { font-size: 13px; }
   
   /* Main Content Styles */
   .profile-main-content {

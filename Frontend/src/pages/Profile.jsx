@@ -16,7 +16,8 @@ const Profile = () => {
     email: '',
     phone: '',
     gender: 'Male',
-    dob: ''
+    dob: '',
+    profileImage: ''
   });
 
   // Address state
@@ -32,6 +33,9 @@ const Profile = () => {
     state: '',
     country: 'India'
   });
+
+  const [imagePreview, setImagePreview] = useState('');
+  const fileInputRef = React.useRef(null);
 
   const token = localStorage.getItem('token');
   const config = {
@@ -59,8 +63,10 @@ const Profile = () => {
         email: res.data.email || '',
         phone: res.data.phone || '',
         gender: res.data.gender || 'Male',
-        dob: res.data.dob || ''
+        dob: res.data.dob || '',
+        profileImage: res.data.profileImage || ''
       });
+      setImagePreview(res.data.profileImage || '');
     } catch (err) {
       toast.error('Failed to load profile');
       setProfileError(true);
@@ -80,6 +86,22 @@ const Profile = () => {
 
   const handleProfileChange = (e) => {
     setProfileForm({ ...profileForm, [e.target.name]: e.target.value });
+  };
+
+  // Convert selected image to base64 for storage
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('Image must be under 2MB');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+      setProfileForm(prev => ({ ...prev, profileImage: reader.result }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleProfileSave = async () => {
@@ -139,39 +161,73 @@ const Profile = () => {
     setShowAddressForm(true);
   };
 
-  if (loading) return <div className="text-center mt-5">Loading profile...</div>;
-  if (profileError) return <div className="text-center mt-5" style={{color:'red'}}>Failed to load profile. Please login again.</div>;
-  if (!user) return <div className="text-center mt-5">Loading profile...</div>;
+  if (loading) return (
+    <div className="prf-loading">
+      <div className="prf-spinner" />
+      <p>Loading profile...</p>
+    </div>
+  );
+  if (profileError) return (
+    <div className="prf-error">
+      <i className="fa-solid fa-triangle-exclamation" />
+      Failed to load profile. Please login again.
+    </div>
+  );
+  if (!user) return null;
 
   return (
     <div className="profile-container">
+      {/* Header */}
       <div className="profile-header-banner">
         <h2>My Account</h2>
-        <p>Manage your personal information</p>
+        <p>Manage your personal information &amp; preferences</p>
       </div>
 
       <div className="profile-content-wrapper">
         <div className="profile-sidebar">
           <div className="profile-user-badge">
-            <div className="profile-avatar">
-              {user.username ? user.username.charAt(0).toUpperCase() : 'U'}
+            {/* Clickable avatar with upload overlay */}
+            <div
+              className="profile-avatar-wrap"
+              onClick={() => fileInputRef.current?.click()}
+              title="Click to change photo"
+            >
+              {imagePreview ? (
+                <img src={imagePreview} alt={user.username} className="profile-avatar-img" />
+              ) : (
+                <div className="profile-avatar">
+                  {user.username ? user.username.charAt(0).toUpperCase() : 'U'}
+                </div>
+              )}
+              <div className="profile-avatar-overlay">
+                <i className="fa-solid fa-camera" />
+              </div>
             </div>
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              onChange={handleImageChange}
+            />
             <h3 className="profile-user-name">{user.username}</h3>
             <p className="profile-user-email">{user.email}</p>
+            {user.phone && <p className="profile-user-phone"><i className="fa-solid fa-phone" /> {user.phone}</p>}
           </div>
 
           <ul className="profile-nav-list">
             <li className={`profile-nav-item ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => setActiveTab('profile')}>
-              My Profile
+              <i className="fa-solid fa-user" /> My Profile
             </li>
             <li className={`profile-nav-item ${activeTab === 'addresses' ? 'active' : ''}`} onClick={() => setActiveTab('addresses')}>
-              Addresses
+              <i className="fa-solid fa-location-dot" /> Addresses
             </li>
             <li className={`profile-nav-item ${activeTab === 'orders' ? 'active' : ''}`} onClick={() => setActiveTab('orders')}>
-              Orders
+              <i className="fa-solid fa-box" /> Orders
             </li>
           </ul>
         </div>
+
 
         <div className="profile-main-content">
           {activeTab === 'profile' && (

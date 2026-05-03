@@ -12,13 +12,8 @@ const Checkout = () => {
   const { removeFromCart, clearCart } = useCart();
   const navigate = useNavigate();
   const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-  const productsForBackend = cartItems.map(item => ({
-  name: item.name,
-  price: Number(item.price),
-  quantity: Number(item.quantity),
-  image: item.image
-}));
- const [paymentMethod, setPaymentMethod] = useState("COD"); 
+  const [paymentMethod, setPaymentMethod] = useState("COD");
+
   const [form, setForm] = useState({
     firstname: "",
     lastname: "",
@@ -30,124 +25,136 @@ const Checkout = () => {
   });
 
   const totalAmount = cartItems.reduce(
-    (sum, item) => sum + item.discountprice * item.quantity
-,
+    (sum, item) => sum + item.discountprice * item.quantity,
     0
   );
 
   const handleLike = () => {
-      confetti({
-        particleCount: 120,
-        spread: 80,
-        origin: { y: 0.6 },
-      });
-    };
-  const discount = cartItems.length > 0 ? 0 : 0;
+    confetti({
+      particleCount: 120,
+      spread: 80,
+      origin: { y: 0.6 },
+    });
+  };
+
+  const discount = 0;
   const grandTotal = totalAmount - discount;
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
   const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
   const placeOrder = async () => {
-  if (!form.firstname || !form.lastname || !form.phone || !form.address) {
-    alert("Fill all required fields");
-    return;
-  }
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  const orderData = {
-    customer: form,
-    products: productsForBackend,
-    totalAmount: totalAmount,
-  };
-
-  try {
-    // 🟢 COD FLOW
-    if (paymentMethod === "COD") {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/orders/place`,
-        { ...orderData, paymentMethod: "COD" },
-        config
-      );
-
-      Swal.fire({
-        icon: "success",
-        title: "Order Placed Successfully 🎉",
-      }).then(() => {
-        clearCart();
-        navigate("/Placeorder");
-      });
+    // Validate all required fields
+    if (!form.firstname || !form.lastname || !form.email || !form.phone || !form.address || !form.city || !form.pincode) {
+      Swal.fire({ icon: "warning", title: "Please fill all required fields" });
+      return;
     }
 
-    // 🔵 ONLINE FLOW (RAZORPAY)
-    else if (paymentMethod === "ONLINE") {
-      // 1️⃣ Create Razorpay order
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/payment/create-order`,
-        { amount: totalAmount },
-        config
-      );
-
-      const { id, amount, currency } = res.data;
-
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount,
-        currency,
-        order_id: id,
-
-        name: "HairCare",
-        description: "Order Payment",
-        theme: {
-          color: "#aba827", // change this color
-        },
-
-        handler: async function (response) {
-          // 2️⃣ Verify payment
-          await axios.post(
-            `${import.meta.env.VITE_API_URL}/payment/verify`,
-            {
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              orderData,
-            },
-            config
-          );
-
-          Swal.fire({
-            icon: "success",
-            title: "Payment Successful 🎉",
-          }).then(() => {
-            clearCart();
-            navigate("/Placeorder");
-          });
-        },
-
-        prefill: {
-          name: form.firstname,
-          email: form.email,
-          contact: form.phone,
-        },
-
-        theme: {
-          color: "#3399cc",
-        },
-      };
-
-      const rzp = new window.Razorpay(options);
-      rzp.open();
+    if (cartItems.length === 0) {
+      Swal.fire({ icon: "warning", title: "Your cart is empty!" });
+      return;
     }
-  } catch (err) {
-    console.log(err);
-    alert("Order failed");
-  }
-};
+
+    const config = {
+      headers: { Authorization: `Bearer ${token}` },
+    };
+
+    // Products sent to backend use discountprice as the price
+    const productsForOrder = cartItems.map(item => ({
+      name: item.name,
+      price: Number(item.discountprice),
+      quantity: Number(item.quantity),
+      image: item.image,
+    }));
+
+    const orderData = {
+      customer: form,
+      products: productsForOrder,
+      totalAmount: totalAmount,
+    };
+
+    try {
+      // 🟢 COD FLOW
+      if (paymentMethod === "COD") {
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/orders/place`,
+          { ...orderData, paymentMethod: "COD" },
+          config
+        );
+
+        handleLike();
+        Swal.fire({
+          icon: "success",
+          title: "Order Placed Successfully 🎉",
+        }).then(() => {
+          clearCart();
+          navigate("/Placeorder");
+        });
+      }
+
+      // 🔵 ONLINE FLOW (RAZORPAY)
+      else if (paymentMethod === "ONLINE") {
+        // 1️⃣ Create Razorpay order
+        const res = await axios.post(
+          `${import.meta.env.VITE_API_URL}/payment/create-order`,
+          { amount: totalAmount },
+          config
+        );
+
+        const { id, amount, currency } = res.data;
+
+        const options = {
+          key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+          amount,
+          currency,
+          order_id: id,
+          name: "HairCare",
+          description: "Order Payment",
+          theme: { color: "#3399cc" },
+
+          handler: async function (response) {
+            // 2️⃣ Verify payment & save order
+            await axios.post(
+              `${import.meta.env.VITE_API_URL}/payment/verify`,
+              {
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                orderData,
+              },
+              config
+            );
+
+            handleLike();
+            Swal.fire({
+              icon: "success",
+              title: "Payment Successful 🎉",
+            }).then(() => {
+              clearCart();
+              navigate("/Placeorder");
+            });
+          },
+
+          prefill: {
+            name: form.firstname,
+            email: form.email,
+            contact: form.phone,
+          },
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+      }
+    } catch (err) {
+      console.error(err);
+      const msg = err.response?.data?.message || "Order failed. Please try again.";
+      Swal.fire({ icon: "error", title: "Order Failed", text: msg });
+    }
+  };
+
 
   return (
     <div className="checkout-container p-2">
@@ -226,10 +233,7 @@ const Checkout = () => {
   </label>
 </div>
                     <div>
-                       <button onClick={() => {
-                         placeOrder();
-                       handleLike();
-}} className='placeorder-btn' >Place Order</button>
+                       <button onClick={placeOrder} className='placeorder-btn'>Place Order</button>
                     </div>
                  </div>
                </div>

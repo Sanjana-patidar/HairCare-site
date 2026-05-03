@@ -6,7 +6,9 @@ import "hover.css/css/hover-min.css";
 import { CartProvider } from './Context/CartContext';
 import { WishlistProvider } from './Context/WishlistContext';
 import './index.css'
+import './responsive.css'
 import App from './App.jsx'
+
 createRoot(document.getElementById('root')).render(
     <WishlistProvider>
       <CartProvider>

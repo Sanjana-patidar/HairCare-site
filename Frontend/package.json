@@ -19,6 +19,7 @@
     "bootstrap": "^5.3.8",
     "canvas-confetti": "^1.9.4",
     "drift-zoom": "^1.5.1",
+    "framer-motion": "^12.38.0",
     "hover.css": "^2.3.2",
     "motion": "^12.23.26",
     "react": "^18.3.1",

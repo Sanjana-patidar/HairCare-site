@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
     phone: { type: String, default: "" },
     gender: { type: String, enum: ["Male", "Female", "Other"], default: "Male" },
     dob: { type: String, default: "" }, // using string for easier mm/dd/yyyy management on frontend
+    profileImage: { type: String, default: "" },
     addresses: [
       {
         name: { type: String, required: true },

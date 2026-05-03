@@ -1,337 +1,399 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import axios from "axios";
 import { useWishlist } from "../Context/WishlistContext";
-import "../Component/Product.css";
 import "./AllProduct.css";
 
 const PRICE_RANGES = [
-  { label: "Rs 100 to 200", min: 100, max: 200 },
-  { label: "Rs 201 to 500", min: 201, max: 500 },
-  { label: "Rs 501 to 1000", min: 501, max: 1000 },
-  { label: "More than Rs 1000", min: 1001, max: Infinity }
+  { label: "Under ₹200",   min: 0,    max: 200  },
+  { label: "₹201 – ₹500",  min: 201,  max: 500  },
+  { label: "₹501 – ₹1000", min: 501,  max: 1000 },
+  { label: "Above ₹1000",  min: 1001, max: Infinity },
 ];
 
-function AllProduct() {
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+const CATEGORY_ICONS = {
+  shampoo:     "🧴",
+  conditioner: "💧",
+  serum:       "✨",
+  oil:         "🌿",
+  default:     "📦",
+};
 
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedPrices, setSelectedPrices] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortOption, setSortOption] = useState("Popularity");
-  const [viewMode, setViewMode] = useState("grid");
+const SORT_OPTIONS = [
+  { value: "Popularity",      label: "⭐ Popularity"       },
+  { value: "Name A-Z",        label: "🔤 Name (A → Z)"     },
+  { value: "Name Z-A",        label: "🔤 Name (Z → A)"     },
+  { value: "Price Low-High",  label: "💰 Price: Low → High" },
+  { value: "Price High-Low",  label: "💰 Price: High → Low" },
+];
+
+export default function AllProduct() {
+  const [products,         setProducts]         = useState([]);
+  const [categories,       setCategories]       = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [selectedCats,     setSelectedCats]     = useState([]);
+  const [selectedPrices,   setSelectedPrices]   = useState([]);
+  const [searchQuery,      setSearchQuery]      = useState("");
+  const [sortOption,       setSortOption]       = useState("Popularity");
+  const [viewMode,         setViewMode]         = useState("grid");
+  const [loading,          setLoading]          = useState(true);
+  const [sidebarOpen,      setSidebarOpen]      = useState(false);
+  const [hoveredId,        setHoveredId]        = useState(null);
 
   const navigate = useNavigate();
   const { wishlistItems, addToWishlist, removeFromWishlist } = useWishlist();
+  const searchRef = useRef(null);
 
-  const handleWishlistToggle = (product) => {
-    const isInWishlist = wishlistItems.some(item => item._id === product._id);
-    if (isInWishlist) {
-      removeFromWishlist(product._id);
-    } else {
-      addToWishlist(product);
-    }
+  const isWished = (id) => wishlistItems.some(i => i._id === id);
+  const toggleWish = (product) => {
+    isWished(product._id) ? removeFromWishlist(product._id) : addToWishlist(product);
   };
 
-  // Fetch initial data
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        const productRes = await axios.get(`${import.meta.env.VITE_API_URL}/products/all?status=active`);
-        const productsData = productRes.data;
-        setProducts(productsData);
-
-        // Extract unique categories directly from the products list
-        const uniqueCategories = Array.from(new Set(productsData.map(p => p.category).filter(Boolean)));
-        setCategories(uniqueCategories);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/products/all?status=active`);
+        const data = res.data;
+        setProducts(data);
+        const cats = Array.from(new Set(data.map(p => p.category).filter(Boolean)));
+        setCategories(cats);
+      } catch (e) { console.error(e); }
+      finally { setLoading(false); }
     };
-
     fetchData();
   }, []);
 
-  // Filtering and Sorting logic
   useEffect(() => {
     let result = [...products];
-
-    // Search filter
-    if (searchQuery.trim() !== "") {
+    if (searchQuery.trim())
       result = result.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
-    }
-
-    // Category filter (using brand/category name)
-    if (selectedCategories.length > 0) {
-      result = result.filter(p => selectedCategories.includes(p.category));
-    }
-
-    // Price filter
-    if (selectedPrices.length > 0) {
-      result = result.filter(p => {
-        return selectedPrices.some(index => {
-          const range = PRICE_RANGES[index];
+    if (selectedCats.length)
+      result = result.filter(p => selectedCats.includes(p.category));
+    if (selectedPrices.length)
+      result = result.filter(p =>
+        selectedPrices.some(idx => {
+          const r = PRICE_RANGES[idx];
           const price = Number(p.discountprice || p.price);
-          return price >= range.min && price <= range.max;
-        });
-      });
-    }
-
-    // Sort
+          return price >= r.min && price <= r.max;
+        })
+      );
     switch (sortOption) {
-      case "Popularity":
-        result.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-        break;
-      case "Name A-Z":
-        result.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case "Name Z-A":
-        result.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      case "Price Low-High":
-        result.sort((a, b) => Number(a.discountprice || 0) - Number(b.discountprice || 0));
-        break;
-      case "Price High-Low":
-        result.sort((a, b) => Number(b.discountprice || 0) - Number(a.discountprice || 0));
-        break;
-      default:
-        break;
+      case "Popularity":     result.sort((a,b) => (b.rating||0)-(a.rating||0)); break;
+      case "Name A-Z":       result.sort((a,b) => a.name.localeCompare(b.name)); break;
+      case "Name Z-A":       result.sort((a,b) => b.name.localeCompare(a.name)); break;
+      case "Price Low-High": result.sort((a,b) => Number(a.discountprice||0)-Number(b.discountprice||0)); break;
+      case "Price High-Low": result.sort((a,b) => Number(b.discountprice||0)-Number(a.discountprice||0)); break;
+      default: break;
     }
-
     setFilteredProducts(result);
-  }, [products, searchQuery, selectedCategories, selectedPrices, sortOption]);
+  }, [products, searchQuery, selectedCats, selectedPrices, sortOption]);
 
-  const handleCategoryToggle = (categoryName) => {
-    setSelectedCategories(prev =>
-      prev.includes(categoryName)
-        ? prev.filter(c => c !== categoryName)
-        : [...prev, categoryName]
-    );
-  };
+  const toggleCat   = (c) => setSelectedCats(p => p.includes(c) ? p.filter(x=>x!==c) : [...p,c]);
+  const togglePrice = (i) => setSelectedPrices(p => p.includes(i) ? p.filter(x=>x!==i) : [...p,i]);
+  const clearAll    = () => { setSelectedCats([]); setSelectedPrices([]); setSearchQuery(""); };
 
-  const handlePriceToggle = (index) => {
-    setSelectedPrices(prev =>
-      prev.includes(index)
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
-    );
-  };
+  const activeFilters = selectedCats.length + selectedPrices.length;
+
+  const discount = (p) => p.discountpercentage || (p.price && p.discountprice
+    ? Math.round((1 - Number(p.discountprice)/Number(p.price)) * 100) : 0);
 
   return (
-    <div className="container-fluid py-4 px-4 all-products-page">
-      <div className="row mb-5">
-        <div className="col-12">
-          <nav aria-label="breadcrumb">
-            <ol className="breadcrumb mb-0 px-2" style={{ fontSize: "15px" }}>
-              <li className="breadcrumb-item text-muted" style={{ cursor: "pointer", transition: "color 0.2s" }} onClick={() => navigate("/")} onMouseOver={(e) => e.target.style.color = "rgb(192, 223, 54)"} onMouseOut={(e) => e.target.style.color = ""}>Home</li>
-              <li className="breadcrumb-item active text-dark" aria-current="page">All Products</li>
-            </ol>
-          </nav>
+    <div className="ap-root">
+
+      {/* ── Hero Banner ── */}
+      <div className="ap-hero">
+        <div className="ap-hero-blob ap-hero-blob-1" />
+        <div className="ap-hero-blob ap-hero-blob-2" />
+        <div className="ap-hero-content">
+          <span className="ap-hero-eyebrow">✦ Explore Our Collection</span>
+          <h1 className="ap-hero-title">All Products</h1>
+          <p className="ap-hero-sub">
+            {products.length} premium hair care products — filtered just for you
+          </p>
+          {/* Search bar inside hero */}
+          <div className="ap-hero-search" ref={searchRef}>
+            <i className="fa-solid fa-magnifying-glass ap-search-icon" />
+            <input
+              className="ap-search-input"
+              placeholder="Search shampoos, serums, oils…"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button className="ap-search-clear" onClick={() => setSearchQuery("")}>
+                <i className="fa-solid fa-xmark" />
+              </button>
+            )}
+          </div>
+        </div>
+        {/* Breadcrumb */}
+        <div className="ap-breadcrumb">
+          <span onClick={() => navigate("/")} className="ap-bc-link">Home</span>
+          <i className="fa-solid fa-chevron-right ap-bc-sep" />
+          <span className="ap-bc-active">All Products</span>
         </div>
       </div>
 
-      <div className="row">
-        {/* Sidebar */}
-        <div className="col-md-3 mb-4">
-          <div className="filter-sidebar">
-            <h5 className="mb-3">Categories</h5>
-            <div className="mb-4 d-flex flex-column gap-2">
-              {categories.map((catName, index) => (
-                <div className="form-check custom-checkbox" key={`cat-${index}`}>
-                  <input
-                    className="form-check-input shadow-none"
-                    type="checkbox"
-                    id={`cat-${index}`}
-                    onChange={() => handleCategoryToggle(catName)}
-                    checked={selectedCategories.includes(catName)}
-                  />
-                  <label className="form-check-label ms-1 text-capitalize" htmlFor={`cat-${index}`}>
-                    {catName}
-                  </label>
-                </div>
-              ))}
-            </div>
+      {/* ── Body ── */}
+      <div className="ap-body">
 
-            <h5 className="mb-3 fw-bold mt-4">Price</h5>
-            <div className="d-flex flex-column gap-2">
-              {PRICE_RANGES.map((range, index) => (
-                <div className="form-check custom-checkbox" key={index}>
-                  <input
-                    className="form-check-input shadow-none"
-                    type="checkbox"
-                    id={`price-${index}`}
-                    onChange={() => handlePriceToggle(index)}
-                    checked={selectedPrices.includes(index)}
-                  />
-                  <label className="form-check-label ms-1 text-muted" htmlFor={`price-${index}`}>
-                    {range.label}
-                  </label>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        {/* Mobile Filter Toggle */}
+        <button className="ap-mob-filter-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
+          <i className="fa-solid fa-sliders" />
+          Filters {activeFilters > 0 && <span className="ap-filter-badge">{activeFilters}</span>}
+        </button>
 
-        {/* Main Content */}
-        <div className="col-md-9">
-          <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4 pb-2 top-bar-filters gap-3">
-            <h2 className="m-0 page-title fw-bold" style={{ color: "#333" }}>Products</h2>
-            <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between justify-content-lg-end gap-3 right-controls w-100" style={{ maxWidth: "100%" }}>
-
-              <div className="input-group search-group" style={{ maxWidth: "400px", flex: 1 }}>
-                <input
-                  type="text"
-                  className="form-control shadow-none border-0 bg-transparent"
-                  placeholder="search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <span className="input-group-text bg-transparent border-0">
-                  <i className="fa-solid fa-magnifying-glass text-muted"></i>
-                </span>
-              </div>
-
-              <div className="d-flex align-items-center align-sort">
-                <span className="me-2 text-nowrap sort-label">Sort By:</span>
-                <select
-                  className="form-select shadow-none cursor-pointer"
-                  value={sortOption}
-                  onChange={(e) => setSortOption(e.target.value)}
-                >
-                  <option value="Popularity">Popularity</option>
-                  <option value="Name A-Z">Name (A - Z)</option>
-                  <option value="Name Z-A">Name (Z - A)</option>
-                  <option value="Price Low-High">Price (Low - High)</option>
-                  <option value="Price High-Low">Price (High - Low)</option>
-                </select>
-                <div className="d-flex ms-3 gap-2 align-items-center">
-                  <button 
-                    className={`btn btn-sm ${viewMode === 'grid' ? 'btn-dark' : 'btn-outline-dark'}`}
-                    onClick={() => setViewMode('grid')}
-                    title="Grid View"
-                  >
-                    <i className="fa-solid fa-border-all"></i>
-                  </button>
-                  <button 
-                    className={`btn btn-sm ${viewMode === 'list' ? 'btn-dark' : 'btn-outline-dark'}`}
-                    onClick={() => setViewMode('list')}
-                    title="List View"
-                  >
-                    <i className="fa-solid fa-list"></i>
-                  </button>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          {/* Products Grid */}
-          <div className="row g-4">
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
-                viewMode === "grid" ? (
-                  <div className="col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center" key={product._id}>
-                    <div className="product-card text-center w-100 mx-0 mt-0">
-                      <div>
-                        <img
-                          className="w-75"
-                          src={`${import.meta.env.VITE_API_IMAGE}/${product.image}`}
-                          alt={product.name}
-                          style={{ objectFit: "contain", height: "160px" }}
-                        />
-                        <h6 className="mt-3 fw-bold" style={{ color: "#333" }}>{product.name}</h6>
-                        <p className="description text-truncate" style={{ color: "rgb(192, 223, 54)", fontSize: "0.9rem" }}>{product.description}</p>
-                        <p className="d-flex align-items-center justify-content-center gap-2 mb-2">
-                          <span className="fw-bold fs-6">₹{product.discountprice}</span>
-                          <del className="text-secondary small">₹{product.price}</del>
-                          <span className="small font-weight-bold">{product.discountpercentage}%</span>
-                        </p>
-                        <Box sx={{ "& > legend": { mt: 2 } }}>
-                          <Rating value={product.rating} readOnly size="small" />
-                        </Box>
-                        <button
-                          onClick={() => navigate(`/productdetail/${product._id}`)}
-                          className="w-100 add-to-cart-btn mt-3 py-2 fw-medium border-0 rounded"
-                        >
-                          Product Detail <i className="fa-solid fa-arrow-right ms-1"></i>
-                        </button>
-                      </div>
-                      <div className="like-btn">
-                        {wishlistItems.some(item => item._id === product._id) ? (
-                          <i className="fa-solid fa-heart text-danger hvr-grow" onClick={() => handleWishlistToggle(product)} style={{cursor: "pointer"}}></i>
-                        ) : (
-                          <i className="fa-regular fa-heart hvr-grow" onClick={() => handleWishlistToggle(product)} style={{cursor: "pointer"}}></i>
-                        )}
-                        <p style={{ color: "rgb(192, 223, 54)", margin: 0 }} >stock:{product.stock}</p>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="col-12" key={product._id}>
-                    <div className="product-card list-view-card d-flex flex-column flex-md-row align-items-center gap-4 p-3 w-100 mx-0 mt-0 position-relative" style={{ textAlign: "left" }}>
-                      <div className="list-img-container text-center" style={{ width: "200px", flexShrink: 0 }}>
-                        <img
-                          className="w-100"
-                          src={`${import.meta.env.VITE_API_IMAGE}/${product.image}`}
-                          alt={product.name}
-                          style={{ objectFit: "contain", height: "180px" }}
-                        />
-                      </div>
-                      <div className="list-content-container flex-grow-1 w-100">
-                        <div className="d-flex justify-content-between align-items-start w-100 mb-2">
-                           <h5 className="fw-bold m-0" style={{ color: "#333" }}>{product.name}</h5>
-                           <div className="like-btn position-static">
-                             {wishlistItems.some(item => item._id === product._id) ? (
-                               <i className="fa-solid fa-heart text-danger hvr-grow fs-5" onClick={() => handleWishlistToggle(product)} style={{cursor: "pointer"}}></i>
-                             ) : (
-                               <i className="fa-regular fa-heart hvr-grow fs-5" onClick={() => handleWishlistToggle(product)} style={{cursor: "pointer"}}></i>
-                             )}
-                           </div>
-                        </div>
-                        <p className="description mb-3" style={{ color: "rgb(192, 223, 54)", fontSize: "0.95rem", maxWidth: "800px" }}>{product.description}</p>
-                        
-                        <div className="d-flex align-items-center gap-3 mb-3">
-                          <span className="fw-bold fs-4" style={{ color: "#333" }}>₹{product.discountprice}</span>
-                          <del className="text-secondary">₹{product.price}</del>
-                          <span className="badge bg-success px-2 py-1">{product.discountpercentage}% OFF</span>
-                        </div>
-                        
-                        <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center w-100 gap-3">
-                           <div className="d-flex align-items-center gap-3">
-                             <Box sx={{ "& > legend": { mt: 2 } }}>
-                               <Rating value={product.rating} readOnly size="small" />
-                             </Box>
-                             <span className="fw-medium" style={{ color: "rgb(192, 223, 54)" }}>Stock: {product.stock}</span>
-                           </div>
-                           
-                           <button
-                             onClick={() => navigate(`/productdetail/${product._id}`)}
-                             className="add-to-cart-btn py-2 px-4 fw-medium border-0 rounded w-auto m-0"
-                           >
-                             Product Detail <i className="fa-solid fa-arrow-right ms-1"></i>
-                           </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )
-              ))
-            ) : (
-              <div className="col-12 text-center py-5">
-                <i className="fa-solid fa-box-open mb-3" style={{ fontSize: "3rem", color: "#ccc" }}></i>
-                <h4 className="text-muted">No products found matching your criteria.</h4>
-              </div>
+        {/* ── Sidebar ── */}
+        <aside className={`ap-sidebar ${sidebarOpen ? "ap-sidebar--open" : ""}`}>
+          <div className="ap-sidebar-header">
+            <span className="ap-sidebar-title">
+              <i className="fa-solid fa-sliders" /> Filters
+            </span>
+            {activeFilters > 0 && (
+              <button className="ap-clear-btn" onClick={clearAll}>Clear all</button>
             )}
           </div>
 
-        </div>
+          {/* Category */}
+          <div className="ap-filter-section">
+            <p className="ap-filter-label">Category</p>
+            <div className="ap-cat-pills">
+              {categories.map(cat => {
+                const icon = CATEGORY_ICONS[cat.toLowerCase()] || CATEGORY_ICONS.default;
+                return (
+                  <button
+                    key={cat}
+                    className={`ap-cat-pill ${selectedCats.includes(cat) ? "ap-cat-pill--active" : ""}`}
+                    onClick={() => toggleCat(cat)}
+                  >
+                    <span>{icon}</span>
+                    <span className="text-capitalize">{cat}</span>
+                    {selectedCats.includes(cat) && <i className="fa-solid fa-check ap-pill-check" />}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Price */}
+          <div className="ap-filter-section">
+            <p className="ap-filter-label">Price Range</p>
+            <div className="ap-price-options">
+              {PRICE_RANGES.map((r, i) => (
+                <label key={i} className={`ap-price-chip ${selectedPrices.includes(i) ? "ap-price-chip--active" : ""}`}>
+                  <input
+                    type="checkbox"
+                    hidden
+                    checked={selectedPrices.includes(i)}
+                    onChange={() => togglePrice(i)}
+                  />
+                  {r.label}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Stock indicator */}
+          <div className="ap-sidebar-tip">
+            <i className="fa-solid fa-circle-info" />
+            <span>Showing <strong>{filteredProducts.length}</strong> of <strong>{products.length}</strong> products</span>
+          </div>
+        </aside>
+
+        {/* ── Main ── */}
+        <main className="ap-main">
+
+          {/* Toolbar */}
+          <div className="ap-toolbar">
+            <div className="ap-toolbar-left">
+              <span className="ap-result-count">
+                <strong>{filteredProducts.length}</strong> Products
+              </span>
+              {/* Active filter chips */}
+              {selectedCats.map(c => (
+                <span key={c} className="ap-chip" onClick={() => toggleCat(c)}>
+                  {c} <i className="fa-solid fa-xmark" />
+                </span>
+              ))}
+              {selectedPrices.map(i => (
+                <span key={i} className="ap-chip" onClick={() => togglePrice(i)}>
+                  {PRICE_RANGES[i].label} <i className="fa-solid fa-xmark" />
+                </span>
+              ))}
+            </div>
+            <div className="ap-toolbar-right">
+              <select
+                className="ap-sort-select"
+                value={sortOption}
+                onChange={e => setSortOption(e.target.value)}
+              >
+                {SORT_OPTIONS.map(o => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
+              <div className="ap-view-btns">
+                <button
+                  className={`ap-view-btn ${viewMode==="grid" ? "ap-view-btn--active":""}`}
+                  onClick={() => setViewMode("grid")} title="Grid"
+                >
+                  <i className="fa-solid fa-border-all" />
+                </button>
+                <button
+                  className={`ap-view-btn ${viewMode==="list" ? "ap-view-btn--active":""}`}
+                  onClick={() => setViewMode("list")} title="List"
+                >
+                  <i className="fa-solid fa-list" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Loading */}
+          {loading ? (
+            <div className="ap-loading">
+              {[...Array(6)].map((_,i) => <div key={i} className="ap-skeleton" />)}
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="ap-empty">
+              <div className="ap-empty-icon">🔍</div>
+              <h3>No products found</h3>
+              <p>Try adjusting your filters or search term</p>
+              <button className="ap-empty-btn" onClick={clearAll}>Reset Filters</button>
+            </div>
+          ) : viewMode === "grid" ? (
+
+            /* ── GRID ── */
+            <div className="ap-grid">
+              {filteredProducts.map((product, idx) => (
+                <div
+                  key={product._id}
+                  className={`ap-card ${hoveredId===product._id ? "ap-card--hovered":""}`}
+                  onMouseEnter={() => setHoveredId(product._id)}
+                  onMouseLeave={() => setHoveredId(null)}
+                  style={{ animationDelay: `${idx * 0.04}s` }}
+                >
+                  {/* Discount badge */}
+                  {discount(product) > 0 && (
+                    <span className="ap-card-badge">−{discount(product)}%</span>
+                  )}
+
+                  {/* Wishlist */}
+                  <button
+                    className={`ap-card-wish ${isWished(product._id) ? "ap-card-wish--active":""}`}
+                    onClick={(e) => { e.stopPropagation(); toggleWish(product); }}
+                  >
+                    <i className={`fa-${isWished(product._id)?"solid":"regular"} fa-heart`} />
+                  </button>
+
+                  {/* Image */}
+                  <div className="ap-card-img-wrap" onClick={() => navigate(`/productdetail/${product._id}`)}>
+                    <img
+                      src={`${import.meta.env.VITE_API_IMAGE}/${product.image}`}
+                      alt={product.name}
+                      className="ap-card-img"
+                    />
+                    <div className="ap-card-img-overlay">
+                      <span className="ap-quick-view">View Details →</span>
+                    </div>
+                  </div>
+
+                  {/* Info */}
+                  <div className="ap-card-body">
+                    <span className="ap-card-cat text-capitalize">{product.category}</span>
+                    <h3 className="ap-card-name">{product.name}</h3>
+                    <p className="ap-card-desc">{product.description}</p>
+
+                    <div className="ap-card-rating">
+                      <Rating value={product.rating || 0} readOnly size="small" precision={0.5} />
+                      <span className="ap-card-rating-num">({product.rating || 0})</span>
+                    </div>
+
+                    <div className="ap-card-pricing">
+                      <span className="ap-card-price">₹{product.discountprice}</span>
+                      {product.price && <del className="ap-card-mrp">₹{product.price}</del>}
+                    </div>
+
+                    <div className="ap-card-stock">
+                      <span className={`ap-stock-dot ${Number(product.stock)>0?"ap-stock-dot--in":"ap-stock-dot--out"}`} />
+                      {Number(product.stock) > 0 ? `${product.stock} in stock` : "Out of stock"}
+                    </div>
+
+                    <button
+                      className="ap-card-btn"
+                      onClick={() => navigate(`/productdetail/${product._id}`)}
+                    >
+                      View Details <i className="fa-solid fa-arrow-right" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+          ) : (
+
+            /* ── LIST ── */
+            <div className="ap-list">
+              {filteredProducts.map((product, idx) => (
+                <div
+                  key={product._id}
+                  className="ap-list-card"
+                  style={{ animationDelay: `${idx * 0.04}s` }}
+                >
+                  <div className="ap-list-img-wrap" onClick={() => navigate(`/productdetail/${product._id}`)}>
+                    <img
+                      src={`${import.meta.env.VITE_API_IMAGE}/${product.image}`}
+                      alt={product.name}
+                      className="ap-list-img"
+                    />
+                    {discount(product) > 0 && (
+                      <span className="ap-card-badge">−{discount(product)}%</span>
+                    )}
+                  </div>
+                  <div className="ap-list-body">
+                    <div className="ap-list-top">
+                      <span className="ap-card-cat text-capitalize">{product.category}</span>
+                      <button
+                        className={`ap-card-wish ${isWished(product._id)?"ap-card-wish--active":""}`}
+                        style={{position:"static"}}
+                        onClick={() => toggleWish(product)}
+                      >
+                        <i className={`fa-${isWished(product._id)?"solid":"regular"} fa-heart`} />
+                      </button>
+                    </div>
+                    <h3 className="ap-list-name">{product.name}</h3>
+                    <p className="ap-list-desc">{product.description}</p>
+                    <div className="ap-card-rating">
+                      <Rating value={product.rating||0} readOnly size="small" precision={0.5} />
+                      <span className="ap-card-rating-num">({product.rating||0})</span>
+                    </div>
+                    <div className="ap-list-footer">
+                      <div className="ap-card-pricing">
+                        <span className="ap-card-price">₹{product.discountprice}</span>
+                        {product.price && <del className="ap-card-mrp">₹{product.price}</del>}
+                        {discount(product) > 0 && (
+                          <span className="ap-list-discount">{discount(product)}% OFF</span>
+                        )}
+                      </div>
+                      <div className="ap-card-stock">
+                        <span className={`ap-stock-dot ${Number(product.stock)>0?"ap-stock-dot--in":"ap-stock-dot--out"}`} />
+                        {Number(product.stock)>0 ? `${product.stock} in stock`:"Out of stock"}
+                      </div>
+                      <button
+                        className="ap-card-btn"
+                        onClick={() => navigate(`/productdetail/${product._id}`)}
+                      >
+                        View Details <i className="fa-solid fa-arrow-right" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </main>
       </div>
     </div>
   );
 }
-
-export default AllProduct;

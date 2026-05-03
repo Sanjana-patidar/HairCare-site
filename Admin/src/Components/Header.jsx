@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { FiMenu, FiMoon, FiSun } from "react-icons/fi";
 import { motion } from "framer-motion";
+import axios from "axios";
+import NotificationBell from "./NotificationBell";
+
+const API = "http://localhost:5000/api/users";
 
 const Header = ({ toggleSidebar }) => {
   const [isDark, setIsDark] = useState(false);
+  const [adminName, setAdminName] = useState("");
 
+  // Load theme & fetch admin profile
   useEffect(() => {
     const savedTheme = localStorage.getItem("adminTheme");
     if (savedTheme === "dark") {
@@ -14,25 +20,38 @@ const Header = ({ toggleSidebar }) => {
       setIsDark(false);
       document.body.removeAttribute("data-theme");
     }
+
+    // Fetch real admin name for avatar
+    const token = localStorage.getItem("token");
+    if (token) {
+      axios
+        .get(`${API}/profile`, { headers: { Authorization: `Bearer ${token}` } })
+        .then(({ data }) => setAdminName(data.username || ""))
+        .catch(() => {});
+    }
+
+    // Sync theme if changed from Settings page
+    const onThemeChange = (e) => {
+      setIsDark(e.detail === "dark");
+    };
+    window.addEventListener("adminThemeChanged", onThemeChange);
+    return () => window.removeEventListener("adminThemeChanged", onThemeChange);
   }, []);
 
   const toggleTheme = () => {
-    if (isDark) {
-      document.body.removeAttribute("data-theme");
-      localStorage.setItem("adminTheme", "light");
-      setIsDark(false);
-    } else {
+    const next = !isDark;
+    if (next) {
       document.body.setAttribute("data-theme", "dark");
       localStorage.setItem("adminTheme", "dark");
-      setIsDark(true);
+    } else {
+      document.body.removeAttribute("data-theme");
+      localStorage.setItem("adminTheme", "light");
     }
+    setIsDark(next);
+    window.dispatchEvent(new CustomEvent("adminThemeChanged", { detail: next ? "dark" : "light" }));
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    window.location.href = "/";
-  };
+  const initial = adminName ? adminName[0].toUpperCase() : "A";
 
   return (
     <motion.div
@@ -45,22 +64,27 @@ const Header = ({ toggleSidebar }) => {
       <h4 className="admin-title">Admin Hub</h4>
 
       {/* Right side controls */}
-      <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '15px' }}>
+      <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "12px" }}>
         <div className="theme-toggle" onClick={toggleTheme} title="Toggle Light/Dark Mode">
           {isDark ? <FiSun /> : <FiMoon />}
         </div>
 
-        {/* <div
-          className="theme-toggle"
-          onClick={handleLogout}
-          title="Logout"
-          style={{ color: '#ef4444' }}
-        >
-          <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M160 241.1l111.4-111.4c6.2-6.2 16.4-6.2 22.6 0 6.2 6.2 6.2 16.4 0 22.6L201.3 245h214.7c8.8 0 16 7.2 16 16s-7.2 16-16 16H201.3l92.7 92.7c6.2 6.2 6.2 16.4 0 22.6-6.2 6.2-16.4 6.2-22.6 0L160 270.9c-8.3-8.3-8.3-21.5 0-29.8zM416 48v416c0 26.5-21.5 48-48 48H144c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48h224c26.5 0 48 21.5 48 48zm-32 0c0-8.8-7.2-16-16-16H144c-8.8 0-16 7.2-16 16v416c0 8.8 7.2 16 16 16h224c8.8 0 16-7.2 16-16V48z"></path></svg>
-        </div> */}
+        {/* Dynamic Notification Bell */}
+        <NotificationBell />
 
-        <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#4f46e5', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-          A
+        {/* Admin Avatar */}
+        <div
+          title={adminName || "Admin"}
+          style={{
+            width: "40px", height: "40px", borderRadius: "50%",
+            background: "linear-gradient(135deg,#4f46e5,#3b82f6)",
+            color: "white", display: "flex", alignItems: "center",
+            justifyContent: "center", fontWeight: "700", fontSize: "1rem",
+            cursor: "default", flexShrink: 0,
+            boxShadow: "0 4px 12px rgba(79,70,229,0.35)"
+          }}
+        >
+          {initial}
         </div>
       </div>
     </motion.div>
@@ -68,3 +92,4 @@ const Header = ({ toggleSidebar }) => {
 };
 
 export default Header;
+
