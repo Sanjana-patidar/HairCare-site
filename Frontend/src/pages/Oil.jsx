@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {useNavigate} from "react-router-dom";
-import { Link } from "react-router-dom";
-import Box from "@mui/material/Box";
+import { useNavigate, Link } from "react-router-dom";
 import Rating from "@mui/material/Rating";
 import axios from "axios";
 import { useWishlist } from "../Context/WishlistContext";
-import './Style.css'
+import '../Component/Product.css';
+import './Style.css';
 
 const Oil = () => {
   const [products, setProducts] = useState([]);
-   const navigate = useNavigate();
-   const { wishlistItems, addToWishlist, removeFromWishlist } = useWishlist();
+  const navigate = useNavigate();
+  const { wishlistItems, addToWishlist, removeFromWishlist } = useWishlist();
 
   const handleWishlistToggle = (product) => {
     const isInWishlist = wishlistItems.some(item => item._id === product._id);
@@ -20,68 +19,82 @@ const Oil = () => {
       addToWishlist(product);
     }
   };
+
   useEffect(() => {
-      const fetchOilProducts = async () => {
-        try {
-          const res = await axios.get(
-            `${import.meta.env.VITE_API_URL}/products/category/oil`
-          );
-          setProducts(res.data);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-  fetchOilProducts();
-  
+    const fetchOilProducts = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/products/category/oil`
+        );
+        setProducts(res.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchOilProducts();
   }, []);
+
   return (
-    <div data-aos="zoom-in">
-      <div className="text-center mt-3 mb-3">
-              <span className="back"  style={{color:"rgb(192, 223, 54)"}}>
-               <Link to="/"  style={{color:"rgb(192, 223, 54)"}} >
-                  <i class="fa-solid fa-arrow-left me-2"></i> 
-               </Link>
-                Back to Home</span>
-              <h3 className="mt-2 header-top">Hair Shampoo</h3>
-            </div>
+    <div>
+      {/* Page Header */}
+      <div className="text-center mt-4 mb-4">
+        <Link to="/" style={{ color: "rgb(192, 223, 54)", textDecoration: "none" }}>
+          <i className="fa-solid fa-arrow-left me-2"></i>Back to Home
+        </Link>
+        <h3 className="mt-2 header-top">Hair Oil</h3>
+      </div>
+
+      {/* Product Grid */}
       <div className="product-grid">
         {products.length > 0 ? (
           products.map((product) => (
-              <div key={product._id} className="product-card text-center">
-              <div>
+            <div key={product._id} className="product-card">
+              {/* Image */}
+              <div className="pc-img-wrap" onClick={() => navigate(`/productdetail/${product._id}`)}>
                 <img
-                  className="w-75"
                   src={`${import.meta.env.VITE_API_IMAGE}/${product.image}`}
                   alt={product.name}
                 />
-                <h6>{product.name}</h6>
-                <p className="description">{product.description}</p>
-                <p>
-                  <span>₹{product.discountprice}</span>{" "}
-                   <del className="text-secondary">₹{product.price}</del>
-                  <span className="ps-2">{product.discountpercentage}%</span>
-                </p>
-                <Box sx={{ "& > legend": { mt: 2 } }}>
-                  <Rating
-                    value={product.rating }
-                  />
-                </Box>
-                  <button onClick={()=> navigate(`/productdetail/${product._id}`)}  className="w-100 add-to-cart-btn">
-                    Product Detail <i className="fa-solid fa-arrow-right"></i>
-                  </button>
-              </div>
-              <div className="like-btn">
-                {wishlistItems.some(item => item._id === product._id) ? (
-                  <i className="fa-solid fa-heart text-danger hvr-grow" onClick={() => handleWishlistToggle(product)} style={{cursor: "pointer"}}></i>
-                ) : (
-                  <i className="fa-regular fa-heart hvr-grow" onClick={() => handleWishlistToggle(product)} style={{cursor: "pointer"}}></i>
+                {product.discountpercentage > 0 && (
+                  <span className="pc-badge">{product.discountpercentage}% OFF</span>
                 )}
-                <p style={{color:"rgb(192, 223, 54)"}} >stock:{product.stock}</p>
+                <div className="pc-overlay">
+                  <span className="pc-quick-btn">Quick View</span>
+                </div>
+                {/* Wishlist */}
+                <button
+                  className={`pc-wish ${wishlistItems.some(i => i._id === product._id) ? 'pc-wish--active' : ''}`}
+                  onClick={(e) => { e.stopPropagation(); handleWishlistToggle(product); }}
+                >
+                  <i className={`fa-${wishlistItems.some(i => i._id === product._id) ? 'solid' : 'regular'} fa-heart`}></i>
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="pc-body">
+                <span className="pc-cat">Hair Oil</span>
+                <p className="pc-name">{product.name}</p>
+                <p className="pc-desc">{product.description}</p>
+                <div className="pc-rating">
+                  <Rating value={product.rating || 0} size="small" readOnly />
+                  <span>({product.rating || 0})</span>
+                </div>
+                <div className="pc-price-row">
+                  <span className="pc-price">₹{product.discountprice}</span>
+                  <span className="pc-mrp"><del>₹{product.price}</del></span>
+                </div>
+                <div className="pc-stock">
+                  <span className={`pc-dot ${product.stock > 0 ? '' : 'pc-dot--out'}`}></span>
+                  {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                </div>
+                <button className="pc-btn" onClick={() => navigate(`/productdetail/${product._id}`)}>
+                  View Details <i className="fa-solid fa-arrow-right"></i>
+                </button>
               </div>
             </div>
           ))
         ) : (
-          <p>No Product Related to Category </p>
+          <p className="text-center py-5 text-muted">No products found in this category.</p>
         )}
       </div>
     </div>

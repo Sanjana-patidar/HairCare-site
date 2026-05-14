@@ -21,7 +21,6 @@ import Profile from './pages/Profile';
 import Wishlist from './pages/Wishlist';
 import ScroolToTop from './Component/ScroolToTop';
 import SplashScreen from './Component/SplashScreen';
-import CustomCursor from './Component/CustomCursor';
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -40,10 +39,9 @@ function App() {
 
   useEffect(() => {
     AOS.init({
-      duration: 1100,
-      once: false,
-      mirror: true,
-      easing: "ease-in-out",
+      duration: 800,
+      once: true,
+      easing: "ease-out",
     });
   }, []);
 
@@ -53,7 +51,6 @@ function App() {
 
   return (
     <>
-      <CustomCursor />
       <BrowserRouter>
         <Routes>
           {/* user route */}

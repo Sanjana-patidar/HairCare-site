@@ -1,4 +1,14 @@
-.row{
-    gap:0px !important;
-    margin: 0% !important;
+.row {
+  gap: 0px !important;
+  margin: 0% !important;
+}
+
+/* ── Prevent horizontal scroll globally ── */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+* {
+  box-sizing: border-box;
 }

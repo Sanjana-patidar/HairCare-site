@@ -21,6 +21,15 @@ const Navbar = ({ openCart }) => {
   const totalWishlistItems = wishlistItems.length;
 
   const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
+
+  // Solid navbar after scrolling past hero
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   // state for user modal
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -157,10 +166,17 @@ const Navbar = ({ openCart }) => {
 
   return (
     <>
-      <nav class="navbar navbar-expand-lg navbar-light ">
-        <div class="container-fluid ">
+      <nav className={`navbar navbar-expand-lg navbar-light premium-navbar${scrolled ? ' navbar-scrolled' : ''}`}>
+        <div className="container-fluid">
+          <a className="navbar-brand hvr-grow">
+            <h3 className="logo-text">
+              <img src="/src/assets/img/womens-day.png" className="logo" alt="Shinny Logo" />
+              Shinn<span className="brand-accent">y</span>
+            </h3>
+          </a>
+
           <button
-            class="navbar-toggler"
+            className="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent"
@@ -168,138 +184,114 @@ const Navbar = ({ openCart }) => {
             aria-expanded="false"
             aria-label="Toggle navigation"
           >
-            <span class="navbar-toggler-icon"></span>
+            <span className="navbar-toggler-icon"></span>
           </button>
-          <a class="navbar-brand hvr-grow">
-            <h3 className="logo-text text-warning"> <img src="/src/assets/img/womens-day.png" className="logo" alt="" />Shinny</h3>
-          </a>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav m-auto mb-2 mb-lg-0 gap-3">
+
+          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul className="navbar-nav m-auto mb-2 mb-lg-0">
               <Link to="/" className="text-decoration-none">
-                <li class="nav-item hvr-underline-from-center">
-                  <a class="nav-link " href="#">
-                    Home
-                  </a>
-                </li>
+                <li className="nav-item"><a className="nav-link">Home</a></li>
               </Link>
               <Link to="/Categoryshampoo" className="text-decoration-none">
-                <li class="nav-item hvr-underline-from-center">
-                  <a class="nav-link" href="#">
-                    Shampoo
-                  </a>
-                </li>
+                <li className="nav-item"><a className="nav-link">Shampoo</a></li>
               </Link>
-              <Link to="/Categoryconditioner">
-                <li class="nav-item hvr-underline-from-center">
-                  <a class="nav-link" href="#">
-                    Conditioner
-                  </a>
-                </li>
+              <Link to="/Categoryconditioner" className="text-decoration-none">
+                <li className="nav-item"><a className="nav-link">Conditioner</a></li>
               </Link>
-              <Link to="/Categoryserum">
-                <li class="nav-item hvr-underline-from-center">
-                  <a class="nav-link" href="#">
-                    Serum
-                  </a>
-                </li>
+              <Link to="/Categoryserum" className="text-decoration-none">
+                <li className="nav-item"><a className="nav-link">Serum</a></li>
               </Link>
               <Link to="/Categoryoil" className="text-decoration-none">
-                <li class="nav-item hvr-underline-from-center">
-                  <a class="nav-link" href="#">
-                    Oil
-                  </a>
-                </li>
+                <li className="nav-item"><a className="nav-link">Oil</a></li>
               </Link>
-              <Link to="/contact" className="text-decoration-none ">
-                <li class="nav-item hvr-underline-from-center">
-                  <a class="nav-link " href="#">
-                    Contact
-                  </a>
-                </li>
+              <Link to="/contact" className="text-decoration-none">
+                <li className="nav-item"><a className="nav-link">Contact</a></li>
               </Link>
               <Link to="/placeorder" className="text-decoration-none">
-                <li class="nav-item hvr-underline-from-center">
-                  <a class="nav-link " href="#">
-                    Order
-                  </a>
-                </li>
+                <li className="nav-item"><a className="nav-link">Orders</a></li>
               </Link>
             </ul>
           </div>
-          <div>
-            <div className="search-bar d-flex align-items-center ">
-              <Link to="/wishlist" className="text-decoration-none">
-                <div className="me-3 cart-icon text-dark">
-                  <i class="fa-solid fa-heart hvr-grow fs-4"></i>
-                  {wishlistItems.length > 0 && <span style={{ color: "rgb(192, 223, 54)", fontSize: "20px" }}>({totalWishlistItems})</span>}
-                </div>
-              </Link>
-              <div onClick={openCart} className="me-3 cart-icon">
-                <i class="fa-solid fa-cart-arrow-down fs-5 hvr-grow"></i>
-                {cartItems.length > 0 && <span style={{ color: "rgb(192, 223, 54)", fontSize: "20px" }}>({totalProducts})</span>}
-              </div>
-              <div className="cart-icon">
-                {localStorage.getItem("token") ? (
-                  <div className="dropdown">
-                    <button
-                      className="border-0 bg-transparent nav-avatar-btn dropdown-toggle"
-                      id="dropdownMenuButton1"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      {profileImage ? (
-                        <img src={profileImage} alt={displayName} className="nav-avatar-img" />
-                      ) : (
-                        <span className="nav-avatar-letter">{firstLetter}</span>
-                      )}
-                      <span className="nav-username-text">{displayName}</span>
-                    </button>
-                    <ul className="dropdown-menu drop1 nav-dropdown" aria-labelledby="dropdownMenuButton1">
-                      {/* User info header */}
-                      <li className="nav-drop-header">
-                        <div className="nav-drop-avatar">
-                          {profileImage ? (
-                            <img src={profileImage} alt={displayName} className="nav-drop-avatar-img" />
-                          ) : (
-                            <span className="nav-drop-avatar-letter">{firstLetter}</span>
-                          )}
-                        </div>
-                        <div>
-                          <div className="nav-drop-name">{displayName}</div>
-                          <div className="nav-drop-email">{userProfile?.email || ""}</div>
-                        </div>
-                      </li>
-                      <li><hr className="dropdown-divider" /></li>
-                      <li>
-                        <Link className="dropdown-item nav-drop-item" to="/profile">
-                          <i className="fa-solid fa-user" /> My Account
-                        </Link>
-                      </li>
-                      <li>
-                        <Link className="dropdown-item nav-drop-item" to="/placeorder">
-                          <i className="fa-solid fa-box" /> My Orders
-                        </Link>
-                      </li>
-                      <li>
-                        <Link className="dropdown-item nav-drop-item" to="/wishlist">
-                          <i className="fa-solid fa-heart" /> My Wishlist
-                        </Link>
-                      </li>
-                      <li><hr className="dropdown-divider" /></li>
-                      <li onClick={handleLogout}>
-                        <a className="dropdown-item nav-drop-item nav-drop-logout" href="#">
-                          <i className="fa-solid fa-right-from-bracket" /> Logout
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                ) : (
-                  <div onClick={handleShow}>
-                    <i className="fa-solid fa-user fs-5 hvr-grow"></i>
-                  </div>
-                )}
-              </div>
 
+          {/* Right icons */}
+          <div className="search-bar d-flex align-items-center gap-1">
+            {/* Wishlist */}
+            <Link to="/wishlist" className="nav-icon-btn">
+              <i className="fa-solid fa-heart"></i>
+              {wishlistItems.length > 0 && (
+                <span className="nav-badge">{totalWishlistItems}</span>
+              )}
+            </Link>
+
+            {/* Cart */}
+            <button className="nav-icon-btn" onClick={openCart}>
+              <i className="fa-solid fa-cart-arrow-down"></i>
+              {cartItems.length > 0 && (
+                <span className="nav-badge">{totalProducts}</span>
+              )}
+            </button>
+
+            {/* User */}
+            <div className="cart-icon">
+              {localStorage.getItem("token") ? (
+                <div className="dropdown">
+                  <button
+                    className="border-0 bg-transparent nav-avatar-btn dropdown-toggle"
+                    id="dropdownMenuButton1"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    {profileImage ? (
+                      <img src={profileImage} alt={displayName} className="nav-avatar-img" />
+                    ) : (
+                      <span className="nav-avatar-letter">{firstLetter}</span>
+                    )}
+                    <span className="nav-username-text">{displayName}</span>
+                  </button>
+                  <ul className="dropdown-menu nav-dropdown" aria-labelledby="dropdownMenuButton1">
+                    <li className="nav-drop-header">
+                      <div className="nav-drop-avatar">
+                        {profileImage ? (
+                          <img src={profileImage} alt={displayName} className="nav-drop-avatar-img" />
+                        ) : (
+                          <span className="nav-drop-avatar-letter">{firstLetter}</span>
+                        )}
+                      </div>
+                      <div>
+                        <div className="nav-drop-name">{displayName}</div>
+                        <div className="nav-drop-email">{userProfile?.email || ""}</div>
+                      </div>
+                    </li>
+                    <li><hr className="dropdown-divider" /></li>
+                    <li>
+                      <Link className="dropdown-item nav-drop-item" to="/profile">
+                        <i className="fa-solid fa-user" /> My Account
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item nav-drop-item" to="/placeorder">
+                        <i className="fa-solid fa-box" /> My Orders
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item nav-drop-item" to="/wishlist">
+                        <i className="fa-solid fa-heart" /> My Wishlist
+                      </Link>
+                    </li>
+                    <li><hr className="dropdown-divider" /></li>
+                    <li onClick={handleLogout}>
+                      <a className="dropdown-item nav-drop-item nav-drop-logout" href="#">
+                        <i className="fa-solid fa-right-from-bracket" /> Logout
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              ) : (
+                <button className="nav-login-btn" onClick={handleShow}>
+                  <i className="fa-solid fa-user"></i>
+                  <span>Login</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
