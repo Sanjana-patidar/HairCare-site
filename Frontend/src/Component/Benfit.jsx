@@ -1,43 +1,70 @@
-import React from 'react'
-import './Benifit.css'
+import React from 'react';
+import './Benifit.css';
+
+const benefits = [
+  {
+    img: '/src/assets/img/natural-product.png',
+    title: 'Trusted Brand',
+    desc: '100% natural & vegan-certified ingredients you can trust for healthy, beautiful hair.',
+    tag: '✓ Certified Natural',
+    num: '01',
+  },
+  {
+    img: '/src/assets/img/offer.png',
+    title: 'Best Prices & Offers',
+    desc: 'Unbeatable deals, exclusive discounts and loyalty rewards on every purchase.',
+    tag: '🏷 Save More',
+    num: '02',
+  },
+  {
+    img: '/src/assets/img/delivery.png',
+    title: 'Fast & Secure Delivery',
+    desc: 'Packed with care and delivered to your doorstep within 2-4 business days.',
+    tag: '🚚 2–4 Day Delivery',
+    num: '03',
+  },
+  {
+    img: '/src/assets/img/delivery-man (1).png',
+    title: 'Happy Customers',
+    desc: 'Trusted by 10,000+ customers with a 4.9★ average rating across all products.',
+    tag: '⭐ 4.9 Rating',
+    num: '04',
+  },
+];
+
 const Benfit = () => {
   return (
-    <div  className='benifit-section  p-4'>
-       <div>
-          <h3   className='text-center'>Why Choose <span className='brand'>Shinny</span></h3>
-          <div className="row mt-5 g-3">
-            <div className="col-12 col-sm-6 col-md-6 col-lg-3">
-              <div className=' box rounded-4 p-3 text-center'>
-                <img className='benifit-img  pb-3 hvr-pulse' src="\src\assets\img\natural-product.png" alt="" />
-                <h5>Trusted Brand</h5>
-                <p>We sell only natural products & Quality Hair Care Product</p>
-              </div>
-            </div>
-            <div className="col-12 col-sm-6 col-md-6 col-lg-3">
-              <div className=' box  rounded-4 p-3 text-center'>
-                <img  className=' benifit-img  pb-3 hvr-pulse ' src="/src/assets/img/offer.png" alt="" />
-                <h5>Best Prices & Offers</h5>
-                <p>We sell only natural products & Quality Hair Care Product</p>
-              </div>
-            </div>
-            <div className="col-12 col-sm-6 col-md-6 col-lg-3">
-              <div className=' box rounded-4 p-3 text-center'>
-                <img className='benifit-img  pb-3 hvr-pulse' src="/src/assets/img/delivery.png" alt="" />
-                <h5>Fast & Secure Delivery</h5>
-                <p>We sell only natural products & Quality Hair Care Product</p>
-              </div>
-            </div>
-            <div className="col-12 col-sm-6 col-md-6 col-lg-3">
-              <div className='box rounded-4 p-3 text-center'>
-                <img className='benifit-img  pb-3 hvr-pulse' src="/src/assets/img/delivery-man (1).png" alt="" />
-                <h5>Happy Customers</h5>
-                <p>We sell only natural products & Quality Hair Care Product</p>
-              </div>
-            </div>
-          </div>
-       </div>
-    </div>
-  )
-}
+    <section className="benifit-section">
+      {/* Header */}
+      <div className="text-center">
+        <div className="benefit-eyebrow">
+          <span className="benefit-eyebrow-dot" />
+          Our Promise
+        </div>
+        <h2 className="benefit-title">
+          Why Choose <span className="brand">Shinny</span>
+        </h2>
+        <p className="benefit-sub">
+          We blend science and nature to deliver hair care you can feel good about — from ingredient to delivery.
+        </p>
+      </div>
 
-export default Benfit
+      {/* Cards */}
+      <div className="benefit-grid">
+        {benefits.map((b) => (
+          <div className="benefit-card" key={b.num}>
+            <span className="benefit-num">{b.num}</span>
+            <div className="benefit-icon-wrap">
+              <img src={b.img} alt={b.title} />
+            </div>
+            <h3 className="benefit-card-title">{b.title}</h3>
+            <p className="benefit-card-desc">{b.desc}</p>
+            <span className="benefit-tag">{b.tag}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+export default Benfit;

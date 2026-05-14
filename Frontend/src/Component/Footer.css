@@ -1,7 +1,185 @@
-.list-unstyled li {
-  margin-bottom: 8px;
+/* ================================================================
+   SHINNY – PREMIUM FOOTER
+   Light theme · Lime-green accent (#c0df36)
+================================================================ */
+
+.footer-section {
+  background: #0f1117;
+  color: #e5e7eb;
+  font-family: 'Inter', sans-serif;
+  width: 100%;
+  overflow: hidden;
 }
 
-footer {
-  background-color: rgb(233, 227, 227);
+/* ── Top bar ── */
+.footer-top {
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 48px clamp(16px, 5vw, 80px) 40px;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: 40px;
+  max-width: 1300px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Brand column */
+.footer-brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.footer-logo-img {
+  height: 36px;
+  width: 36px;
+  object-fit: contain;
+  filter: brightness(1.1);
+}
+
+.footer-brand-name {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.footer-brand-name span { color: #c0df36; }
+
+.footer-brand-desc {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  line-height: 1.7;
+  margin-bottom: 20px;
+  max-width: 280px;
+}
+
+/* Social icons */
+.footer-socials {
+  display: flex;
+  gap: 10px;
+}
+
+.footer-social-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s;
+  text-decoration: none;
+}
+
+.footer-social-btn:hover {
+  background: #c0df36;
+  border-color: #c0df36;
+  color: #111;
+  transform: translateY(-2px);
+}
+
+/* Column titles */
+.footer-col-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #c0df36;
+  margin-bottom: 16px;
+}
+
+/* Links */
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-links li a,
+.footer-links li span {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  text-decoration: none;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.footer-links li a:hover,
+.footer-links li span:hover { color: #c0df36; }
+
+.footer-links li i {
+  width: 14px;
+  font-size: 12px;
+  color: #c0df36;
+}
+
+/* ── Bottom bar ── */
+.footer-bottom {
+  padding: 16px clamp(16px, 5vw, 80px);
+  max-width: 1300px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.footer-copy {
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
+.footer-copy span { color: #c0df36; }
+
+.footer-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.footer-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(192,223,54,0.25);
+  color: #9ca3af;
+  background: rgba(192,223,54,0.05);
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+}
+
+@media (max-width: 540px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 36px 16px 28px;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    padding: 16px;
+  }
 }
