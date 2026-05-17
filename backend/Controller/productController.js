@@ -65,6 +65,14 @@ export const getProductById = async (req, res) => {
   }
 };
 
+const deleteFile = (filename) => {
+  if (!filename) return;
+  const filePath = path.join("uploads", filename);
+  fs.unlink(filePath, (err) => {
+    if (err) console.error("Error deleting file:", err);
+  });
+};
+
 // UPDATE product (image optional)
 export const updateProduct = async (req, res) => {
   try {
@@ -77,9 +85,29 @@ export const updateProduct = async (req, res) => {
       updateData.image = mainImageFile.filename;
     }
 
+    // Process gallery images: merge retained existing images with newly uploaded ones
+    let finalImages = [];
+    if (req.body.existingImages) {
+      try {
+        finalImages = JSON.parse(req.body.existingImages);
+      } catch (e) {
+        if (Array.isArray(req.body.existingImages)) {
+          finalImages = req.body.existingImages;
+        } else if (typeof req.body.existingImages === "string") {
+          finalImages = [req.body.existingImages];
+        }
+      }
+    }
+
     const galleryFiles = req.files?.images;
     if (galleryFiles && galleryFiles.length > 0) {
-      updateData.images = galleryFiles.map(f => f.filename);
+      const newFilenames = galleryFiles.map(f => f.filename);
+      finalImages = [...finalImages, ...newFilenames];
+    }
+
+    // Only update images array if existingImages was specified or new files were uploaded
+    if (req.body.existingImages !== undefined || (galleryFiles && galleryFiles.length > 0)) {
+      updateData.images = finalImages;
     }
 
     const updated = await productModel.findByIdAndUpdate(req.params.id, updateData, { new: true });

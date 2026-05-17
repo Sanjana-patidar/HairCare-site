@@ -4,17 +4,17 @@ import { useNavigate } from "react-router-dom";
 import './Ordersuccess.css';
 
 const STATUS_CONFIG = {
-  Pending:    { color: "#f59e0b", bg: "#fef3c7", icon: "fa-clock"            },
-  Processing: { color: "#3b82f6", bg: "#dbeafe", icon: "fa-gear"             },
-  Shipped:    { color: "#8b5cf6", bg: "#ede9fe", icon: "fa-truck"            },
-  Delivered:  { color: "#22c55e", bg: "#dcfce7", icon: "fa-circle-check"     },
-  Cancelled:  { color: "#ef4444", bg: "#fee2e2", icon: "fa-circle-xmark"     },
+  Pending: { color: "#f59e0b", bg: "#fef3c7", icon: "fa-clock" },
+  Processing: { color: "#3b82f6", bg: "#dbeafe", icon: "fa-gear" },
+  Shipped: { color: "#8b5cf6", bg: "#ede9fe", icon: "fa-truck" },
+  Delivered: { color: "#22c55e", bg: "#dcfce7", icon: "fa-circle-check" },
+  Cancelled: { color: "#ef4444", bg: "#fee2e2", icon: "fa-circle-xmark" },
 };
 
 const PAYMENT_CONFIG = {
-  Paid:    { color: "#22c55e", bg: "#dcfce7", label: "Paid"    },
+  Paid: { color: "#22c55e", bg: "#dcfce7", label: "Paid" },
   Pending: { color: "#f59e0b", bg: "#fef3c7", label: "Pending" },
-  Failed:  { color: "#ef4444", bg: "#fee2e2", label: "Failed"  },
+  Failed: { color: "#ef4444", bg: "#fee2e2", label: "Failed" },
 };
 
 function StatusBadge({ status }) {
@@ -37,8 +37,8 @@ function PayBadge({ status }) {
 }
 
 export default function Ordersuccess() {
-  const [orders,        setOrders]        = useState([]);
-  const [loading,       setLoading]       = useState(true);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const navigate = useNavigate();
 
@@ -67,7 +67,7 @@ export default function Ordersuccess() {
           <h1 className="ord-page-title">My Orders</h1>
         </div>
         <div className="ord-skeleton-list">
-          {[1,2,3].map(i => <div key={i} className="ord-skeleton" />)}
+          {[1, 2, 3].map(i => <div key={i} className="ord-skeleton" />)}
         </div>
       </div>
     );
@@ -93,149 +93,151 @@ export default function Ordersuccess() {
   }
 
   return (
-    <div className="ord-page">
-      {/* Page header */}
-      <div className="ord-header">
-        <div>
-          <h1 className="ord-page-title">My Orders</h1>
-          <p className="ord-page-sub">{orders.length} order{orders.length !== 1 ? 's' : ''} placed</p>
+    <div className="outline">
+      <div className="ord-page">
+        {/* Page header */}
+        <div className="ord-header">
+          <div>
+            <h1 className="ord-page-title">My Orders</h1>
+            <p className="ord-page-sub">{orders.length} order{orders.length !== 1 ? 's' : ''} placed</p>
+          </div>
+          <button className="ord-shop-btn" onClick={() => navigate('/allproducts')}>
+            Shop More <i className="fa-solid fa-bag-shopping" />
+          </button>
         </div>
-        <button className="ord-shop-btn" onClick={() => navigate('/allproducts')}>
-          Shop More <i className="fa-solid fa-bag-shopping" />
-        </button>
-      </div>
 
-      {/* Order cards */}
-      <div className="ord-list">
-        {orders.map((order) => {
-          const date = new Date(order.createdAt).toLocaleDateString('en-IN', {
-            day: 'numeric', month: 'short', year: 'numeric'
-          });
-          const prods = order.products || [];
-          const isOpen = selectedOrder?._id === order._id;
+        {/* Order cards */}
+        <div className="ord-list">
+          {orders.map((order) => {
+            const date = new Date(order.createdAt).toLocaleDateString('en-IN', {
+              day: 'numeric', month: 'short', year: 'numeric'
+            });
+            const prods = order.products || [];
+            const isOpen = selectedOrder?._id === order._id;
 
-          return (
-            <div key={order._id} className={`ord-card ${isOpen ? 'ord-card--open' : ''}`}>
-              {/* Card header */}
-              <div className="ord-card-head" onClick={() => setSelectedOrder(isOpen ? null : order)}>
-                <div className="ord-card-left">
-                  <div className="ord-id">
-                    <span className="ord-id-label">Order</span>
-                    <span className="ord-id-val">#{order._id.slice(-8).toUpperCase()}</span>
+            return (
+              <div key={order._id} className={`ord-card ${isOpen ? 'ord-card--open' : ''}`}>
+                {/* Card header */}
+                <div className="ord-card-head" onClick={() => setSelectedOrder(isOpen ? null : order)}>
+                  <div className="ord-card-left">
+                    <div className="ord-id">
+                      <span className="ord-id-label">Order</span>
+                      <span className="ord-id-val">#{order._id.slice(-8).toUpperCase()}</span>
+                    </div>
+                    <div className="ord-meta">
+                      <span><i className="fa-regular fa-calendar" /> {date}</span>
+                      <span>
+                        {order.paymentMethod === "Online" || order.paymentMethod === "Razorpay"
+                          ? "💳 Online" : "💵 COD"}
+                      </span>
+                    </div>
                   </div>
-                  <div className="ord-meta">
-                    <span><i className="fa-regular fa-calendar" /> {date}</span>
-                    <span>
-                      {order.paymentMethod === "Online" || order.paymentMethod === "Razorpay"
-                        ? "💳 Online" : "💵 COD"}
-                    </span>
+
+                  <div className="ord-card-mid">
+                    {/* Product thumbnails */}
+                    <div className="ord-thumb-row">
+                      {prods.slice(0, 3).map((p, i) => (
+                        <img
+                          key={i}
+                          src={`${import.meta.env.VITE_API_IMAGE}/${p.image}`}
+                          alt={p.name}
+                          className="ord-thumb"
+                          onError={(e) => { e.target.src = '/placeholder.png'; }}
+                        />
+                      ))}
+                      {prods.length > 3 && (
+                        <div className="ord-thumb ord-thumb-more">+{prods.length - 3}</div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="ord-card-right">
+                    <div className="ord-amount">₹{order.totalAmount?.toLocaleString('en-IN')}</div>
+                    <StatusBadge status={order.status} />
+                    <PayBadge status={order.paymentStatus} />
+                    <i className={`fa-solid fa-chevron-${isOpen ? 'up' : 'down'} ord-chevron`} />
                   </div>
                 </div>
 
-                <div className="ord-card-mid">
-                  {/* Product thumbnails */}
-                  <div className="ord-thumb-row">
-                    {prods.slice(0, 3).map((p, i) => (
-                      <img
-                        key={i}
-                        src={`${import.meta.env.VITE_API_IMAGE}/${p.image}`}
-                        alt={p.name}
-                        className="ord-thumb"
-                        onError={(e) => { e.target.src = '/placeholder.png'; }}
-                      />
-                    ))}
-                    {prods.length > 3 && (
-                      <div className="ord-thumb ord-thumb-more">+{prods.length - 3}</div>
-                    )}
-                  </div>
-                </div>
+                {/* Expanded detail panel */}
+                {isOpen && (
+                  <div className="ord-detail">
+                    <div className="ord-detail-grid">
+                      {/* Products */}
+                      <div className="ord-detail-section">
+                        <h4 className="ord-section-title">
+                          <i className="fa-solid fa-box" /> Items Ordered
+                        </h4>
+                        <div className="ord-items">
+                          {prods.map((p, i) => (
+                            <div key={i} className="ord-item">
+                              <img
+                                src={`${import.meta.env.VITE_API_IMAGE}/${p.image}`}
+                                alt={p.name}
+                                className="ord-item-img"
+                                onError={(e) => { e.target.src = '/placeholder.png'; }}
+                              />
+                              <div className="ord-item-info">
+                                <div className="ord-item-name">{p.name}</div>
+                                <div className="ord-item-qty">Qty: {p.quantity}</div>
+                              </div>
+                              <div className="ord-item-price">₹{(p.price * p.quantity).toLocaleString('en-IN')}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
 
-                <div className="ord-card-right">
-                  <div className="ord-amount">₹{order.totalAmount?.toLocaleString('en-IN')}</div>
-                  <StatusBadge status={order.status} />
-                  <PayBadge status={order.paymentStatus} />
-                  <i className={`fa-solid fa-chevron-${isOpen ? 'up' : 'down'} ord-chevron`} />
-                </div>
+                      {/* Delivery + Summary */}
+                      <div className="ord-detail-right">
+                        <div className="ord-detail-section">
+                          <h4 className="ord-section-title">
+                            <i className="fa-solid fa-location-dot" /> Delivery Address
+                          </h4>
+                          <div className="ord-address-box">
+                            <div className="ord-addr-name">
+                              {order.customer?.firstname} {order.customer?.lastname}
+                              {order.customer?.name}
+                            </div>
+                            <div className="ord-addr-line">{order.customer?.address}</div>
+                            <div className="ord-addr-line">
+                              {order.customer?.city}{order.customer?.city && order.customer?.pincode ? " – " : ""}
+                              {order.customer?.pincode}
+                            </div>
+                            {order.customer?.phone && (
+                              <div className="ord-addr-phone">
+                                <i className="fa-solid fa-phone" /> {order.customer.phone}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="ord-detail-section">
+                          <h4 className="ord-section-title">
+                            <i className="fa-solid fa-receipt" /> Order Summary
+                          </h4>
+                          <div className="ord-summary">
+                            <div className="ord-summary-row">
+                              <span>Subtotal</span>
+                              <span>₹{order.totalAmount?.toLocaleString('en-IN')}</span>
+                            </div>
+                            <div className="ord-summary-row">
+                              <span>Shipping</span>
+                              <span className="ord-free">FREE</span>
+                            </div>
+                            <div className="ord-summary-row ord-summary-total">
+                              <span>Total</span>
+                              <span>₹{order.totalAmount?.toLocaleString('en-IN')}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-
-              {/* Expanded detail panel */}
-              {isOpen && (
-                <div className="ord-detail">
-                  <div className="ord-detail-grid">
-                    {/* Products */}
-                    <div className="ord-detail-section">
-                      <h4 className="ord-section-title">
-                        <i className="fa-solid fa-box" /> Items Ordered
-                      </h4>
-                      <div className="ord-items">
-                        {prods.map((p, i) => (
-                          <div key={i} className="ord-item">
-                            <img
-                              src={`${import.meta.env.VITE_API_IMAGE}/${p.image}`}
-                              alt={p.name}
-                              className="ord-item-img"
-                              onError={(e) => { e.target.src = '/placeholder.png'; }}
-                            />
-                            <div className="ord-item-info">
-                              <div className="ord-item-name">{p.name}</div>
-                              <div className="ord-item-qty">Qty: {p.quantity}</div>
-                            </div>
-                            <div className="ord-item-price">₹{(p.price * p.quantity).toLocaleString('en-IN')}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Delivery + Summary */}
-                    <div className="ord-detail-right">
-                      <div className="ord-detail-section">
-                        <h4 className="ord-section-title">
-                          <i className="fa-solid fa-location-dot" /> Delivery Address
-                        </h4>
-                        <div className="ord-address-box">
-                          <div className="ord-addr-name">
-                            {order.customer?.firstname} {order.customer?.lastname}
-                            {order.customer?.name}
-                          </div>
-                          <div className="ord-addr-line">{order.customer?.address}</div>
-                          <div className="ord-addr-line">
-                            {order.customer?.city}{order.customer?.city && order.customer?.pincode ? " – " : ""}
-                            {order.customer?.pincode}
-                          </div>
-                          {order.customer?.phone && (
-                            <div className="ord-addr-phone">
-                              <i className="fa-solid fa-phone" /> {order.customer.phone}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="ord-detail-section">
-                        <h4 className="ord-section-title">
-                          <i className="fa-solid fa-receipt" /> Order Summary
-                        </h4>
-                        <div className="ord-summary">
-                          <div className="ord-summary-row">
-                            <span>Subtotal</span>
-                            <span>₹{order.totalAmount?.toLocaleString('en-IN')}</span>
-                          </div>
-                          <div className="ord-summary-row">
-                            <span>Shipping</span>
-                            <span className="ord-free">FREE</span>
-                          </div>
-                          <div className="ord-summary-row ord-summary-total">
-                            <span>Total</span>
-                            <span>₹{order.totalAmount?.toLocaleString('en-IN')}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );

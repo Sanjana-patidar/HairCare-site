@@ -39,11 +39,9 @@ function App() {
 
   useEffect(() => {
     AOS.init({
-      duration: 700,
+      duration: 800,
       once: true,
       easing: "ease-out",
-      offset: 60,
-      disable: false,
     });
   }, []);
 

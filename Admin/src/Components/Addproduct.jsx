@@ -16,8 +16,7 @@ const Addproduct = () => {
   });
   const [mainImage,    setMainImage]    = useState(null);   // File
   const [mainPreview,  setMainPreview]  = useState(null);   // URL string
-  const [galleryFiles, setGalleryFiles] = useState([]);     // File[]
-  const [galleryPreviews, setGalleryPreviews] = useState([]); // URL[]
+  const [gallery,      setGallery]      = useState([]);     // Array of { isExisting, file, filename, preview }
   const [loading, setLoading] = useState(false);
 
   const mainInputRef    = useRef();
@@ -29,7 +28,13 @@ const Addproduct = () => {
       const { image, images, __v, createdAt, updatedAt, ...rest } = state;
       setForm({ ...rest });
       if (image) setMainPreview(`${import.meta.env.VITE_API_IMAGE}/${image}`);
-      if (images?.length) setGalleryPreviews(images.map(img => `${import.meta.env.VITE_API_IMAGE}/${img}`));
+      if (images?.length) {
+        setGallery(images.map(img => ({
+          isExisting: true,
+          filename: img,
+          preview: `${import.meta.env.VITE_API_IMAGE}/${img}`
+        })));
+      }
     }
   }, [state]);
 
@@ -43,14 +48,17 @@ const Addproduct = () => {
   };
 
   const handleGallery = (e) => {
-    const files = Array.from(e.target.files).slice(0, 5);
-    setGalleryFiles(files);
-    setGalleryPreviews(files.map(f => URL.createObjectURL(f)));
+    const files = Array.from(e.target.files);
+    const newItems = files.map(file => ({
+      isExisting: false,
+      file,
+      preview: URL.createObjectURL(file)
+    }));
+    setGallery(prev => [...prev, ...newItems].slice(0, 5));
   };
 
   const removeGalleryImage = (index) => {
-    setGalleryFiles(prev => prev.filter((_, i) => i !== index));
-    setGalleryPreviews(prev => prev.filter((_, i) => i !== index));
+    setGallery(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
@@ -63,7 +71,15 @@ const Addproduct = () => {
     const formData = new FormData();
     Object.keys(form).forEach(key => formData.append(key, form[key]));
     if (mainImage) formData.append("image", mainImage);
-    galleryFiles.forEach(f => formData.append("images", f));
+
+    // Append retained existing gallery images
+    const existingImgs = gallery.filter(item => item.isExisting).map(item => item.filename);
+    formData.append("existingImages", JSON.stringify(existingImgs));
+
+    // Append newly uploaded gallery files
+    gallery.filter(item => !item.isExisting).forEach(item => {
+      formData.append("images", item.file);
+    });
 
     try {
       if (state) {
@@ -146,10 +162,10 @@ const Addproduct = () => {
               </div>
               <input ref={galleryInputRef} type="file" accept="image/*" multiple style={{ display: "none" }} onChange={handleGallery} />
 
-              {galleryPreviews.length > 0 && (
+              {gallery.length > 0 && (
                 <div className="ap-gallery-grid">
                   <AnimatePresence>
-                    {galleryPreviews.map((src, idx) => (
+                    {gallery.map((item, idx) => (
                       <motion.div
                         key={idx}
                         className="ap-gallery-thumb"
@@ -157,7 +173,7 @@ const Addproduct = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
                       >
-                        <img src={src} alt={`Gallery ${idx + 1}`} />
+                        <img src={item.preview} alt={`Gallery ${idx + 1}`} />
                         <button type="button" className="ap-remove-thumb" onClick={() => removeGalleryImage(idx)}>
                           <FiX />
                         </button>

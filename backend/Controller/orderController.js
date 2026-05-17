@@ -5,9 +5,15 @@ export const placeOrder = async (req, res) => {
   try {
     const { customer, products, totalAmount, paymentMethod } = req.body;
 
+    console.log("📦 placeOrder called with paymentMethod:", paymentMethod);
+
     // Validation
     if (!customer || !products || products.length === 0) {
       return res.status(400).json({ message: "Invalid order data" });
+    }
+
+    if (!paymentMethod) {
+      return res.status(400).json({ message: "Payment method is required" });
     }
 
     if (paymentMethod === "COD") {
@@ -79,8 +85,8 @@ export const placeOrder = async (req, res) => {
       return; // Response already sent above
     }
 
-    // Online payment is handled via /payment/verify route
-    return res.status(400).json({ message: "Invalid payment method" });
+    // Online payment orders are saved via /payment/verify — this endpoint only handles COD
+    return res.status(400).json({ message: `Unsupported payment method: ${paymentMethod}. Online payments are processed via /payment/verify.` });
 
   } catch (error) {
     console.error("Order error:", error);

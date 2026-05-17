@@ -47,6 +47,13 @@ const Checkout = () => {
   const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const placeOrder = async () => {
+    // 🔒 Check if user is logged in
+    if (!token) {
+      Swal.fire({ icon: "warning", title: "Please login to place an order" });
+      navigate("/login");
+      return;
+    }
+
     // Validate all required fields
     if (!form.firstname || !form.lastname || !form.email || !form.phone || !form.address || !form.city || !form.pincode) {
       Swal.fire({ icon: "warning", title: "Please fill all required fields" });
@@ -79,24 +86,36 @@ const Checkout = () => {
     try {
       // 🟢 COD FLOW
       if (paymentMethod === "COD") {
-        await axios.post(
+        const res = await axios.post(
           `${import.meta.env.VITE_API_URL}/orders/place`,
           { ...orderData, paymentMethod: "COD" },
           config
         );
 
-        handleLike();
-        Swal.fire({
-          icon: "success",
-          title: "Order Placed Successfully 🎉",
-        }).then(() => {
-          clearCart();
-          navigate("/Placeorder");
-        });
+        if (res.data.success) {
+          handleLike();
+          Swal.fire({
+            icon: "success",
+            title: "Order Placed Successfully 🎉",
+          }).then(() => {
+            clearCart();
+            navigate("/Placeorder");
+          });
+        }
       }
 
       // 🔵 ONLINE FLOW (RAZORPAY)
       else if (paymentMethod === "ONLINE") {
+        // ✅ Check Razorpay SDK is loaded
+        if (!window.Razorpay) {
+          Swal.fire({
+            icon: "error",
+            title: "Payment Error",
+            text: "Razorpay SDK failed to load. Please refresh the page and try again.",
+          });
+          return;
+        }
+
         // 1️⃣ Create Razorpay order
         const res = await axios.post(
           `${import.meta.env.VITE_API_URL}/payment/create-order`,
@@ -116,26 +135,32 @@ const Checkout = () => {
           theme: { color: "#3399cc" },
 
           handler: async function (response) {
-            // 2️⃣ Verify payment & save order
-            await axios.post(
-              `${import.meta.env.VITE_API_URL}/payment/verify`,
-              {
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-                orderData,
-              },
-              config
-            );
+            try {
+              // 2️⃣ Verify payment & save order
+              await axios.post(
+                `${import.meta.env.VITE_API_URL}/payment/verify`,
+                {
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  orderData,
+                },
+                config
+              );
 
-            handleLike();
-            Swal.fire({
-              icon: "success",
-              title: "Payment Successful 🎉",
-            }).then(() => {
-              clearCart();
-              navigate("/Placeorder");
-            });
+              handleLike();
+              Swal.fire({
+                icon: "success",
+                title: "Payment Successful 🎉",
+              }).then(() => {
+                clearCart();
+                navigate("/Placeorder");
+              });
+            } catch (verifyErr) {
+              console.error("Payment verify error:", verifyErr);
+              const msg = verifyErr.response?.data?.message || "Payment verification failed. Contact support.";
+              Swal.fire({ icon: "error", title: "Payment Error", text: msg });
+            }
           },
 
           prefill: {
@@ -149,8 +174,12 @@ const Checkout = () => {
         rzp.open();
       }
     } catch (err) {
-      console.error(err);
-      const msg = err.response?.data?.message || "Order failed. Please try again.";
+      console.error("Order error:", err);
+      // Show the actual server error message if available
+      const msg =
+        err.response?.data?.message ||
+        err.message ||
+        "Order failed. Please try again.";
       Swal.fire({ icon: "error", title: "Order Failed", text: msg });
     }
   };
@@ -181,7 +210,7 @@ const Checkout = () => {
                    </div>
                    <div className='w-100'>
                       <label>Phone Number <span style={{color:"red"}}>*</span></label><br />
-                      <input name="phone" type="number" placeholder='9119675097' onChange={handleChange} />
+                      <input name="phone" type="text" inputMode="numeric" placeholder='9119675097' onChange={handleChange} />
                    </div>
 
                    </div>
@@ -195,7 +224,7 @@ const Checkout = () => {
                    </div>
                    <div>
                       <label>Pincode  <span style={{color:"red"}}>*</span></label><br />
-                      <input name="pincode" type="number" placeholder='pincode' onChange={handleChange} />
+                      <input name="pincode" type="text" inputMode="numeric" placeholder='pincode' onChange={handleChange} />
                    </div>
                    <div className="payment-method">
   <h5>Select Payment Method</h5>
