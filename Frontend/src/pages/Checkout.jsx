@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
 import Swal from 'sweetalert2';
 import confetti from "canvas-confetti";
+import BackButton from '../Component/BackButton';
 import './Checkout.css'
 
 const Checkout = () => {
@@ -221,6 +222,7 @@ const Checkout = () => {
 
   return (
     <div className="checkout-container p-2">
+      <BackButton />
       <div className="row">
         <div className="col-12 col-md-6 fixed">
             <div className=' p-3'>

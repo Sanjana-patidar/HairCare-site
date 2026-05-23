@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from "sweetalert2";
 import { useNavigate } from 'react-router-dom';
+import BackButton from '../Component/BackButton';
 import './Contect.css';
 
 const Contect = () => {
@@ -44,7 +45,10 @@ const Contect = () => {
   };
 
   return (
-    <div className="contact-page">
+    <div className="contact-page" style={{ flexDirection: "column", gap: "20px" }}>
+      <div style={{ width: "100%", maxWidth: "1000px", margin: "0 auto" }}>
+        <BackButton />
+      </div>
       <div className="contact-card">
 
         {/* ── Left: Info Panel ── */}

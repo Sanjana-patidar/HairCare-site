@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Rating from "@mui/material/Rating";
 import axios from "axios";
 import { useWishlist } from "../Context/WishlistContext";
+import BackButton from '../Component/BackButton';
 import "../Component/Product.css";
 import "./CategoryPage.css";
 
@@ -52,6 +53,9 @@ export default function CategoryPage({ category }) {
 
   return (
     <div className="cp-page">
+      <div style={{padding: "20px 20px 0", maxWidth: "1200px", margin: "0 auto"}}>
+        <BackButton />
+      </div>
       {/* ── Hero Header ── */}
       <div className="cp-hero">
         <div className="cp-hero-blob cp-hero-blob-1" />

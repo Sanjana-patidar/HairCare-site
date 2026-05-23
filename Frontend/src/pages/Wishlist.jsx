@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useWishlist } from "../Context/WishlistContext";
 import { useCart } from "../Context/CartContext";
 import { toast } from "react-toastify";
+import BackButton from '../Component/BackButton';
 import "./Wishlist.css";
 
 const Wishlist = () => {
@@ -29,6 +30,7 @@ const Wishlist = () => {
   if (wishlistItems.length === 0) {
     return (
       <div className="wl-page">
+        <BackButton />
         <div className="wl-empty">
           <div className="wl-empty-icon">
             <i className="fa-regular fa-heart" />
@@ -45,6 +47,7 @@ const Wishlist = () => {
 
   return (
     <div className="wl-page">
+      <BackButton />
       {/* ── Header ── */}
       <div className="wl-header">
         <div className="wl-header-left">

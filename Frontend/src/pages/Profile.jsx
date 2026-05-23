@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import BackButton from '../Component/BackButton';
 import './Profile.css';
 
 const Profile = () => {
@@ -198,6 +199,7 @@ const Profile = () => {
 
   return (
     <div className="profile-container">
+      <BackButton />
       {/* Header */}
       <div className="profile-header-banner">
         <h2>My Account</h2>

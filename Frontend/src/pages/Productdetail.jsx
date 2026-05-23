@@ -6,6 +6,7 @@ import Rating from '@mui/material/Rating';
 import { useCart } from '../Context/CartContext';
 import { useWishlist } from '../Context/WishlistContext';
 import confetti from 'canvas-confetti';
+import BackButton from '../Component/BackButton';
 import './Productdetail.css';
 
 const API_IMG = import.meta.env.VITE_API_IMAGE || 'http://localhost:5000/uploads';
@@ -147,7 +148,7 @@ export default function Productdetail() {
   return (
     <div className="pd-root">
       <div className="pd-page">
-
+        <BackButton />
         {/* Breadcrumb */}
         <nav className="pd-breadcrumb">
           <span className="pd-bc-link" onClick={() => navigate('/')}>Home</span>

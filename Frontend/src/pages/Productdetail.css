@@ -126,6 +126,18 @@
   box-shadow: 0 0 0 3px rgba(192, 223, 54, 0.2);
 }
 
+@media (max-width: 768px) {
+  .pd-gallery {
+    flex-direction: column-reverse;
+  }
+  .pd-thumbs {
+    flex-direction: row;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+}
+
 /* Main image container */
 .pd-img-main-wrap {
   flex: 1;
@@ -139,6 +151,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .pd-img-main-wrap {
+    min-height: 280px;
+  }
+  .pd-img-zoom-wrap {
+    height: 280px;
+  }
 }
 
 /* Zoom wrapper */

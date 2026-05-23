@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Rating from "@mui/material/Rating";
 import axios from "axios";
 import { useWishlist } from "../Context/WishlistContext";
+import BackButton from '../Component/BackButton';
 import "./AllProduct.css";
 
 const PRICE_RANGES = [
@@ -101,6 +102,9 @@ export default function AllProduct() {
 
   return (
     <div className="ap-root">
+      <div style={{padding: "20px 20px 0", maxWidth: "1200px", margin: "0 auto"}}>
+        <BackButton />
+      </div>
 
       {/* ── Hero Banner ── */}
       <div className="ap-hero">

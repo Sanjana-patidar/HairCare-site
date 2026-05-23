@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import BackButton from '../Component/BackButton';
 import './Ordersuccess.css';
 
 const STATUS_CONFIG = {
@@ -63,6 +64,7 @@ export default function Ordersuccess() {
   if (loading) {
     return (
       <div className="ord-page">
+        <BackButton />
         <div className="ord-header">
           <h1 className="ord-page-title">My Orders</h1>
         </div>
@@ -77,6 +79,7 @@ export default function Ordersuccess() {
   if (orders.length === 0) {
     return (
       <div className="ord-page">
+        <BackButton />
         <div className="ord-header">
           <h1 className="ord-page-title">My Orders</h1>
         </div>
@@ -95,6 +98,7 @@ export default function Ordersuccess() {
   return (
     <div className="outline">
       <div className="ord-page">
+        <BackButton />
         {/* Page header */}
         <div className="ord-header">
           <div>
