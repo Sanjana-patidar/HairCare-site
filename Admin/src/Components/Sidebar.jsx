@@ -38,7 +38,8 @@ const Sidebar = ({ collapsed }) => {
     { path: "/admin/addbrand", name: "Add Brands", icon: <MdOutlineLibraryAdd /> },
     { path: "/admin/orderhistory", name: "Order History", icon: <ShoppingCartIcon /> },
     { path: "/admin/reviews", name: "Reviews", icon: <StarIcon /> },
-    { path: "/admin/setting", name: "Settings", icon: <FiSettings /> }
+    { path: "/admin/setting", name: "Settings", icon: <FiSettings /> },
+    { path: "/", name: "Logout", icon: <IoMdLogOut /> }
   ];
 
   return (
