@@ -148,12 +148,12 @@
   }
 
   .pd-img-main-wrap {
-    width: 280px !important;
+    width: 296px !important;
   }
 
   .pd-thumbs {
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: wrap !important;
     width: 100%;
     overflow-x: auto;
     padding-bottom: 8px;
@@ -186,11 +186,11 @@
 
 @media (max-width: 768px) {
   .pd-img-main-wrap {
-    min-height: 280px;
+    min-height: 296px;
   }
 
   .pd-img-zoom-wrap {
-    height: 280px;
+    height: 296px;
   }
 }
 
