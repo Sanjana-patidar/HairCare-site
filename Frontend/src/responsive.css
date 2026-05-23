@@ -521,6 +521,10 @@ body {
   .address-card {
     padding: 14px !important;
   }
+
+  .address-form {
+    padding: 16px !important;
+  }
 }
 
 @media (max-width: 480px) {
