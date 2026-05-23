@@ -201,14 +201,7 @@ export default function Productdetail() {
                   {curImg && <img src={curImg} alt={product.name} className="pd-img-main" />}
                 </div>
 
-                {allImgs.length > 1 && (
-                  <div className="pd-dots">
-                    {allImgs.map((_, i) => (
-                      <button key={i} className={`pd-dot ${activeImg === i ? 'pd-dot-active' : ''}`} onClick={() => setActiveImg(i)} />
-                    ))}
-                  </div>
-                )}
-              </div>
+                </div>
             </div>
 
             {/* ── RIGHT: Info ── */}
