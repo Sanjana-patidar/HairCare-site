@@ -4,7 +4,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-router-dom";
+import { HashRouter as Router, Routes, Route, HashRouter } from "react-router-dom";
 import Layout from './pages/Layout';
 import Contect from './pages/Contect';
 import Home from './pages/Home';
@@ -51,7 +51,7 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           {/* user route */}
           <Route path="/" element={<Layout />}>
@@ -69,7 +69,7 @@ function App() {
             <Route path="wishlist" element={<Wishlist />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
       <ToastContainer position="top-right" autoClose={1000} />
       <ScroolToTop />
     </>
