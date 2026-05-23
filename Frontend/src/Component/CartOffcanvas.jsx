@@ -1,6 +1,7 @@
 import { useCart } from "../Context/CartContext";
 import { Link } from "react-router-dom";
 import "./CartOffcanvas.css";
+import emptyCartImg from '../assets/img/empty-cart-1.png';
 
 const CartOffcanvas = ({ isOpen, closeCart }) => {
   const { cartItems, increaseQty, decreaseQty, removeFromCart } = useCart();
@@ -22,7 +23,7 @@ const CartOffcanvas = ({ isOpen, closeCart }) => {
           {cartItems.length === 0 ? (
             <img
               className="w-100"
-              src="/src/assets/img/empty-cart-1.png"
+              src={emptyCartImg}
               alt=""
             />
           ) : (

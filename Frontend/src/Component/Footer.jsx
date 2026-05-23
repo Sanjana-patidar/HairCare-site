@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Footer.css';
+import logoImg from '../assets/img/womens-day.png';
 
 const Footer = () => {
   return (
@@ -10,7 +11,7 @@ const Footer = () => {
         {/* Brand */}
         <div>
           <div className="footer-brand-logo">
-            <img src="/src/assets/img/womens-day.png" className="footer-logo-img" alt="Shinny Logo" />
+            <img src={logoImg} className="footer-logo-img" alt="Shinny Logo" />
             <span className="footer-brand-name">Shinn<span>y</span></span>
           </div>
           <p className="footer-brand-desc">

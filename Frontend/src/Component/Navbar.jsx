@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "./Navbar.css";
+import logoImg from '../assets/img/womens-day.png';
 
 const Navbar = ({ openCart }) => {
 
@@ -228,7 +229,7 @@ const Navbar = ({ openCart }) => {
         <div className="container-fluid">
           <a className="navbar-brand hvr-grow">
             <h3 className="logo-text">
-              <img src="/src/assets/img/womens-day.png" className="logo" alt="Shinny Logo" />
+              <img src={logoImg} className="logo" alt="Shinny Logo" />
               Shinn<span className="brand-accent">y</span>
             </h3>
           </a>

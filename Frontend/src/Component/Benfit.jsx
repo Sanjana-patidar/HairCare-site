@@ -1,30 +1,34 @@
 import React from 'react';
 import './Benifit.css';
+import naturalProductImg from '../assets/img/natural-product.png';
+import offerImg from '../assets/img/offer.png';
+import deliveryImg from '../assets/img/delivery.png';
+import deliveryManImg from '../assets/img/delivery-man (1).png';
 
 const benefits = [
   {
-    img: '/src/assets/img/natural-product.png',
+    img: naturalProductImg,
     title: 'Trusted Brand',
     desc: '100% natural & vegan-certified ingredients you can trust for healthy, beautiful hair.',
     tag: '✓ Certified Natural',
     num: '01',
   },
   {
-    img: '/src/assets/img/offer.png',
+    img: offerImg,
     title: 'Best Prices & Offers',
     desc: 'Unbeatable deals, exclusive discounts and loyalty rewards on every purchase.',
     tag: '🏷 Save More',
     num: '02',
   },
   {
-    img: '/src/assets/img/delivery.png',
+    img: deliveryImg,
     title: 'Fast & Secure Delivery',
     desc: 'Packed with care and delivered to your doorstep within 2-4 business days.',
     tag: '🚚 2–4 Day Delivery',
     num: '03',
   },
   {
-    img: '/src/assets/img/delivery-man (1).png',
+    img: deliveryManImg,
     title: 'Happy Customers',
     desc: 'Trusted by 10,000+ customers with a 4.9★ average rating across all products.',
     tag: '⭐ 4.9 Rating',
