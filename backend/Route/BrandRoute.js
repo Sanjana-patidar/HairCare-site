@@ -1,7 +1,7 @@
 import express from 'express';
 import authMiddleware from "../Middleware/Authmiddleware.js";
 import adminMiddleware from "../Middleware/Adminmiddleware.js";
-import upload from "../middleware/upload.js";
+import upload from "../Middleware/upload.js";
 import { createBrand, getAllBrands, deleteBrand } from '../Controller/BrandController.js';
 
 const router = express.Router();
