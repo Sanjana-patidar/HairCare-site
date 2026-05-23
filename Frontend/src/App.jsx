@@ -19,6 +19,7 @@ import Ordersuccess from './pages/Ordersuccess';
 import AllProduct from './pages/AllProduct';
 import Profile from './pages/Profile';
 import Wishlist from './pages/Wishlist';
+import Cart from './pages/Cart';
 import ScroolToTop from './Component/ScroolToTop';
 import SplashScreen from './Component/SplashScreen';
 function App() {
@@ -67,6 +68,7 @@ function App() {
             <Route path="productdetail/:id" element={<Productdetail />} />
             <Route path="profile" element={<Profile />} />
             <Route path="wishlist" element={<Wishlist />} />
+            <Route path="cart" element={<Cart />} />
           </Route>
         </Routes>
       </HashRouter>

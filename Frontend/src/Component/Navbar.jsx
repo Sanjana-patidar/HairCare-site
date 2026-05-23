@@ -370,13 +370,13 @@ const Navbar = ({ openCart }) => {
               </Link>
 
               {/* Cart */}
-              <button className="nav-icon-btn flex-fill" onClick={() => { openCart(); closeMobileMenu(); }}>
+              <Link to="/cart" className="nav-icon-btn flex-fill text-decoration-none" onClick={closeMobileMenu}>
                 <i className="fa-solid fa-cart-arrow-down"></i>
                 {cartItems.length > 0 && (
                   <span className="nav-badge">{totalProducts}</span>
                 )}
                 <span className="ms-2 font-weight-bold" style={{ fontSize: "14px", fontWeight: "600", color: "#374151" }}>Cart</span>
-              </button>
+              </Link>
             </div>
           </div>
         </div>
