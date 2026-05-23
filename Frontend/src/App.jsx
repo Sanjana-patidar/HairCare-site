@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-router-dom";
 import Layout from './pages/Layout';
-import Contect from './Pages/Contect';
+import Contect from './pages/Contect';
 import Home from './pages/Home';
 import Productdetail from './pages/Productdetail';
 import Oil from './pages/Oil';

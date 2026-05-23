@@ -3,7 +3,7 @@ import Navbar from '../Component/Navbar'
 import Footer from '../Component/Footer'
 import {Outlet} from "react-router-dom"
 import { useState } from 'react'
-import CartOffcanvas from '../Component/Cartoffcanvas'
+import CartOffcanvas from '../Component/CartOffcanvas'
 const Layout = () => {
   // state for cart offcanvas
   const [cartOpen, setCartOpen] = useState(false);
