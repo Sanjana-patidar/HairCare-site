@@ -1,8 +1,9 @@
 .cart-offcanvas {
   position: fixed;
   top: 0;
-  right: -350px;
-  width: 350px;
+  right: -100%;
+  width: 100%;
+  max-width: 400px;
   height: 100vh;
   background: #fff;
   transition: 0.4s ease;

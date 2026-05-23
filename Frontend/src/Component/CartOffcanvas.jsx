@@ -30,13 +30,13 @@ const CartOffcanvas = ({ isOpen, closeCart }) => {
             cartItems.map((item) => (
               <div key={item._id} className="cart-container p-2">
                 <div className="cart-bg row justify-content-center align-items-center p-2">
-                  <div className="col-12 col-sm-4">
+                  <div className="col-4">
                     <img className="w-100"
                     src={`${import.meta.env.VITE_API_IMAGE}/${item.image}`}
                     alt=""
                   />
                   </div>
-                  <div className=" col-12 col-sm-8">
+                  <div className="col-8">
                     <h6>{item.name}</h6>
                     <p className="m-0"> Price: ₹{item.discountprice}</p>
                     <p className="m-0" > Product Quantity: {item.quantity}</p>
