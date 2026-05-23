@@ -8,6 +8,8 @@
 .pd-root {
   background: #f7f8fa;
   min-height: 100vh;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 .pd-page {
