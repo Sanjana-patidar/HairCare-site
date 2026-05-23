@@ -19,7 +19,7 @@
 }
 
 @media (max-width: 768px) {
-  .pd-page { padding: 12px 14px 48px; }
+  .pd-page { padding: 12px 14px 80px; }
 }
 
 /* ── Breadcrumb ── */
@@ -538,11 +538,17 @@
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
-  white-space: nowrap;
   transition: all 0.2s;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
+}
+
+@media (max-width: 480px) {
+  .pd-cta-row {
+    flex-direction: column;
+  }
 }
 
 .pd-btn-view:hover {
@@ -592,6 +598,7 @@
   background: #fafafa;
   overflow-x: auto;
   scrollbar-width: none;
+  padding-right: 24px;
 }
 
 .pd-tab-bar::-webkit-scrollbar { display: none; }

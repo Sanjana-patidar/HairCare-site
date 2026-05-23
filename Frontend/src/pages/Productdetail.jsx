@@ -60,6 +60,7 @@ export default function Productdetail() {
 
   /* ── Fetch product ── */
   useEffect(() => {
+    window.scrollTo(0, 0);
     setLoading(true);
     setActiveTab(0);
     setQty(1);
