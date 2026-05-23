@@ -128,7 +128,7 @@
   box-shadow: 0 0 0 3px rgba(192, 223, 54, 0.2);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 860px) {
   .pd-gallery {
     flex-direction: column-reverse;
   }
