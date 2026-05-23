@@ -236,61 +236,94 @@
   
   /* Addresses Styles */
   .address-card {
-    border: 1px solid #eee;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    background-color: #fafafa;
+    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .address-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+    border-color: #c0df36;
   }
   
   .address-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.3s ease;
+  }
+  
+  .address-card.open .address-card-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .address-accordion-body {
+    animation: fadeInSlideDown 0.3s ease-out forwards;
+  }
+  
+  @keyframes fadeInSlideDown {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   
   .address-type-badge {
-    background-color: #eee;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    color: #555;
+    background: linear-gradient(135deg, #c0df36, #a8c42a);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
   
   .address-card h4 {
     margin: 0;
-    font-size: 16px;
-    color: #333;
+    font-size: 18px;
+    font-weight: 700;
+    color: #222;
   }
   
   .address-details p {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #666;
+    margin: 6px 0;
+    font-size: 15px;
+    color: #555;
+    line-height: 1.5;
   }
   
   .address-actions {
-    margin-top: 15px;
+    margin-top: 20px;
     display: flex;
-    gap: 10px;
+    gap: 12px;
   }
   
   .btn-edit, .btn-delete {
-    padding: 6px 15px;
+    padding: 8px 18px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 600;
     color: white;
+    transition: all 0.2s ease;
   }
   
   .btn-edit { background-color: #f5a623; }
-  .btn-delete { background-color: #ff3b30; }
+  .btn-delete { background-color: #ef4444; }
   
-  .btn-edit:hover { background-color: #e09612; }
-  .btn-delete:hover { background-color: #e6352b; }
+  .btn-edit:hover { background-color: #e09612; transform: translateY(-1px); }
+  .btn-delete:hover { background-color: #dc2626; transform: translateY(-1px); }
   
   .address-form {
     border: 1px solid #ddd;
@@ -324,33 +357,136 @@
   .btn-cancel:hover { background-color: #ddd; }
   
   /* Orders Tab */
+  .orders-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
   .order-card {
-    border: 1px solid #eee;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
+    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    padding: 24px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+  }
+  
+  .order-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+    border-color: #c0df36;
   }
   
   .order-header {
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
   }
   
-  .order-id { font-weight: 500; color: #333; display: block; font-size: 14px; }
-  .order-date { font-size: 13px; color: #777; }
-  .order-amount { font-weight: bold; color: #3b8c66; }
-  .order-status {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    background-color: #f0f0f0;
+  .order-header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
   }
+  
+  .order-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(192, 223, 54, 0.15);
+    color: #8caba3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+  }
+  
+  .order-id { 
+    font-weight: 700; 
+    color: #222; 
+    display: block; 
+    font-size: 16px; 
+    margin-bottom: 4px;
+  }
+  
+  .order-date { 
+    font-size: 13px; 
+    color: #777; 
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .order-status {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
   .order-status.pending { background-color: #fff3cd; color: #856404; }
   .order-status.approved { background-color: #d4edda; color: #155724; }
   .order-status.rejected { background-color: #f8d7da; color: #721c24; }
+  
+  .order-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .order-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .order-stat-label {
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .order-amount { 
+    font-weight: 800; 
+    color: #3b8c66; 
+    font-size: 18px;
+  }
+  
+  .order-stat-val {
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+  }
+  
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    color: #999;
+  }
+  
+  .empty-state i {
+    font-size: 48px;
+    color: #ddd;
+    margin-bottom: 15px;
+  }
+  
+  .empty-state p {
+    font-size: 16px;
+    font-weight: 500;
+  }
   
   /* Responsive */
   @media (max-width: 768px) {

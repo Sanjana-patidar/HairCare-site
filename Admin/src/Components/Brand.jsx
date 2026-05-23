@@ -6,6 +6,7 @@ import "./Product.css";
 
 const Brand = () => {
   const [brands, setBrands] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   const fetchBrands = async () => {
@@ -43,10 +44,23 @@ const Brand = () => {
     }
   };
 
+  const filteredBrands = brands.filter((item) => 
+    item.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="admin-product-container">
-      <div className="admin-header">
+      <div className="admin-header d-flex justify-content-between align-items-center">
         <div><h2>Brand Management</h2></div>
+        <div style={{width: '250px'}}>
+          <input 
+            type="text" 
+            placeholder="Search brands..." 
+            className="form-control"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
         <div>
           <button
             className="add-btn"
@@ -69,7 +83,7 @@ const Brand = () => {
             </tr>
           </thead>
           <tbody>
-            {brands.map((item, index) => (
+            {filteredBrands.map((item, index) => (
               <tr key={item._id}>
                 <td>{index + 1}</td>
                 <td>
@@ -95,7 +109,7 @@ const Brand = () => {
           </tbody>
         </table>
 
-        {brands.length === 0 && (
+        {filteredBrands.length === 0 && (
           <p className="empty-text">No brands available</p>
         )}
       </div>

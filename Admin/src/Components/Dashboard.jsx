@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import {
@@ -18,23 +19,6 @@ import {
 import { FaUsers, FaBoxOpen, FaShoppingBag, FaRupeeSign } from "react-icons/fa";
 import "./Dashboard.css";
 
-const revenueData = [
-  { name: "Jan", revenue: 4000 },
-  { name: "Feb", revenue: 5500 },
-  { name: "Mar", revenue: 4800 },
-  { name: "Apr", revenue: 7200 },
-  { name: "May", revenue: 8500 },
-  { name: "Jun", revenue: 6900 },
-  { name: "Jul", revenue: 9800 },
-];
-
-const categoryData = [
-  { name: "Shampoo", value: 400 },
-  { name: "Conditioner", value: 300 },
-  { name: "Serum", value: 200 },
-  { name: "Oil", value: 250 },
-];
-
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 const Dashboard = () => {
@@ -44,6 +28,10 @@ const Dashboard = () => {
     products: 0,
     revenue: 0
   });
+  const [recentOrders, setRecentOrders] = useState([]);
+  const [revenueData, setRevenueData] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -60,7 +48,11 @@ const Dashboard = () => {
 
         const users = Array.isArray(usersRes.data.users) ? usersRes.data.users : Array.isArray(usersRes.data) ? usersRes.data : [];
         const products = Array.isArray(productsRes.data) ? productsRes.data : [];
-        const orders = Array.isArray(ordersRes.data) ? ordersRes.data : [];
+        let orders = Array.isArray(ordersRes.data) ? ordersRes.data : [];
+
+        // Sort orders by date descending
+        orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setRecentOrders(orders.slice(0, 5));
 
         // Calculate total revenue from orders
         const totalRevenue = orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
@@ -71,6 +63,35 @@ const Dashboard = () => {
           orders: orders.length,
           revenue: totalRevenue
         });
+
+        // Compute Category Data (Number of products per category)
+        const catMap = {};
+        products.forEach(p => {
+          const c = p.category ? p.category.charAt(0).toUpperCase() + p.category.slice(1) : "Other";
+          catMap[c] = (catMap[c] || 0) + 1;
+        });
+        setCategoryData(Object.keys(catMap).map(k => ({ name: k, value: catMap[k] })));
+
+        // Compute Revenue by Month (Last 6 active months, or all months with data)
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const revMap = {};
+        orders.forEach(o => {
+          if (!o.createdAt) return;
+          const date = new Date(o.createdAt);
+          const m = months[date.getMonth()];
+          revMap[m] = (revMap[m] || 0) + (o.totalAmount || 0);
+        });
+        
+        // Show all months that have revenue, sorted chronologically
+        const currentMonth = new Date().getMonth();
+        let revData = [];
+        for (let i = 5; i >= 0; i--) {
+          let mIndex = (currentMonth - i + 12) % 12;
+          let mName = months[mIndex];
+          revData.push({ name: mName, revenue: revMap[mName] || 0 });
+        }
+        setRevenueData(revData);
+
       } catch (error) {
         console.error("Failed to fetch dashboard stats", error);
       }
@@ -188,6 +209,59 @@ const Dashboard = () => {
                   <Legend verticalAlign="bottom" height={36}/>
                 </PieChart>
               </ResponsiveContainer>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Recent Orders Table */}
+      <div className="row g-4 mb-4">
+        <div className="col-12">
+          <motion.div 
+            className="chart-card"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <h5 className="chart-title mb-0">Recent Orders</h5>
+              <button className="btn btn-sm btn-outline-primary" onClick={() => navigate('/admin/orderhistory')}>View All</button>
+            </div>
+            <div className="table-responsive">
+              <table className="table table-hover align-middle">
+                <thead className="table-light">
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentOrders.length > 0 ? recentOrders.map((order, idx) => (
+                    <tr key={idx}>
+                      <td><small className="text-muted">#{order._id ? order._id.slice(-6) : 'N/A'}</small></td>
+                      <td>{order.customer ? `${order.customer.firstname} ${order.customer.lastname}` : 'Guest'}</td>
+                      <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                      <td>₹{order.totalAmount}</td>
+                      <td>
+                        <span className={`badge ${
+                          order.status === 'Approved' ? 'bg-success text-white' : 
+                          order.status === 'Rejected' ? 'bg-danger text-white' : 
+                          'bg-warning text-dark'
+                        }`}>
+                          {order.status || 'Pending'}
+                        </span>
+                      </td>
+                    </tr>
+                  )) : (
+                    <tr>
+                      <td colSpan="5" className="text-center text-muted py-3">No recent orders found</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </motion.div>
         </div>

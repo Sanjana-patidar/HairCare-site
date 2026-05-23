@@ -1,7 +1,7 @@
 import React from 'react'
 import { useCart } from "../Context/CartContext";
 import axios from "axios";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
 import Swal from 'sweetalert2';
 import confetti from "canvas-confetti";
@@ -13,6 +13,9 @@ const Checkout = () => {
   const navigate = useNavigate();
   const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
   const [paymentMethod, setPaymentMethod] = useState("COD");
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [userEmail, setUserEmail] = useState("");
+  const [selectedAddressIndex, setSelectedAddressIndex] = useState(null);
 
   const [form, setForm] = useState({
     firstname: "",
@@ -46,6 +49,36 @@ const Checkout = () => {
 
   const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
+  useEffect(() => {
+    if (token) {
+      axios.get(`${import.meta.env.VITE_API_URL}/users/profile`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(res => {
+        if (res.data) {
+          if (res.data.email) setUserEmail(res.data.email);
+          if (res.data.addresses) setSavedAddresses(res.data.addresses);
+        }
+      })
+      .catch(err => console.error("Failed to fetch user profile", err));
+    }
+  }, [token]);
+
+  const handleSelectAddress = (addr, index) => {
+    setSelectedAddressIndex(index);
+    const nameParts = addr.name ? addr.name.split(" ") : [""];
+    setForm({
+      ...form,
+      firstname: nameParts[0] || "",
+      lastname: nameParts.slice(1).join(" ") || "",
+      email: userEmail || form.email,
+      phone: addr.phoneNo || "",
+      address: addr.address || "",
+      city: addr.city || "",
+      pincode: addr.pincode || "",
+    });
+  };
+
   const placeOrder = async () => {
     // 🔒 Check if user is logged in
     if (!token) {
@@ -71,6 +104,7 @@ const Checkout = () => {
 
     // Products sent to backend use discountprice as the price
     const productsForOrder = cartItems.map(item => ({
+      product: item._id, // ✅ Critical for stock deduction
       name: item.name,
       price: Number(item.discountprice),
       quantity: Number(item.quantity),
@@ -191,40 +225,59 @@ const Checkout = () => {
         <div className="col-12 col-md-6 fixed">
             <div className=' p-3'>
                <h4>Billing Detail</h4>
+
+               {/* Saved Addresses Section */}
+               {savedAddresses.length > 0 && (
+                 <div className="saved-addresses mb-4">
+                   <p className="fw-bold mb-2 text-secondary">Quick Select Saved Address:</p>
+                   <div className="d-flex flex-wrap gap-2">
+                     {savedAddresses.map((addr, idx) => (
+                       <button
+                         key={addr._id || idx}
+                         className={`btn btn-sm ${selectedAddressIndex === idx ? 'btn-primary' : 'btn-outline-primary'}`}
+                         onClick={() => handleSelectAddress(addr, idx)}
+                       >
+                         {addr.addressType || "Home"} - {addr.city}
+                       </button>
+                     ))}
+                   </div>
+                 </div>
+               )}
+
                <div className="form-container">
                  <div>
                    <div className='d-flex flex-column flex-sm-row gap-3'>
                     <div className='w-100'>
                       <label>First Name <span style={{color:"red"}}>*</span></label><br />
-                      <input name="firstname" type="text" placeholder='Enter your first name...' onChange={handleChange}/>
+                      <input name="firstname" type="text" placeholder='Enter your first name...' value={form.firstname} onChange={handleChange}/>
                    </div>
                    <div className='w-100'>
                       <label>Last Name <span style={{color:"red"}}>*</span></label><br />
-                      <input name="lastname" type="text" placeholder='Enter your last name...' onChange={handleChange} />
+                      <input name="lastname" type="text" placeholder='Enter your last name...' value={form.lastname} onChange={handleChange} />
                    </div>
                    </div>
                    <div className='d-flex flex-column flex-sm-row gap-3'>
                     <div className='w-100'>
                       <label>Email <span style={{color:"red"}}>*</span></label><br />
-                      <input name="email" type="text" placeholder='email@gmail.com' onChange={handleChange} />
+                      <input name="email" type="text" placeholder='email@gmail.com' value={form.email} onChange={handleChange} />
                    </div>
                    <div className='w-100'>
                       <label>Phone Number <span style={{color:"red"}}>*</span></label><br />
-                      <input name="phone" type="text" inputMode="numeric" placeholder='9119675097' onChange={handleChange} />
+                      <input name="phone" type="text" inputMode="numeric" placeholder='9119675097' value={form.phone} onChange={handleChange} />
                    </div>
 
                    </div>
                     <div>
                       <label>Address  <span style={{color:"red"}}>*</span></label><br />
-                      <textarea name="address" placeholder='address' onChange={handleChange} ></textarea>
+                      <textarea name="address" placeholder='address' value={form.address} onChange={handleChange} ></textarea>
                     </div>
                     <div>
                       <label>Town/City  <span style={{color:"red"}}>*</span></label><br />
-                      <input name="city" type="text" placeholder='city' onChange={handleChange} />
+                      <input name="city" type="text" placeholder='city' value={form.city} onChange={handleChange} />
                    </div>
                    <div>
                       <label>Pincode  <span style={{color:"red"}}>*</span></label><br />
-                      <input name="pincode" type="text" inputMode="numeric" placeholder='pincode' onChange={handleChange} />
+                      <input name="pincode" type="text" inputMode="numeric" placeholder='pincode' value={form.pincode} onChange={handleChange} />
                    </div>
                    <div className="payment-method">
   <h5>Select Payment Method</h5>

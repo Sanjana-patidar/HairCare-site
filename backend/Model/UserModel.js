@@ -25,7 +25,9 @@ const userSchema = new mongoose.Schema({
         country: { type: String, default: "India" }
       }
     ],
-    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "product" }]
+    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "product" }],
+    resetPasswordOtp: { type: String, default: null },
+    resetPasswordExpires: { type: Date, default: null }
 },
  { timestamps: true }
 );

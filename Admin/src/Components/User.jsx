@@ -6,6 +6,7 @@ const User = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -59,11 +60,17 @@ const User = () => {
       timeStyle: "short",
     });
 
+  // Search filter
+  const filteredUsers = users.filter(user => 
+    user.username?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   // Pagination logic
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
-  const totalPages = Math.ceil(users.length / usersPerPage);
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   const handlePrev = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -75,7 +82,21 @@ const User = () => {
 
   return (
     <div className="user-container">
-      <h2 className="page-title">User Management</h2>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2 className="page-title mb-0">User Management</h2>
+        <div style={{width: '250px'}}>
+          <input 
+            type="text" 
+            placeholder="Search users..." 
+            className="form-control"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+          />
+        </div>
+      </div>
 
       <div className="table-card">
         <table className="user-table">
@@ -128,10 +149,10 @@ const User = () => {
           </tbody>
         </table>
 
-        {users.length === 0 && <p className="empty-text">No users found</p>}
+        {filteredUsers.length === 0 && <p className="empty-text">No users found</p>}
 
         {/* ===== Pagination Buttons ===== */}
-        {users.length > usersPerPage && (
+        {filteredUsers.length > usersPerPage && (
           <div className="pagination">
             <button onClick={handlePrev} disabled={currentPage === 1}>
               Prev

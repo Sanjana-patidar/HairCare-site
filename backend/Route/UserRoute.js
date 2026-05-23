@@ -1,7 +1,8 @@
 import express from "express";
 import authMiddleware from "../Middleware/Authmiddleware.js";
 import adminMiddleware from "../Middleware/Adminmiddleware.js";
-import { signup, login, getAllUsers, deleteUser, getUserProfile, updateUserProfile, addAddress, updateAddress, deleteAddress, addToWishlist, removeFromWishlist, getWishlist, changePassword } from '../Controller/UserController.js'
+import upload from "../Middleware/upload.js";
+import { signup, login, getAllUsers, deleteUser, getUserProfile, updateUserProfile, addAddress, updateAddress, deleteAddress, addToWishlist, removeFromWishlist, getWishlist, changePassword, forgotPassword, resetPassword } from '../Controller/UserController.js'
 
 
 const router = express.Router();
@@ -250,7 +251,7 @@ router.get('/profile', authMiddleware, getUserProfile);
  *       401:
  *         description: Unauthorized
  */
-router.put('/profile', authMiddleware, updateUserProfile);
+router.put('/profile', authMiddleware, upload.single("image"), updateUserProfile);
 
 /**
  * @swagger
@@ -466,5 +467,11 @@ router.delete('/wishlist/:productId', authMiddleware, removeFromWishlist);
  *         description: Unauthorized
  */
 router.put('/change-password', authMiddleware, changePassword);
+
+// Forgot Password
+router.post('/forgot-password', forgotPassword);
+
+// Reset Password
+router.post('/reset-password', resetPassword);
 
 export default router;

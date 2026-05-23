@@ -400,7 +400,24 @@
   .nav-link { padding: 12px 16px !important; border-radius: 10px; }
   .nav-link::after { display: none; }
 
-  .search-bar { margin-top: 12px; padding-top: 12px; border-top: 1px solid #f3f4f6; flex-wrap: wrap; gap: 10px; }
+  .search-bar { 
+    margin-top: 0; 
+    padding-top: 0; 
+    border-top: none; 
+    gap: 8px !important; 
+  }
+  
+  .navbar-collapse .nav-icon-btn {
+    width: auto;
+    height: 48px;
+    border-radius: 12px;
+    padding: 0 16px;
+    background: rgba(243, 244, 246, 0.9);
+  }
+  
+  .navbar-collapse .nav-icon-btn:hover {
+    background: rgba(192, 223, 54, 0.15);
+  }
 }
 
 /* ── Auth modal styling ── */
@@ -456,6 +473,16 @@
 /* ── Mobile search bar gap ── */
 @media (max-width: 768px) {
   .nav-username-text { display: none; }
-  .nav-avatar-btn { padding: 4px !important; }
+  .nav-avatar-btn { padding: 4px !important; border-radius: 50%; }
   .nav-login-btn span { display: none; }
+  .nav-login-btn { 
+    padding: 0 !important; 
+    width: 42px; 
+    height: 42px; 
+    justify-content: center; 
+    border-radius: 50%;
+  }
+  .search-bar { gap: 6px !important; margin-right: 0px !important; }
+  .navbar-toggler { padding: 4px 8px !important; margin-left: 2px; }
+  .logo-text { font-size: 1.25rem; }
 }

@@ -1,13 +1,14 @@
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import { Order } from "../Model/OrderModel.js";
+import { productModel } from "../Model/ProductModel.js";
 
 
 
 // ✅ 1. Create Razorpay Order
 export const createRazorpayOrder = async (req, res) => {
   try {
-     const razorpay = new Razorpay({
+    const razorpay = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID,
       key_secret: process.env.RAZORPAY_SECRET,
     });
@@ -43,21 +44,37 @@ export const verifyPayment = async (req, res) => {
       .digest("hex");
 
     if (expectedSignature !== razorpay_signature) {
-  return res.status(400).json({
-    message: "Payment verification failed",
-  });
-}
+      return res.status(400).json({
+        message: "Payment verification failed",
+      });
+    }
 
     // ✅ Save order AFTER payment success
-   const newOrder = new Order({
-  user: req.user.id,
-  ...orderData,
-  paymentMethod: "Online",
-   paymentStatus: "Paid", 
-  paymentId: razorpay_payment_id,
-  razorpayOrderId: razorpay_order_id,
-});
+    const newOrder = new Order({
+      user: req.user.id,
+      ...orderData,
+      paymentMethod: "Online",
+      paymentStatus: "Paid",
+      paymentId: razorpay_payment_id,
+      razorpayOrderId: razorpay_order_id,
+    });
     await newOrder.save();
+
+    // ✅ Decrement stock for each purchased product
+    if (orderData.products && Array.isArray(orderData.products)) {
+      for (const item of orderData.products) {
+        if (!item.product) continue;
+        const dbProduct = await productModel.findById(item.product);
+        if (dbProduct) {
+          dbProduct.stock -= item.quantity;
+          if (dbProduct.stock <= 0) {
+            dbProduct.stock = 0;
+            dbProduct.status = "outofstock";
+          }
+          await dbProduct.save();
+        }
+      }
+    }
 
     res.json({ success: true, message: "Payment successful & order saved" });
   } catch (error) {

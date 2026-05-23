@@ -17,20 +17,25 @@ export const CartProvider = ({ children }) => {
   }, [cartItems]);
 
   // add to cart function
-  const addToCart = (product) => {
+  const addToCart = (product, qty = 1) => {
     setCartItems((prev) => {
       const alreadyExists = prev.find((item) => item._id === product._id);
       if (alreadyExists) return prev;
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prev, { ...product, quantity: qty }];
     });
   };
 
   // increase quantity
   const increaseQty = (id) => {
     setCartItems((prev) =>
-      prev.map((item) =>
-        item._id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
+      prev.map((item) => {
+        if (item._id === id) {
+          const maxStock = item.stock || 1;
+          const newQty = item.quantity + 1 > maxStock ? maxStock : item.quantity + 1;
+          return { ...item, quantity: newQty };
+        }
+        return item;
+      })
     );
   };
 

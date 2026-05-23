@@ -111,7 +111,7 @@ export default function Productdetail() {
   const handleAddToCart = () => {
     if (!isLoggedIn)  { toast.warning('Login first!');       return; }
     if (cartItem)     { toast.warning('Already in cart!');   return; }
-    addToCart(product);
+    addToCart(product, qty);
     confetti({ particleCount: 140, spread: 90, origin: { y: 0.55 } });
     toast.success('Added to cart 🎉');
   };

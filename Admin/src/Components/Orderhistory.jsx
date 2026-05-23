@@ -7,6 +7,7 @@ const Orderhistory = () => {
   const [orders, setOrders] = useState([]);
   const [page, setPage] = useState(1);
   const [orderDetails, setOrderDetails] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const perPage = 7;
 
@@ -52,9 +53,20 @@ const Orderhistory = () => {
     return status.toLowerCase();
   };
 
+  const filteredOrders = orders.filter((o) => {
+    const searchString = searchTerm.toLowerCase();
+    const orderId = o._id.toLowerCase();
+    const customerName = `${o.customer?.firstname || ''} ${o.customer?.lastname || ''}`.toLowerCase();
+    const customerEmail = (o.customer?.email || '').toLowerCase();
+    
+    return orderId.includes(searchString) || 
+           customerName.includes(searchString) || 
+           customerEmail.includes(searchString);
+  });
+
   const start = (page - 1) * perPage;
-  const currentOrders = orders.slice(start, start + perPage);
-  const totalPages = Math.ceil(orders.length / perPage);
+  const currentOrders = filteredOrders.slice(start, start + perPage);
+  const totalPages = Math.ceil(filteredOrders.length / perPage);
 
   return (
     <>
@@ -215,8 +227,20 @@ const Orderhistory = () => {
       </div>
 
       <div className="order-history-container">
-        <div className="admin-header">
+        <div className="admin-header d-flex justify-content-between align-items-center">
           <h2>Order History</h2>
+          <div style={{width: '250px'}}>
+            <input 
+              type="text" 
+              placeholder="Search orders..." 
+              className="form-control"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setPage(1);
+              }}
+            />
+          </div>
         </div>
 
         {/* TABLE */}
@@ -282,7 +306,7 @@ const Orderhistory = () => {
             </tbody>
           </table>
 
-          {orders.length === 0 && (
+          {filteredOrders.length === 0 && (
             <p className="empty-text">No orders found.</p>
           )}
         </div>

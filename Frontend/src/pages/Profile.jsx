@@ -23,6 +23,7 @@ const Profile = () => {
   // Address state
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [editingAddressId, setEditingAddressId] = useState(null);
+  const [openAddressId, setOpenAddressId] = useState(null);
   const [addressForm, setAddressForm] = useState({
     name: '',
     phoneNo: '',
@@ -99,15 +100,31 @@ const Profile = () => {
     const reader = new FileReader();
     reader.onloadend = () => {
       setImagePreview(reader.result);
-      setProfileForm(prev => ({ ...prev, profileImage: reader.result }));
+      setProfileForm(prev => ({ ...prev, imageFile: file }));
     };
     reader.readAsDataURL(file);
   };
 
   const handleProfileSave = async () => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/users/profile`, profileForm, config);
+      const formData = new FormData();
+      formData.append("username", profileForm.username);
+      formData.append("phone", profileForm.phone);
+      formData.append("gender", profileForm.gender);
+      formData.append("dob", profileForm.dob);
+      
+      if (profileForm.imageFile) {
+        formData.append("image", profileForm.imageFile);
+      }
+
+      await axios.put(`${import.meta.env.VITE_API_URL}/users/profile`, formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data" 
+        }
+      });
       toast.success('Profile updated successfully');
+      window.dispatchEvent(new Event('profileUpdated'));
       fetchProfile();
     } catch (err) {
       toast.error('Failed to update profile');
@@ -161,6 +178,10 @@ const Profile = () => {
     setShowAddressForm(true);
   };
 
+  const toggleAddressAccordion = (id) => {
+    setOpenAddressId(prev => (prev === id ? null : id));
+  };
+
   if (loading) return (
     <div className="prf-loading">
       <div className="prf-spinner" />
@@ -193,7 +214,7 @@ const Profile = () => {
               title="Click to change photo"
             >
               {imagePreview ? (
-                <img src={imagePreview} alt={user.username} className="profile-avatar-img" />
+                <img src={imagePreview.startsWith('data:') ? imagePreview : `${import.meta.env.VITE_API_IMAGE}/${imagePreview}`} alt={user.username} className="profile-avatar-img" />
               ) : (
                 <div className="profile-avatar">
                   {user.username ? user.username.charAt(0).toUpperCase() : 'U'}
@@ -271,20 +292,28 @@ const Profile = () => {
                 <>
                   {user.addresses && user.addresses.length > 0 ? (
                     user.addresses.map((addr) => (
-                      <div className="address-card" key={addr._id}>
-                        <div className="address-card-header">
-                          <h4>{addr.name} - {addr.phoneNo}</h4>
+                      <div className={`address-card ${openAddressId === addr._id ? 'open' : ''}`} key={addr._id}>
+                        <div className="address-card-header" onClick={() => toggleAddressAccordion(addr._id)}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <i className={`fa-solid fa-chevron-${openAddressId === addr._id ? 'up' : 'down'}`} style={{ color: '#888', fontSize: '13px', transition: 'all 0.3s' }}></i>
+                            <h4>{addr.name} - {addr.phoneNo}</h4>
+                          </div>
                           <span className="address-type-badge">{addr.addressType}</span>
                         </div>
-                        <div className="address-details">
-                          <p>{addr.address}</p>
-                          <p>{addr.city}, {addr.state} - {addr.pincode}</p>
-                          <p>{addr.country}</p>
-                        </div>
-                        <div className="address-actions">
-                          <button className="btn-edit" onClick={() => openEditAddress(addr)}>Edit</button>
-                          <button className="btn-delete" onClick={() => handleDeleteAddress(addr._id)}>Delete</button>
-                        </div>
+                        
+                        {openAddressId === addr._id && (
+                          <div className="address-accordion-body">
+                            <div className="address-details">
+                              <p>{addr.address}</p>
+                              <p>{addr.city}, {addr.state} - {addr.pincode}</p>
+                              <p>{addr.country}</p>
+                            </div>
+                            <div className="address-actions">
+                              <button className="btn-edit" onClick={() => openEditAddress(addr)}>Edit</button>
+                              <button className="btn-delete" onClick={() => handleDeleteAddress(addr._id)}>Delete</button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ))
                   ) : (
@@ -344,28 +373,51 @@ const Profile = () => {
           )}
 
           {activeTab === 'orders' && (
-            <div>
+            <div className="orders-section">
               <h3>Order History</h3>
               {orders.length > 0 ? (
-                orders.map((order) => (
-                  <div className="order-card" key={order._id}>
-                    <div className="order-header">
-                      <div>
-                        <span className="order-id">Order ID: {order._id}</span>
-                        <span className="order-date">{new Date(order.createdAt).toLocaleDateString()}</span>
+                <div className="orders-grid">
+                  {orders.map((order) => (
+                    <div className="order-card" key={order._id}>
+                      <div className="order-header">
+                        <div className="order-header-left">
+                          <div className="order-icon-wrap">
+                            <i className="fa-solid fa-box-open"></i>
+                          </div>
+                          <div>
+                            <span className="order-id">#{order._id.slice(-8).toUpperCase()}</span>
+                            <span className="order-date"><i className="fa-regular fa-calendar"></i> {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                          </div>
+                        </div>
+                        <span className={`order-status ${order.status?.toLowerCase() || 'pending'}`}>
+                          {order.status || 'Pending'}
+                        </span>
                       </div>
-                      <span className={`order-status ${order.status?.toLowerCase() || 'pending'}`}>
-                        {order.status || 'Pending'}
-                      </span>
+                      
+                      <div className="order-details">
+                        <div className="order-stat">
+                          <span className="order-stat-label">Total Amount</span>
+                          <span className="order-amount">₹{order.totalAmount}</span>
+                        </div>
+                        <div className="order-stat">
+                          <span className="order-stat-label">Items</span>
+                          <span className="order-stat-val">{order.products?.length || 0} Products</span>
+                        </div>
+                        <div className="order-stat">
+                          <span className="order-stat-label">Payment</span>
+                          <span className="order-stat-val">
+                            <i className={`fa-solid ${order.paymentMethod === 'ONLINE' ? 'fa-credit-card' : 'fa-money-bill-wave'}`}></i> {order.paymentMethod}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="order-details mt-2">
-                      <p className="order-amount mb-1">Total: ₹{order.totalAmount}</p>
-                      <p className="mb-0 text-secondary" style={{ fontSize: '13px' }}>{order.products?.length || 0} Items | Method: {order.paymentMethod}</p>
-                    </div>
-                  </div>
-                ))
+                  ))}
+                </div>
               ) : (
-                <p>No orders found.</p>
+                <div className="empty-state">
+                  <i className="fa-solid fa-box-archive"></i>
+                  <p>You haven't placed any orders yet.</p>
+                </div>
               )}
             </div>
           )}

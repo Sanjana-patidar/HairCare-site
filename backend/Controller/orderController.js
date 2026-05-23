@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { Order } from "../Model/OrderModel.js";
+import { productModel } from "../Model/ProductModel.js";
 
 export const placeOrder = async (req, res) => {
   try {
@@ -27,6 +28,20 @@ export const placeOrder = async (req, res) => {
       });
 
       await newOrder.save();
+
+      // ✅ Decrement stock for each purchased product
+      for (const item of products) {
+        if (!item.product) continue;
+        const dbProduct = await productModel.findById(item.product);
+        if (dbProduct) {
+          dbProduct.stock -= item.quantity;
+          if (dbProduct.stock <= 0) {
+            dbProduct.stock = 0;
+            dbProduct.status = "outofstock";
+          }
+          await dbProduct.save();
+        }
+      }
 
       // ✅ Respond with success IMMEDIATELY — don't wait for email
       res.status(201).json({

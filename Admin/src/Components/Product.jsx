@@ -15,6 +15,7 @@ const Product = () => {
   const [categoryFilter, setCategoryFilter] = useState(""); // "" = All
   const [priceSort, setPriceSort] = useState(""); // "low-high", "high-low"
   const [nameSort, setNameSort] = useState(""); // "a-z", "z-a"
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   // Pagination
@@ -24,6 +25,14 @@ const Product = () => {
   // function for soting filtered products
   const getFilteredProducts = () => {
     let filtered = [...products];
+
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter((item) => 
+        item.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        item.category?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
 
     // Status filter
     if (statusFilter) {
@@ -55,7 +64,7 @@ const Product = () => {
   // Reset page when filters change
   React.useEffect(() => {
     setPage(1);
-  }, [statusFilter, categoryFilter, priceSort, nameSort]);
+  }, [statusFilter, categoryFilter, priceSort, nameSort, searchTerm]);
 
   const filteredProducts = getFilteredProducts();
   const totalPages = Math.ceil(filteredProducts.length / perPage);
@@ -82,7 +91,7 @@ const Product = () => {
     return pages;
   };
 
-  const activeFilterCount = [statusFilter, categoryFilter, priceSort, nameSort].filter(Boolean).length;
+  const activeFilterCount = [statusFilter, categoryFilter, priceSort, nameSort, searchTerm].filter(Boolean).length;
 
 
   const StatusToggle = ({ status, onChange }) => {
@@ -253,65 +262,6 @@ const Product = () => {
         <div className="admin-header">
           <div><h2>Product Management</h2></div>
           <div>
-            <div className="filter-bar">
-
-              <div className="filter-bar-selects">
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="filter-select"
-                >
-                  <option value="">All Status</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                  <option value="outofstock">Out of Stock</option>
-                </select>
-
-                <select
-                  value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="filter-select"
-                >
-                  <option value="">All Categories</option>
-                  {Array.from(new Set(products.map((p) => p.category))).map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
-                  ))}
-                </select>
-
-                <select
-                  value={priceSort}
-                  onChange={(e) => setPriceSort(e.target.value)}
-                  className="filter-select"
-                >
-                  <option value="">Price: All</option>
-                  <option value="low-high">Price: Low → High</option>
-                  <option value="high-low">Price: High → Low</option>
-                </select>
-
-                <select
-                  value={nameSort}
-                  onChange={(e) => setNameSort(e.target.value)}
-                  className="filter-select"
-                >
-                  <option value="">Name: All</option>
-                  <option value="a-z">A → Z</option>
-                  <option value="z-a">Z → A</option>
-                </select>
-              </div>
-              {activeFilterCount > 0 && (
-                <button
-                  className="filter-clear-btn"
-                  onClick={() => { setStatusFilter(''); setCategoryFilter(''); setPriceSort(''); setNameSort(''); }}
-                >
-                  Clear All
-                </button>
-              )}
-            </div>
-
-          </div>
-          <div>
             <button
               className="add-btn"
               onClick={() => navigate("/admin/addproduct")}
@@ -319,6 +269,71 @@ const Product = () => {
               + Add Product
             </button>
           </div>
+        </div>
+
+        <div className="filter-bar" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px', flexWrap: 'wrap' }}>
+          <div className="filter-bar-selects" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', flex: 1 }}>
+            <input 
+              type="text" 
+              placeholder="Search products..." 
+              className="filter-select"
+              style={{ minWidth: '200px', flex: '1 1 auto' }}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="filter-select"
+            >
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+              <option value="outofstock">Out of Stock</option>
+            </select>
+
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="filter-select"
+            >
+              <option value="">All Categories</option>
+              {Array.from(new Set(products.map((p) => p.category))).map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={priceSort}
+              onChange={(e) => setPriceSort(e.target.value)}
+              className="filter-select"
+            >
+              <option value="">Price: All</option>
+              <option value="low-high">Price: Low → High</option>
+              <option value="high-low">Price: High → Low</option>
+            </select>
+
+            <select
+              value={nameSort}
+              onChange={(e) => setNameSort(e.target.value)}
+              className="filter-select"
+            >
+              <option value="">Name: All</option>
+              <option value="a-z">A → Z</option>
+              <option value="z-a">Z → A</option>
+            </select>
+          </div>
+          {activeFilterCount > 0 && (
+            <button
+              className="filter-clear-btn btn btn-outline-danger btn-sm"
+              style={{ padding: '8px 16px', borderRadius: '8px' }}
+              onClick={() => { setStatusFilter(''); setCategoryFilter(''); setPriceSort(''); setNameSort(''); setSearchTerm(''); }}
+            >
+              Clear All
+            </button>
+          )}
         </div>
 
         <div className="table-card">
