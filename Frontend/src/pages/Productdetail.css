@@ -131,6 +131,7 @@
 @media (max-width: 860px) {
   .pd-gallery {
     flex-direction: column-reverse;
+    align-items: stretch;
   }
   .pd-thumbs {
     flex-direction: row;
